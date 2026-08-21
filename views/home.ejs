@@ -1,0 +1,738 @@
+<%- include('partials/header') %>
+
+<main class="home">
+
+    <!-- =====================================================
+         BANNER PRINCIPAL
+    ====================================================== -->
+
+    <section
+        class="banner-home"
+        aria-label="Promoções Manto 10"
+    >
+
+        <button
+            type="button"
+            class="banner-seta banner-seta-esquerda"
+            id="bannerAnterior"
+            aria-label="Banner anterior"
+        >
+            &#10094;
+        </button>
+
+        <div class="banner-viewport">
+
+            <div
+                class="banner-trilho"
+                id="bannerTrilho"
+            >
+
+                <!-- BANNER 1 -->
+
+                <article class="banner-slide ativo">
+
+                    <div class="banner-conteudo">
+
+                        <span class="banner-etiqueta">
+                            PROMOÇÃO MANTO 10
+                        </span>
+
+                        <h1>
+                            COMPRE 2
+                            <strong>LEVE 3</strong>
+                        </h1>
+
+                        <p>
+                            Escolha seus mantos favoritos
+                            e complete sua coleção.
+                        </p>
+
+                        <a
+                            href="#tailandesas"
+                            class="banner-botao"
+                        >
+                            Garanta já
+                        </a>
+
+                    </div>
+
+                    <div
+                        class="banner-ilustracao"
+                        aria-hidden="true"
+                    >
+
+                        <div class="camisa-banner camisa-1">
+                            10
+                        </div>
+
+                        <div class="camisa-banner camisa-2">
+                            10
+                        </div>
+
+                    </div>
+
+                </article>
+
+                <!-- BANNER 2 -->
+
+                <article class="banner-slide banner-slide-2">
+
+                    <div class="banner-conteudo">
+
+                        <span class="banner-etiqueta">
+                            NOVIDADES
+                        </span>
+
+                        <h1>
+                            NOVOS
+                            <strong>MANTOS</strong>
+                        </h1>
+
+                        <p>
+                            Lançamentos dos maiores clubes
+                            do mundo em um só lugar.
+                        </p>
+
+                        <a
+                            href="#nacionais-premium"
+                            class="banner-botao"
+                        >
+                            Conferir
+                        </a>
+
+                    </div>
+
+                    <div
+                        class="banner-ilustracao"
+                        aria-hidden="true"
+                    >
+
+                        <div class="bola-banner">
+                            ⚽
+                        </div>
+
+                        <div class="numero-banner">
+                            10
+                        </div>
+
+                    </div>
+
+                </article>
+
+                <!-- BANNER 3 -->
+
+                <article class="banner-slide banner-slide-3">
+
+                    <div class="banner-conteudo">
+
+                        <span class="banner-etiqueta">
+                            MANTO 10
+                        </span>
+
+                        <h1>
+                            VISTA SUA
+                            <strong>PAIXÃO</strong>
+                        </h1>
+
+                        <p>
+                            Camisas atuais, retrôs
+                            e grandes clássicos do futebol.
+                        </p>
+
+                        <a
+                            href="#ligas"
+                            class="banner-botao"
+                        >
+                            Ver ligas
+                        </a>
+
+                    </div>
+
+                    <div
+                        class="banner-ilustracao"
+                        aria-hidden="true"
+                    >
+
+                        <span class="trofeu-banner">
+                            ★
+                        </span>
+
+                        <div class="numero-banner">
+                            10
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </div>
+
+        <button
+            type="button"
+            class="banner-seta banner-seta-direita"
+            id="bannerProximo"
+            aria-label="Próximo banner"
+        >
+            &#10095;
+        </button>
+
+        <div
+            class="banner-indicadores"
+            id="bannerIndicadores"
+        >
+
+            <button
+                type="button"
+                class="ativo"
+                data-banner="0"
+                aria-label="Mostrar banner 1"
+            ></button>
+
+            <button
+                type="button"
+                data-banner="1"
+                aria-label="Mostrar banner 2"
+            ></button>
+
+            <button
+                type="button"
+                data-banner="2"
+                aria-label="Mostrar banner 3"
+            ></button>
+
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         LIGAS
+    ====================================================== -->
+
+    <section
+        class="secao-home"
+        id="ligas"
+    >
+
+        <div class="titulo-secao">
+
+            <span></span>
+
+            <h2>
+                LIGAS
+            </h2>
+
+            <span></span>
+
+        </div>
+
+        <div class="carrossel-home">
+
+            <button
+                type="button"
+                class="seta-carrossel"
+                id="ligaAnterior"
+                aria-label="Ligas anteriores"
+            >
+                &#10094;
+            </button>
+
+            <div
+                class="lista-ligas"
+                id="listaLigas"
+            >
+
+                <% if (ligas.length > 0) { %>
+
+                    <% ligas.forEach((liga) => { %>
+
+                        <a
+                            href="/camisas?liga=<%= liga.slug %>"
+                            class="card-liga"
+                        >
+
+                            <div class="logo-liga">
+
+                                <% if (liga.imagem) { %>
+
+                                    <img
+                                        src="<%= liga.imagem %>"
+                                        alt="<%= liga.nome %>"
+                                    >
+
+                                <% } else { %>
+
+                                    <span>
+                                        <%= liga.nome
+                                            .split(' ')
+                                            .map(parte => parte.charAt(0))
+                                            .join('')
+                                            .substring(0, 3)
+                                        %>
+                                    </span>
+
+                                <% } %>
+
+                            </div>
+
+                            <strong>
+                                <%= liga.nome %>
+                            </strong>
+
+                            <% if (liga.pais) { %>
+
+                                <small>
+                                    <%= liga.pais %>
+                                </small>
+
+                            <% } %>
+
+                        </a>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <p class="estado-vazio">
+                        Nenhuma liga cadastrada.
+                    </p>
+
+                <% } %>
+
+            </div>
+
+            <button
+                type="button"
+                class="seta-carrossel"
+                id="ligaProxima"
+                aria-label="Próximas ligas"
+            >
+                &#10095;
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         TAILANDESAS
+    ====================================================== -->
+
+    <section
+        class="secao-home"
+        id="tailandesas"
+    >
+
+        <div class="cabecalho-produtos-home">
+
+            <div class="titulo-secao titulo-secao-produtos">
+
+                <span></span>
+
+                <h2>
+                    TAILANDESAS
+                </h2>
+
+                <span></span>
+
+            </div>
+
+            <a
+                href="/camisas?tipo=Tailandesa"
+                class="botao-ver-mais-home"
+            >
+                VER MAIS
+            </a>
+
+        </div>
+
+        <div class="carrossel-home">
+
+            <button
+                type="button"
+                class="seta-carrossel"
+                id="tailandesasAnterior"
+                aria-label="Camisas tailandesas anteriores"
+            >
+                &#10094;
+            </button>
+
+            <div
+                class="lista-produtos-home"
+                id="listaTailandesasHome"
+            >
+
+                <% if (tailandesas.length > 0) { %>
+
+                    <% tailandesas.forEach((produto) => { %>
+
+                        <article class="card-produto-home">
+
+                            <button
+                                type="button"
+                                class="produto-area-click"
+                                data-produto="<%= produto.slug %>"
+                            >
+
+                                <div class="produto-imagem-home">
+
+                                    <% if (produto.temPromocao) { %>
+
+                                        <span class="selo-promocao">
+                                            OFERTA
+                                        </span>
+
+                                    <% } %>
+
+                                    <img
+                                        src="<%= produto.imagem || '/images/produtos/placeholder.svg' %>"
+                                        alt="<%= produto.nome %>"
+                                        loading="lazy"
+                                        onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                                    >
+
+                                </div>
+
+                                <div class="produto-info-home">
+
+                                    <small class="produto-time">
+                                        <%= produto.tipo_camisa.toUpperCase() %>
+                                    </small>
+
+                                    <h3>
+                                        <%= produto.nome %>
+                                    </h3>
+
+                                    <% if (produto.temporada) { %>
+
+                                        <span class="produto-temporada">
+                                            Temporada <%= produto.temporada %>
+                                        </span>
+
+                                    <% } %>
+
+                                    <div class="produto-precos">
+
+                                        <% if (produto.temPromocao) { %>
+
+                                            <span class="preco-antigo">
+                                                <%= produto.precoAnteriorFormatado %>
+                                            </span>
+
+                                        <% } %>
+
+                                        <strong>
+                                            <%= produto.precoFormatado %>
+                                        </strong>
+
+                                    </div>
+
+                                    <% if (Number(produto.desconto_pix) > 0) { %>
+
+                                        <span class="produto-pix">
+                                            <%= Number(produto.desconto_pix) %>% de desconto no Pix
+                                        </span>
+
+                                    <% } %>
+
+                                    <span
+                                        class="
+                                            produto-estoque
+                                            <%= Number(produto.estoque_total) <= 5
+                                                ? 'estoque-baixo'
+                                                : ''
+                                            %>
+                                        "
+                                    >
+                                        <%= produto.estoque_total %>
+                                        unidades disponíveis
+                                    </span>
+
+                                </div>
+
+                            </button>
+
+                        </article>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <p class="estado-vazio">
+                        Nenhuma camisa Tailandesa disponível no momento.
+                    </p>
+
+                <% } %>
+
+            </div>
+
+            <button
+                type="button"
+                class="seta-carrossel"
+                id="tailandesasProximo"
+                aria-label="Próximas camisas tailandesas"
+            >
+                &#10095;
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         NACIONAIS PREMIUM
+    ====================================================== -->
+
+    <section
+        class="secao-home"
+        id="nacionais-premium"
+    >
+
+        <div class="cabecalho-produtos-home">
+
+            <div class="titulo-secao titulo-secao-produtos">
+
+                <span></span>
+
+                <h2>
+                    NACIONAIS PREMIUM
+                </h2>
+
+                <span></span>
+
+            </div>
+
+            <a
+                href="/camisas?tipo=Nacional%20Premium"
+                class="botao-ver-mais-home"
+            >
+                VER MAIS
+            </a>
+
+        </div>
+
+        <div class="carrossel-home">
+
+            <button
+                type="button"
+                class="seta-carrossel"
+                id="nacionaisAnterior"
+                aria-label="Camisas nacionais premium anteriores"
+            >
+                &#10094;
+            </button>
+
+            <div
+                class="lista-produtos-home"
+                id="listaNacionaisHome"
+            >
+
+                <% if (nacionaisPremium.length > 0) { %>
+
+                    <% nacionaisPremium.forEach((produto) => { %>
+
+                        <article class="card-produto-home">
+
+                            <button
+                                type="button"
+                                class="produto-area-click"
+                                data-produto="<%= produto.slug %>"
+                            >
+
+                                <div class="produto-imagem-home">
+
+                                    <% if (produto.temPromocao) { %>
+
+                                        <span class="selo-promocao">
+                                            OFERTA
+                                        </span>
+
+                                    <% } %>
+
+                                    <img
+                                        src="<%= produto.imagem || '/images/produtos/placeholder.svg' %>"
+                                        alt="<%= produto.nome %>"
+                                        loading="lazy"
+                                        onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                                    >
+
+                                </div>
+
+                                <div class="produto-info-home">
+
+                                    <small class="produto-time">
+                                        <%= produto.tipo_camisa.toUpperCase() %>
+                                    </small>
+
+                                    <h3>
+                                        <%= produto.nome %>
+                                    </h3>
+
+                                    <% if (produto.temporada) { %>
+
+                                        <span class="produto-temporada">
+                                            Temporada <%= produto.temporada %>
+                                        </span>
+
+                                    <% } %>
+
+                                    <div class="produto-precos">
+
+                                        <% if (produto.temPromocao) { %>
+
+                                            <span class="preco-antigo">
+                                                <%= produto.precoAnteriorFormatado %>
+                                            </span>
+
+                                        <% } %>
+
+                                        <strong>
+                                            <%= produto.precoFormatado %>
+                                        </strong>
+
+                                    </div>
+
+                                    <% if (Number(produto.desconto_pix) > 0) { %>
+
+                                        <span class="produto-pix">
+                                            <%= Number(produto.desconto_pix) %>% de desconto no Pix
+                                        </span>
+
+                                    <% } %>
+
+                                    <span
+                                        class="
+                                            produto-estoque
+                                            <%= Number(produto.estoque_total) <= 5
+                                                ? 'estoque-baixo'
+                                                : ''
+                                            %>
+                                        "
+                                    >
+                                        <%= produto.estoque_total %>
+                                        unidades disponíveis
+                                    </span>
+
+                                </div>
+
+                            </button>
+
+                        </article>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <p class="estado-vazio">
+                        Nenhuma camisa Nacional Premium disponível no momento.
+                    </p>
+
+                <% } %>
+
+            </div>
+
+            <button
+                type="button"
+                class="seta-carrossel"
+                id="nacionaisProximo"
+                aria-label="Próximas camisas nacionais premium"
+            >
+                &#10095;
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- =====================================================
+         BENEFÍCIOS
+    ====================================================== -->
+
+    <section class="beneficios-home">
+
+        <article>
+
+            <span>
+                ✓
+            </span>
+
+            <div>
+
+                <strong>
+                    Compra segura
+                </strong>
+
+                <small>
+                    Seus dados protegidos
+                </small>
+
+            </div>
+
+        </article>
+
+        <article>
+
+            <span>
+                $
+            </span>
+
+            <div>
+
+                <strong>
+                    Desconto no Pix
+                </strong>
+
+                <small>
+                    Economia no pagamento
+                </small>
+
+            </div>
+
+        </article>
+
+        <article>
+
+            <span>
+                ⚽
+            </span>
+
+            <div>
+
+                <strong>
+                    Grandes clubes
+                </strong>
+
+                <small>
+                    Mantos para todos os torcedores
+                </small>
+
+            </div>
+
+        </article>
+
+        <article>
+
+            <span>
+                ↗
+            </span>
+
+            <div>
+
+                <strong>
+                    Atendimento
+                </strong>
+
+                <small>
+                    Fale conosco pelo WhatsApp
+                </small>
+
+            </div>
+
+        </article>
+
+    </section>
+
+</main>
+
+<%- include('partials/footer') %>

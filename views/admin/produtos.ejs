@@ -1,0 +1,527 @@
+<%- include('../partials/header') %>
+
+<main class="admin-pagina">
+
+    <div class="admin-container">
+
+        <div class="admin-topo">
+
+            <div>
+
+                <span class="admin-etiqueta">
+                    ADMINISTRADOR
+                </span>
+
+                <h1>
+                    Camisas
+                </h1>
+
+                <p>
+                    Gerencie os produtos e o estoque da loja.
+                </p>
+
+            </div>
+
+            <a
+                href="/admin"
+                class="admin-botao-secundario"
+            >
+                Voltar ao dashboard
+            </a>
+
+        </div>
+
+        <% if (sucesso) { %>
+
+            <div class="admin-alerta-sucesso">
+                Estoque atualizado com sucesso.
+            </div>
+
+        <% } %>
+
+        <!-- ==============================================
+             FILTROS
+        =============================================== -->
+
+        <form
+            action="/admin/produtos"
+            method="GET"
+            class="admin-filtros"
+        >
+
+            <div class="admin-filtro-pesquisa">
+
+                <label for="buscaAdmin">
+                    Pesquisar
+                </label>
+
+                <input
+                    type="search"
+                    id="buscaAdmin"
+                    name="busca"
+                    value="<%= filtros.busca %>"
+                    placeholder="Nome, código ou temporada"
+                >
+
+            </div>
+
+            <div>
+
+                <label for="tipoAdmin">
+                    Tipo
+                </label>
+
+                <select
+                    id="tipoAdmin"
+                    name="tipo"
+                >
+
+                    <option value="">
+                        Todos
+                    </option>
+
+                    <option
+                        value="Tailandesa"
+                        <%= filtros.tipo === 'Tailandesa'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Tailandesa
+                    </option>
+
+                    <option
+                        value="Nacional Premium"
+                        <%= filtros.tipo === 'Nacional Premium'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Nacional Premium
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div>
+
+                <label for="estoqueAdmin">
+                    Estoque
+                </label>
+
+                <select
+                    id="estoqueAdmin"
+                    name="estoque"
+                >
+
+                    <option value="">
+                        Todos
+                    </option>
+
+                    <option
+                        value="com"
+                        <%= filtros.estoque === 'com'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Com estoque
+                    </option>
+
+                    <option
+                        value="baixo"
+                        <%= filtros.estoque === 'baixo'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Estoque baixo
+                    </option>
+
+                    <option
+                        value="sem"
+                        <%= filtros.estoque === 'sem'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Sem estoque
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div>
+
+                <label for="statusAdmin">
+                    Status
+                </label>
+
+                <select
+                    id="statusAdmin"
+                    name="status"
+                >
+
+                    <option value="">
+                        Todos
+                    </option>
+
+                    <option
+                        value="Ativo"
+                        <%= filtros.status === 'Ativo'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Ativo
+                    </option>
+
+                    <option
+                        value="Inativo"
+                        <%= filtros.status === 'Inativo'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Inativo
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div>
+
+                <label for="ordemAdmin">
+                    Ordenar
+                </label>
+
+                <select
+                    id="ordemAdmin"
+                    name="ordem"
+                >
+
+                    <option
+                        value="az"
+                        <%= filtros.ordem === 'az'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        A - Z
+                    </option>
+
+                    <option
+                        value="za"
+                        <%= filtros.ordem === 'za'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Z - A
+                    </option>
+
+                    <option
+                        value="maior_estoque"
+                        <%= filtros.ordem === 'maior_estoque'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Maior estoque
+                    </option>
+
+                    <option
+                        value="menor_estoque"
+                        <%= filtros.ordem === 'menor_estoque'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Menor estoque
+                    </option>
+
+                    <option
+                        value="menor_preco"
+                        <%= filtros.ordem === 'menor_preco'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Menor preço
+                    </option>
+
+                    <option
+                        value="maior_preco"
+                        <%= filtros.ordem === 'maior_preco'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Maior preço
+                    </option>
+
+                </select>
+
+            </div>
+
+            <button
+                type="submit"
+                class="admin-botao-filtrar"
+            >
+                Filtrar
+            </button>
+
+            <a
+                href="/admin/produtos"
+                class="admin-limpar-filtros"
+            >
+                Limpar
+            </a>
+
+        </form>
+
+        <div class="admin-total-resultados">
+
+            <strong>
+                <%= produtos.length %>
+            </strong>
+
+            produto(s) encontrado(s)
+
+        </div>
+
+        <!-- ==============================================
+             PRODUTOS
+        =============================================== -->
+
+        <section class="admin-lista-produtos">
+
+            <% produtos.forEach((produto) => { %>
+
+                <article class="admin-produto">
+
+                    <div class="admin-produto-principal">
+
+                        <div class="admin-produto-imagem">
+
+                            <img
+                                src="<%= produto.imagem || '/images/produtos/placeholder.svg' %>"
+                                alt="<%= produto.nome %>"
+                                onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                            >
+
+                        </div>
+
+                        <div class="admin-produto-dados">
+
+                            <div class="admin-produto-etiquetas">
+
+                                <span class="admin-tipo">
+                                    <%= produto.tipo_camisa %>
+                                </span>
+
+                                <span
+                                    class="admin-status <%= produto.status === 'Ativo'
+                                        ? 'ativo'
+                                        : 'inativo'
+                                    %>"
+                                >
+                                    <%= produto.status %>
+                                </span>
+
+                                <% if (Number(produto.estoque_total) === 0) { %>
+
+                                    <span class="admin-sem-estoque">
+                                        Sem estoque
+                                    </span>
+
+                                <% } %>
+
+                            </div>
+
+                            <h2>
+                                <%= produto.nome %>
+                            </h2>
+
+                            <p>
+                                Código:
+                                <strong>
+                                    <%= produto.codigo %>
+                                </strong>
+                            </p>
+
+                            <% if (produto.temporada) { %>
+
+                                <p>
+                                    Temporada:
+                                    <%= produto.temporada %>
+                                </p>
+
+                            <% } %>
+
+                            <p class="admin-produto-preco">
+
+                                <% if (produto.preco_promocional) { %>
+
+                                    <span>
+                                        R$ <%= Number(produto.preco).toFixed(2).replace('.', ',') %>
+                                    </span>
+
+                                    <strong>
+                                        R$ <%= Number(produto.preco_promocional).toFixed(2).replace('.', ',') %>
+                                    </strong>
+
+                                <% } else { %>
+
+                                    <strong>
+                                        R$ <%= Number(produto.preco).toFixed(2).replace('.', ',') %>
+                                    </strong>
+
+                                <% } %>
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ==================================
+                         ESTOQUE
+                    =================================== -->
+
+                    <form
+                        action="/admin/produtos/<%= produto.id %>/estoque"
+                        method="POST"
+                        class="admin-form-estoque"
+                    >
+
+                        <div class="admin-estoque-cabecalho">
+
+                            <div>
+
+                                <strong>
+                                    Estoque
+                                </strong>
+
+                                <span>
+                                    Total:
+                                    <b>
+                                        <%= produto.estoque_total %>
+                                    </b>
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="admin-tamanhos">
+
+                            <label>
+
+                                <span>
+                                    P
+                                </span>
+
+                                <input
+                                    type="number"
+                                    name="estoque_p"
+                                    min="0"
+                                    step="1"
+                                    value="<%= produto.estoque_p %>"
+                                    required
+                                >
+
+                            </label>
+
+                            <label>
+
+                                <span>
+                                    M
+                                </span>
+
+                                <input
+                                    type="number"
+                                    name="estoque_m"
+                                    min="0"
+                                    step="1"
+                                    value="<%= produto.estoque_m %>"
+                                    required
+                                >
+
+                            </label>
+
+                            <label>
+
+                                <span>
+                                    G
+                                </span>
+
+                                <input
+                                    type="number"
+                                    name="estoque_g"
+                                    min="0"
+                                    step="1"
+                                    value="<%= produto.estoque_g %>"
+                                    required
+                                >
+
+                            </label>
+
+                            <label>
+
+                                <span>
+                                    GG
+                                </span>
+
+                                <input
+                                    type="number"
+                                    name="estoque_gg"
+                                    min="0"
+                                    step="1"
+                                    value="<%= produto.estoque_gg %>"
+                                    required
+                                >
+
+                            </label>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="admin-salvar-estoque"
+                        >
+                            Salvar estoque
+                        </button>
+
+                    </form>
+
+                </article>
+
+            <% }) %>
+
+            <% if (produtos.length === 0) { %>
+
+                <div class="admin-sem-resultados">
+
+                    <h2>
+                        Nenhum produto encontrado
+                    </h2>
+
+                    <p>
+                        Altere os filtros e tente novamente.
+                    </p>
+
+                </div>
+
+            <% } %>
+
+        </section>
+
+    </div>
+
+</main>
+
+<%- include('../partials/footer') %>

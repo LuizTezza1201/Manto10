@@ -1,0 +1,114 @@
+<%- include('../partials/header') %>
+
+<main class="pagina-auth">
+
+    <section class="cartao-auth">
+
+        <div class="cabecalho-auth">
+
+            <span class="marca-auth">
+                MANTO <strong>10</strong>
+            </span>
+
+            <h1>
+                Entrar
+            </h1>
+
+            <p>
+                Acesse sua conta para continuar.
+            </p>
+
+        </div>
+
+        <% if (sucesso) { %>
+
+            <div class="mensagem-auth sucesso">
+                <%= sucesso %>
+            </div>
+
+        <% } %>
+
+        <% if (erro) { %>
+
+            <div class="mensagem-auth erro">
+                <%= erro %>
+            </div>
+
+        <% } %>
+
+        <form
+            action="/login"
+            method="POST"
+            class="formulario-auth"
+        >
+
+            <div class="campo-auth">
+
+                <label for="email">
+                    E-mail
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="<%= dados.email %>"
+                    placeholder="Digite seu e-mail"
+                    maxlength="190"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+            <div class="campo-auth">
+
+                <label for="senha">
+                    Senha
+                </label>
+
+                <input
+                    type="password"
+                    id="senha"
+                    name="senha"
+                    placeholder="Digite sua senha"
+                    autocomplete="current-password"
+                    required
+                >
+
+            </div>
+
+            <div class="opcoes-auth">
+
+                <span class="link-futuro">
+                    Esqueci minha senha
+                </span>
+
+            </div>
+
+            <button
+                type="submit"
+                class="botao-auth"
+            >
+                Entrar
+            </button>
+
+        </form>
+
+        <div class="rodape-auth">
+
+            <span>
+                Ainda não possui conta?
+            </span>
+
+            <a href="/cadastro">
+                Criar conta
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<%- include('../partials/footer') %>

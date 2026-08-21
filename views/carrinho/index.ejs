@@ -1,0 +1,375 @@
+<%- include('../partials/header') %>
+
+<main class="pagina-carrinho">
+
+    <div class="pagina-carrinho-container">
+
+        <div class="pagina-carrinho-titulo">
+
+            <h1>
+                Carrinho
+            </h1>
+
+            <span>
+                <%= carrinho.quantidade %>
+                <%= carrinho.quantidade === 1
+                    ? 'item'
+                    : 'itens'
+                %>
+            </span>
+
+        </div>
+
+        <% if (carrinho.itens.length > 0) { %>
+
+            <!-- ==========================================
+                 CABEÇALHO DA LISTA
+            =========================================== -->
+
+            <div class="carrinho-tabela-cabecalho">
+
+                <strong>
+                    Produtos
+                </strong>
+
+                <strong>
+                    Quantidade
+                </strong>
+
+                <strong>
+                    Valor total
+                </strong>
+
+                <span></span>
+
+            </div>
+
+            <!-- ==========================================
+                 PRODUTOS
+            =========================================== -->
+
+            <div
+                class="carrinho-pagina-itens"
+                id="carrinhoPaginaItens"
+            >
+
+                <% carrinho.itens.forEach((item) => { %>
+
+                    <article
+                        class="carrinho-pagina-item"
+                        data-item="<%= item.itemId %>"
+                    >
+
+                        <!-- PRODUTO -->
+
+                        <div class="carrinho-produto">
+
+                            <a
+                                href="/produto/<%= item.slug %>"
+                                class="carrinho-produto-imagem"
+                            >
+
+                                <img
+                                    src="<%= item.imagem %>"
+                                    alt="<%= item.nome %>"
+                                    onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                                >
+
+                            </a>
+
+                            <div class="carrinho-produto-info">
+
+                                <span class="carrinho-produto-tipo">
+                                    <%= item.tipoCamisa.toUpperCase() %>
+                                </span>
+
+                                <a
+                                    href="/produto/<%= item.slug %>"
+                                >
+                                    <h2>
+                                        <%= item.nome %>
+                                    </h2>
+                                </a>
+
+                                <p>
+                                    Tamanho:
+                                    <strong>
+                                        <%= item.tamanho %>
+                                    </strong>
+                                </p>
+
+                                <p>
+                                    Código:
+                                    <%= item.codigo %>
+                                </p>
+
+                                <p class="carrinho-preco-unitario">
+                                    Unitário:
+                                    <%= item.precoFormatado %>
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <!-- QUANTIDADE -->
+
+                        <div class="carrinho-pagina-quantidade">
+
+                            <button
+                                type="button"
+                                data-carrinho-acao="diminuir"
+                                data-item-id="<%= item.itemId %>"
+                                data-quantidade="<%= item.quantidade %>"
+                                data-estoque="<%= item.estoque %>"
+                                <%= item.quantidade <= 1
+                                    ? 'disabled'
+                                    : ''
+                                %>
+                            >
+                                −
+                            </button>
+
+                            <span>
+                                <%= item.quantidade %>
+                            </span>
+
+                            <button
+                                type="button"
+                                data-carrinho-acao="aumentar"
+                                data-item-id="<%= item.itemId %>"
+                                data-quantidade="<%= item.quantidade %>"
+                                data-estoque="<%= item.estoque %>"
+                                <%= item.quantidade >= item.estoque
+                                    ? 'disabled'
+                                    : ''
+                                %>
+                            >
+                                +
+                            </button>
+
+                        </div>
+
+                        <!-- TOTAL ITEM -->
+
+                        <strong class="carrinho-pagina-preco">
+                            <%= item.subtotalFormatado %>
+                        </strong>
+
+                        <!-- LIXEIRA -->
+
+                        <button
+                            type="button"
+                            class="carrinho-pagina-remover"
+                            data-carrinho-acao="remover"
+                            data-item-id="<%= item.itemId %>"
+                            aria-label="Remover produto"
+                            title="Remover produto"
+                        >
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                            >
+
+                                <path
+                                    d="M9 3h6l1 2h4v2H4V5h4l1-2z"
+                                ></path>
+
+                                <path
+                                    d="M6 7h12l-1 13H7L6 7z"
+                                ></path>
+
+                                <path
+                                    d="M10 11v6"
+                                ></path>
+
+                                <path
+                                    d="M14 11v6"
+                                ></path>
+
+                            </svg>
+
+                        </button>
+
+                    </article>
+
+                <% }) %>
+
+            </div>
+
+            <!-- ==========================================
+                 PARTE INFERIOR
+            =========================================== -->
+
+            <section class="carrinho-pagina-inferior">
+
+                <!-- INFORMAÇÃO -->
+
+                <div class="carrinho-woocommerce-info">
+
+                    <h2>
+                        Finalização da compra
+                    </h2>
+
+                    <p>
+                        Frete, endereço, descontos
+                        e pagamento serão calculados
+                        na etapa de finalização.
+                    </p>
+
+                    <span>
+                        Checkout realizado com WooCommerce.
+                    </span>
+
+                </div>
+
+                <!-- RESUMO -->
+
+                <div class="carrinho-pagina-resumo">
+
+                    <h2>
+                        Resumo
+                    </h2>
+
+                    <div class="resumo-linha">
+
+                        <span>
+                            Valor dos produtos
+                        </span>
+
+                        <strong
+                            id="resumoValorProdutos"
+                        >
+                            <%= carrinho.subtotalFormatado %>
+                        </strong>
+
+                    </div>
+
+                    <div class="resumo-linha">
+
+                        <span>
+                            Frete
+                        </span>
+
+                        <span class="resumo-a-calcular">
+                            Calculado no checkout
+                        </span>
+
+                    </div>
+
+                    <div class="resumo-linha">
+
+                        <span>
+                            Descontos
+                        </span>
+
+                        <span class="resumo-a-calcular">
+                            Aplicados no checkout
+                        </span>
+
+                    </div>
+
+                    <div class="resumo-total">
+
+                        <strong>
+                            Total parcial
+                        </strong>
+
+                        <strong
+                            id="resumoTotalCarrinho"
+                        >
+                            <%= carrinho.totalFormatado %>
+                        </strong>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="botao-finalizar-woocommerce"
+                        id="finalizarCompraWoo"
+                    >
+                        Finalizar compra
+                    </button>
+
+                    <a
+                        href="/camisas"
+                        class="botao-continuar-comprando"
+                    >
+                        Continuar comprando
+                    </a>
+
+                    <p class="woocommerce-aviso">
+                        A integração com o WooCommerce
+                        será conectada na etapa específica
+                        do checkout.
+                    </p>
+
+                </div>
+
+            </section>
+
+        <% } else { %>
+
+            <!-- ==========================================
+                 CARRINHO VAZIO
+            =========================================== -->
+
+            <section class="carrinho-pagina-vazio">
+
+                <div class="icone-carrinho-vazio">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+
+                        <path
+                            d="M3 4H5L7.5 15H18L21 8H7"
+                        ></path>
+
+                        <circle
+                            cx="9"
+                            cy="20"
+                            r="1"
+                        ></circle>
+
+                        <circle
+                            cx="18"
+                            cy="20"
+                            r="1"
+                        ></circle>
+
+                    </svg>
+
+                </div>
+
+                <h2>
+                    Seu carrinho está vazio
+                </h2>
+
+                <p>
+                    Escolha uma camisa e adicione
+                    ao carrinho para continuar.
+                </p>
+
+                <a href="/camisas">
+                    Ver camisas
+                </a>
+
+            </section>
+
+        <% } %>
+
+        <div
+            class="mensagem-carrinho-pagina"
+            id="mensagemCarrinhoPagina"
+        ></div>
+
+    </div>
+
+</main>
+
+<script src="/js/carrinho-pagina.js"></script>
+
+<%- include('../partials/footer') %>

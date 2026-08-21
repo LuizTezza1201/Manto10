@@ -1,0 +1,274 @@
+<header class="cabecalho-principal">
+
+    <div class="cabecalho-container">
+
+        <a
+            href="/"
+            class="logo-manto"
+            aria-label="Manto 10 - Página inicial"
+        >
+
+            <span class="logo-manto-texto">
+                MANTO
+            </span>
+
+            <span class="logo-manto-numero">
+                10
+            </span>
+
+        </a>
+
+        <form
+            class="pesquisa-topo"
+    id="formPesquisaTopo"
+    action="/camisas"
+    method="GET"
+    autocomplete="off"
+        >
+
+            <input
+                type="search"
+                id="pesquisaTopo"
+                name="busca"
+                placeholder="O que você está procurando?"
+                aria-label="Pesquisar produtos"
+            >
+
+            <button
+                type="submit"
+                class="botao-pesquisa"
+                aria-label="Pesquisar"
+            >
+
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                >
+                    <circle
+                        cx="11"
+                        cy="11"
+                        r="7"
+                    ></circle>
+
+                    <path
+                        d="M20 20L16.5 16.5"
+                    ></path>
+                </svg>
+
+            </button>
+
+        </form>
+
+        <div class="acoes-topo">
+
+            <% if (usuario) { %>
+
+                <a
+                    href="<%= usuario.tipo === 'Administrador' ? '/admin' : '/' %>"
+                    class="acao-topo"
+                    title="Usuário conectado"
+                >
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <circle
+                            cx="12"
+                            cy="8"
+                            r="4"
+                        ></circle>
+
+                        <path
+                            d="M4 21C4 16.6 7.6 13 12 13C16.4 13 20 16.6 20 21"
+                        ></path>
+                    </svg>
+
+                    <span class="acao-texto">
+
+                        <small>
+                            Olá,
+                        </small>
+
+                        <strong>
+                            <%= usuario.nome.split(' ')[0] %>
+                        </strong>
+
+                    </span>
+
+                </a>
+
+                <form
+                    action="/logout"
+                    method="POST"
+                    class="form-logout-topo"
+                >
+
+                    <button
+                        type="submit"
+                        class="botao-logout-topo"
+                    >
+                        Sair
+                    </button>
+
+                </form>
+
+            <% } else { %>
+
+                <a
+                    href="/login"
+                    class="acao-topo"
+                    aria-label="Entrar"
+                    title="Entrar"
+                >
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <circle
+                            cx="12"
+                            cy="8"
+                            r="4"
+                        ></circle>
+
+                        <path
+                            d="M4 21C4 16.6 7.6 13 12 13C16.4 13 20 16.6 20 21"
+                        ></path>
+                    </svg>
+
+                    <span class="acao-texto">
+
+                        <small>
+                            Olá!
+                        </small>
+
+                        <strong>
+                            Entrar
+                        </strong>
+
+                    </span>
+
+                </a>
+
+            <% } %>
+
+            <button
+                type="button"
+                class="acao-topo botao-carrinho"
+                id="botaoCarrinhoTopo"
+                aria-label="Abrir carrinho"
+                title="Carrinho"
+            >
+
+                <span class="icone-carrinho-container">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+
+                        <path
+                            d="M3 4H5L7.5 15H18L21 8H7"
+                        ></path>
+
+                        <circle
+                            cx="9"
+                            cy="20"
+                            r="1"
+                        ></circle>
+
+                        <circle
+                            cx="18"
+                            cy="20"
+                            r="1"
+                        ></circle>
+
+                    </svg>
+
+                    <span class="contador-carrinho">
+                        0
+                    </span>
+
+                </span>
+
+                <span class="acao-texto">
+
+                    <small>
+                        Meu
+                    </small>
+
+                    <strong>
+                        Carrinho
+                    </strong>
+
+                </span>
+
+            </button>
+
+            <button
+                type="button"
+                class="botao-menu-mobile"
+                id="botaoMenuMobile"
+                aria-label="Abrir menu"
+                aria-expanded="false"
+            >
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+<nav
+    class="menu-principal"
+    id="menuPrincipal"
+>
+
+    <div class="menu-container">
+
+        <a
+    href="/camisas?categoria=lancamentos"
+    class="<%= paginaAtual === 'lancamentos' ? 'ativo' : '' %>"
+>
+    Lançamentos
+</a>
+
+<a
+    href="/camisas?categoria=retro"
+    class="<%= paginaAtual === 'retro' ? 'ativo' : '' %>"
+>
+    Retrô
+</a>
+
+<a
+    href="/camisas?categoria=infantil"
+    class="<%= paginaAtual === 'infantil' ? 'ativo' : '' %>"
+>
+    Infantil
+</a>
+
+<a
+    href="/camisas?categoria=box-misteriosas"
+    class="<%= paginaAtual === 'box-misteriosas' ? 'ativo' : '' %>"
+>
+    Box Misteriosas
+</a>
+
+    </div>
+
+</nav>
+
+<div class="barra-atendimento">
+
+    <p>
+        Caso tenha alguma dúvida, clique no ícone do WhatsApp e nos envie uma mensagem!
+    </p>
+
+</div>

@@ -1,0 +1,82 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="600"
+    height="700"
+    viewBox="0 0 600 700"
+>
+
+    <rect
+        width="600"
+        height="700"
+        fill="#f3f3f3"
+    />
+
+    <rect
+        x="120"
+        y="90"
+        width="360"
+        height="500"
+        rx="30"
+        fill="#ffffff"
+        stroke="#e2e2e2"
+        stroke-width="4"
+    />
+
+    <path
+        d="
+            M220 180
+            L165 220
+            L110 175
+            L165 110
+            L240 145
+
+            Q300 190 360 145
+
+            L435 110
+            L490 175
+            L435 220
+            L380 180
+
+            L380 520
+            L220 520
+            Z
+        "
+        fill="#9d00de"
+    />
+
+    <text
+        x="300"
+        y="310"
+        text-anchor="middle"
+        fill="#ffffff"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="36"
+        font-weight="900"
+    >
+        MANTO
+    </text>
+
+    <text
+        x="300"
+        y="370"
+        text-anchor="middle"
+        fill="#ffffff"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="65"
+        font-weight="900"
+    >
+        10
+    </text>
+
+    <text
+        x="300"
+        y="640"
+        text-anchor="middle"
+        fill="#777777"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="22"
+    >
+        Imagem do produto
+    </text>
+
+</svg>

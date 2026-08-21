@@ -1,0 +1,294 @@
+/* =========================================================
+   MANTO 10
+   AUTENTICAÇÃO
+========================================================= */
+
+.pagina-auth {
+    min-height: 650px;
+
+    padding: 60px 20px;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fafafa,
+            #f2f2f2
+        );
+}
+
+.cartao-auth {
+    width: 100%;
+    max-width: 470px;
+
+    padding: 42px;
+
+    border: 1px solid #e6e6e6;
+    border-radius: 24px;
+
+    background-color: #ffffff;
+
+    box-shadow:
+        0 15px 45px
+        rgba(0, 0, 0, 0.08);
+}
+
+.cabecalho-auth {
+    margin-bottom: 30px;
+
+    text-align: center;
+}
+
+.marca-auth {
+    display: inline-block;
+
+    margin-bottom: 18px;
+
+    color: #9d00de;
+
+    font-size: 22px;
+    font-weight: 900;
+
+    letter-spacing: -1px;
+}
+
+.marca-auth strong {
+    font-size: 32px;
+    font-style: italic;
+}
+
+.cabecalho-auth h1 {
+    margin-bottom: 7px;
+
+    color: #000000;
+
+    font-size: 30px;
+}
+
+.cabecalho-auth p {
+    color: #777777;
+
+    font-size: 14px;
+}
+
+.formulario-auth {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+}
+
+.campo-auth {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.campo-auth label {
+    color: #222222;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.campo-auth input {
+    width: 100%;
+    height: 50px;
+
+    padding: 0 17px;
+
+    border:
+        1px solid #dddddd;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    background-color: #ffffff;
+
+    color: #000000;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.campo-auth input:focus {
+    border-color: #9d00de;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(157, 0, 222, 0.1);
+}
+
+.campo-auth small {
+    color: #888888;
+
+    font-size: 11px;
+}
+
+.botao-auth {
+    min-height: 52px;
+
+    margin-top: 3px;
+
+    border-radius: 10px;
+
+    background-color: #9d00de;
+
+    color: #ffffff;
+
+    font-weight: 800;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.botao-auth:hover {
+    background-color: #7800aa;
+
+    transform: translateY(-1px);
+}
+
+.rodape-auth {
+    margin-top: 27px;
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    flex-wrap: wrap;
+
+    color: #777777;
+
+    font-size: 13px;
+}
+
+.rodape-auth a {
+    color: #9d00de;
+
+    font-weight: 700;
+}
+
+.rodape-auth a:hover {
+    text-decoration: underline;
+}
+
+.opcoes-auth {
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: -5px;
+}
+
+.link-futuro {
+    color: #777777;
+
+    font-size: 12px;
+
+    cursor: default;
+}
+
+.mensagem-auth {
+    width: 100%;
+
+    margin-bottom: 22px;
+
+    padding: 13px 15px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+}
+
+.mensagem-auth.erro {
+    border:
+        1px solid #f1b4b4;
+
+    background-color: #fff1f1;
+
+    color: #9f2424;
+}
+
+.mensagem-auth.sucesso {
+    border:
+        1px solid #a8dab5;
+
+    background-color: #effaf2;
+
+    color: #176b30;
+}
+
+/* =========================================================
+   LOGOUT NO CABEÇALHO
+========================================================= */
+
+.form-logout-topo {
+    display: flex;
+
+    align-items: center;
+}
+
+.botao-logout-topo {
+    padding: 8px 11px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.45);
+
+    border-radius: 7px;
+
+    background-color: transparent;
+
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    transition:
+        background-color 0.2s ease;
+}
+
+.botao-logout-topo:hover {
+    background-color:
+        rgba(255, 255, 255, 0.12);
+}
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .pagina-auth {
+        min-height: 560px;
+
+        padding: 35px 15px;
+    }
+
+    .cartao-auth {
+        padding: 30px 22px;
+
+        border-radius: 18px;
+    }
+
+    .cabecalho-auth h1 {
+        font-size: 26px;
+    }
+
+    .botao-logout-topo {
+        display: none;
+    }
+
+}

@@ -1,0 +1,122 @@
+<%- include('../partials/header') %>
+
+<main class="pagina-auth">
+
+    <section class="cartao-auth">
+
+        <div class="cabecalho-auth">
+
+            <span class="marca-auth">
+                MANTO <strong>10</strong>
+            </span>
+
+            <h1>
+                Criar conta
+            </h1>
+
+            <p>
+                Cadastre-se para comprar seus mantos favoritos.
+            </p>
+
+        </div>
+
+        <% if (erro) { %>
+
+            <div class="mensagem-auth erro">
+                <%= erro %>
+            </div>
+
+        <% } %>
+
+        <form
+            action="/cadastro"
+            method="POST"
+            class="formulario-auth"
+        >
+
+            <div class="campo-auth">
+
+                <label for="nome">
+                    Nome completo
+                </label>
+
+                <input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    value="<%= dados.nome %>"
+                    placeholder="Digite seu nome completo"
+                    maxlength="150"
+                    autocomplete="name"
+                    required
+                >
+
+            </div>
+
+            <div class="campo-auth">
+
+                <label for="email">
+                    E-mail
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="<%= dados.email %>"
+                    placeholder="Digite seu e-mail"
+                    maxlength="190"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+            <div class="campo-auth">
+
+                <label for="senha">
+                    Senha
+                </label>
+
+                <input
+                    type="password"
+                    id="senha"
+                    name="senha"
+                    placeholder="Digite sua senha"
+                    minlength="6"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <small>
+                    Utilize pelo menos 6 caracteres.
+                </small>
+
+            </div>
+
+            <button
+                type="submit"
+                class="botao-auth"
+            >
+                Criar conta
+            </button>
+
+        </form>
+
+        <div class="rodape-auth">
+
+            <span>
+                Já possui uma conta?
+            </span>
+
+            <a href="/login">
+                Já sou cadastrado
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<%- include('../partials/footer') %>

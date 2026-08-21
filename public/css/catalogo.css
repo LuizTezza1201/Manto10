@@ -1,0 +1,724 @@
+/* =========================================================
+   MANTO 10
+   CATÁLOGO
+========================================================= */
+
+.catalogo {
+    min-height: 650px;
+
+    background-color: #ffffff;
+}
+
+/* =========================================================
+   TOPO
+========================================================= */
+
+.catalogo-topo {
+    padding: 55px 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #9d00de,
+            #70009e
+        );
+
+    color: #ffffff;
+}
+
+.catalogo-titulo {
+    width: min(
+        100%,
+        1280px
+    );
+
+    margin: 0 auto;
+}
+
+.catalogo-titulo > span {
+    display: inline-block;
+
+    margin-bottom: 8px;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    letter-spacing: 2px;
+}
+
+.catalogo-titulo h1 {
+    font-size:
+        clamp(36px, 6vw, 58px);
+
+    line-height: 1;
+}
+
+.catalogo-titulo p {
+    max-width: 500px;
+
+    margin-top: 12px;
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.85
+        );
+
+    font-size: 14px;
+}
+
+/* =========================================================
+   CONTEÚDO
+========================================================= */
+
+.catalogo-conteudo {
+    width: min(
+        calc(100% - 40px),
+        1280px
+    );
+
+    margin: 0 auto;
+
+    padding: 40px 0 75px;
+}
+
+/* =========================================================
+   FILTROS
+========================================================= */
+
+.catalogo-filtros {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 25px;
+
+    padding-bottom: 25px;
+
+    border-bottom:
+        1px solid #eeeeee;
+}
+
+.filtro-tipo {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+.filtro-tipo a {
+    padding: 10px 17px;
+
+    border:
+        1px solid #dddddd;
+
+    border-radius: 30px;
+
+    background-color: #ffffff;
+
+    color: #444444;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition:
+        0.2s ease;
+}
+
+.filtro-tipo a:hover {
+    border-color: #9d00de;
+
+    color: #9d00de;
+}
+
+.filtro-tipo a.ativo {
+    border-color: #9d00de;
+
+    background-color: #9d00de;
+
+    color: #ffffff;
+}
+
+/* =========================================================
+   ORDENAÇÃO
+========================================================= */
+
+.ordenacao-catalogo {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+}
+
+.ordenacao-catalogo label {
+    color: #666666;
+
+    font-size: 12px;
+}
+
+.ordenacao-catalogo select {
+    min-width: 170px;
+
+    height: 42px;
+
+    padding: 0 36px 0 13px;
+
+    border:
+        1px solid #dddddd;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    background-color: #ffffff;
+
+    color: #222222;
+
+    cursor: pointer;
+}
+
+.ordenacao-catalogo select:focus {
+    border-color: #9d00de;
+}
+
+/* =========================================================
+   RESULTADOS
+========================================================= */
+
+.catalogo-resultado {
+    margin: 25px 0;
+
+    display: flex;
+
+    gap: 5px;
+
+    color: #777777;
+
+    font-size: 12px;
+}
+
+.catalogo-resultado strong {
+    color: #000000;
+}
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.grade-produtos {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            4,
+            minmax(0, 1fr)
+        );
+
+    gap: 25px;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card-catalogo {
+    overflow: hidden;
+
+    border:
+        1px solid #ededed;
+
+    border-radius: 17px;
+
+    background-color: #ffffff;
+
+    box-shadow:
+        0 5px 18px
+        rgba(0, 0, 0, 0.04);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.card-catalogo:hover {
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 15px 35px
+        rgba(0, 0, 0, 0.10);
+}
+
+.card-catalogo-imagem {
+    position: relative;
+
+    width: 100%;
+    height: 310px;
+
+    overflow: hidden;
+
+    background-color: #f4f4f4;
+}
+
+.card-catalogo-imagem img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.35s ease;
+}
+
+.card-catalogo:hover
+.card-catalogo-imagem img {
+    transform: scale(1.035);
+}
+
+/* =========================================================
+   SELOS
+========================================================= */
+
+.selo-catalogo,
+.selo-destaque {
+    position: absolute;
+
+    z-index: 2;
+
+    top: 12px;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    color: #ffffff;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 0.6px;
+}
+
+.selo-catalogo {
+    left: 12px;
+
+    background-color: #9d00de;
+}
+
+.selo-destaque {
+    right: 12px;
+
+    background-color: #000000;
+}
+
+/* =========================================================
+   INFORMAÇÕES
+========================================================= */
+
+.card-catalogo-info {
+    padding: 19px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.tipo-camisa {
+    margin-bottom: 6px;
+
+    color: #9d00de;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    letter-spacing: 0.5px;
+}
+
+.card-catalogo-info h2 {
+    min-height: 44px;
+
+    color: #000000;
+
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.temporada-catalogo {
+    margin-top: 3px;
+
+    color: #999999;
+
+    font-size: 10px;
+}
+
+/* =========================================================
+   PREÇO
+========================================================= */
+
+.preco-catalogo {
+    min-height: 57px;
+
+    margin-top: 17px;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: flex-end;
+}
+
+.preco-antigo-catalogo {
+    color: #aaaaaa;
+
+    font-size: 11px;
+
+    text-decoration:
+        line-through;
+}
+
+.preco-catalogo strong {
+    color: #000000;
+
+    font-size: 25px;
+    line-height: 1.2;
+}
+
+.pix-catalogo {
+    margin-top: 3px;
+
+    color: #34a329;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   ESTOQUE
+========================================================= */
+
+.estoque-catalogo {
+    min-height: 34px;
+
+    margin-top: 11px;
+
+    display: flex;
+    align-items: center;
+}
+
+.estoque-disponivel,
+.estoque-baixo-catalogo,
+.sem-estoque-catalogo {
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.estoque-disponivel {
+    color: #438b34;
+}
+
+.estoque-baixo-catalogo {
+    color: #d27900;
+}
+
+.sem-estoque-catalogo {
+    color: #b63434;
+}
+
+/* =========================================================
+   BOTÃO
+========================================================= */
+
+.botao-ver-produto {
+    width: 100%;
+
+    min-height: 44px;
+
+    margin-top: 8px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background-color: #9d00de;
+
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    transition:
+        background-color 0.2s ease;
+}
+
+.botao-ver-produto:hover {
+    background-color: #7800aa;
+}
+
+.botao-ver-produto.indisponivel {
+    background-color: #bdbdbd;
+}
+
+/* =========================================================
+   CATÁLOGO VAZIO
+========================================================= */
+
+.catalogo-vazio {
+    min-height: 350px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+.catalogo-vazio strong {
+    font-size: 22px;
+}
+
+.catalogo-vazio p {
+    margin-top: 7px;
+
+    color: #777777;
+
+    font-size: 13px;
+}
+
+.catalogo-vazio a {
+    margin-top: 22px;
+
+    padding: 12px 21px;
+
+    border-radius: 30px;
+
+    background-color: #9d00de;
+
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   FILTROS ATIVOS
+========================================================= */
+
+.filtros-ativos {
+    margin-top: 22px;
+
+    padding: 14px 17px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    border-radius: 10px;
+
+    background-color: #f7f7f7;
+
+    border: 1px solid #eeeeee;
+}
+
+.filtros-ativos-lista {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+.filtros-ativos-lista span {
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    background-color: #ffffff;
+
+    color: #777777;
+
+    font-size: 10px;
+}
+
+.filtros-ativos-lista strong {
+    color: #9d00de;
+}
+
+.filtros-ativos > a {
+    flex-shrink: 0;
+
+    color: #9d00de;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.filtros-ativos > a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+
+    .filtros-ativos {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+}
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 1050px) {
+
+    .grade-produtos {
+        grid-template-columns:
+            repeat(
+                3,
+                minmax(0, 1fr)
+            );
+    }
+
+}
+
+@media (max-width: 780px) {
+
+    .catalogo-filtros {
+        align-items: stretch;
+
+        flex-direction: column;
+    }
+
+    .ordenacao-catalogo {
+        justify-content:
+            space-between;
+    }
+
+    .ordenacao-catalogo select {
+        flex: 1;
+    }
+
+    .grade-produtos {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+        gap: 15px;
+    }
+
+    .card-catalogo-imagem {
+        height: 260px;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .catalogo-topo {
+        padding:
+            40px 16px;
+    }
+
+    .catalogo-conteudo {
+        width:
+            calc(100% - 24px);
+
+        padding:
+            30px 0 55px;
+    }
+
+    .filtro-tipo {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .filtro-tipo a {
+        padding:
+            9px 10px;
+
+        text-align: center;
+
+        font-size: 10px;
+    }
+
+    .filtro-tipo a:last-child {
+        grid-column:
+            1 / -1;
+    }
+
+    .grade-produtos {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+        gap: 10px;
+    }
+
+    .card-catalogo {
+        border-radius: 12px;
+    }
+
+    .card-catalogo-imagem {
+        height: 205px;
+    }
+
+    .card-catalogo-info {
+        padding: 13px;
+    }
+
+    .tipo-camisa {
+        font-size: 8px;
+    }
+
+    .card-catalogo-info h2 {
+        min-height: 50px;
+
+        font-size: 12px;
+    }
+
+    .temporada-catalogo {
+        font-size: 8px;
+    }
+
+    .preco-catalogo strong {
+        font-size: 19px;
+    }
+
+    .pix-catalogo {
+        font-size: 8px;
+    }
+
+    .estoque-disponivel,
+    .estoque-baixo-catalogo,
+    .sem-estoque-catalogo {
+        font-size: 8px;
+    }
+
+    .botao-ver-produto {
+        min-height: 38px;
+
+        font-size: 10px;
+    }
+
+}

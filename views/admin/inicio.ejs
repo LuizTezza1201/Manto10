@@ -1,0 +1,205 @@
+<%- include('../partials/header') %>
+
+<main class="admin-pagina">
+
+    <div class="admin-container">
+
+        <div class="admin-topo">
+
+            <div>
+
+                <span class="admin-etiqueta">
+                    ADMINISTRADOR
+                </span>
+
+                <h1>
+                    Dashboard
+                </h1>
+
+                <p>
+                    Visão geral da Manto 10.
+                </p>
+
+            </div>
+
+            <a
+                href="/admin/produtos"
+                class="admin-botao-principal"
+            >
+                Gerenciar camisas
+            </a>
+
+        </div>
+
+        <!-- ==============================================
+             INDICADORES
+        =============================================== -->
+
+        <section class="admin-indicadores">
+
+            <article class="admin-card-indicador">
+
+                <span>
+                    Produtos cadastrados
+                </span>
+
+                <strong>
+                    <%= resumo.totalProdutos %>
+                </strong>
+
+                <small>
+                    Tailandesas e Nacionais Premium
+                </small>
+
+            </article>
+
+            <article class="admin-card-indicador">
+
+                <span>
+                    Unidades em estoque
+                </span>
+
+                <strong>
+                    <%= resumo.unidadesEstoque %>
+                </strong>
+
+                <small>
+                    Soma de todos os tamanhos
+                </small>
+
+            </article>
+
+            <article class="admin-card-indicador">
+
+                <span>
+                    Estoque baixo
+                </span>
+
+                <strong>
+                    <%= resumo.estoqueBaixo %>
+                </strong>
+
+                <small>
+                    Produtos entre 1 e 5 unidades
+                </small>
+
+            </article>
+
+            <article class="admin-card-indicador">
+
+                <span>
+                    Sem estoque
+                </span>
+
+                <strong>
+                    <%= resumo.semEstoque %>
+                </strong>
+
+                <small>
+                    Invisíveis no catálogo público
+                </small>
+
+            </article>
+
+        </section>
+
+        <!-- ==============================================
+             ÁREAS
+        =============================================== -->
+
+        <section class="admin-secao">
+
+            <div class="admin-secao-titulo">
+
+                <div>
+
+                    <h2>
+                        Administração
+                    </h2>
+
+                    <p>
+                        Acesse os módulos do sistema.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="admin-modulos">
+
+                <a
+                    href="/admin/produtos"
+                    class="admin-modulo"
+                >
+
+                    <strong>
+                        Camisas
+                    </strong>
+
+                    <span>
+                        Produtos, preços e estoque
+                    </span>
+
+                    <b>
+                        <%= resumo.totalProdutos %>
+                    </b>
+
+                </a>
+
+                <div class="admin-modulo admin-modulo-futuro">
+
+                    <strong>
+                        Clientes
+                    </strong>
+
+                    <span>
+                        Usuários cadastrados
+                    </span>
+
+                    <b>
+                        <%= resumo.clientes %>
+                    </b>
+
+                </div>
+
+                <div class="admin-modulo admin-modulo-futuro">
+
+                    <strong>
+                        Pedidos
+                    </strong>
+
+                    <span>
+                        Integração com WooCommerce
+                    </span>
+
+                    <b>
+                        <%= resumo.totalPedidos %>
+                    </b>
+
+                </div>
+
+                <div class="admin-modulo admin-modulo-futuro">
+
+                    <strong>
+                        Vendas
+                    </strong>
+
+                    <span>
+                        Total registrado
+                    </span>
+
+                    <b class="admin-valor-menor">
+                        <%= resumo.totalVendasFormatado %>
+                    </b>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<%- include('../partials/footer') %>

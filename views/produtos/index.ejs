@@ -1,0 +1,473 @@
+<%- include('../partials/header') %>
+
+<main class="catalogo">
+
+    <section class="catalogo-topo">
+
+        <div class="catalogo-titulo">
+
+            <span>
+                MANTO 10
+            </span>
+
+            <h1>
+                <%= tituloCatalogo %>
+            </h1>
+
+            <p>
+                Encontre o manto perfeito
+                para representar sua paixão.
+            </p>
+
+        </div>
+
+    </section>
+
+    <section class="catalogo-conteudo">
+
+        <!-- ==============================================
+             FILTROS
+        =============================================== -->
+
+        <div class="catalogo-filtros">
+
+<%
+    function montarUrlTipo(tipo) {
+
+        const parametros = [];
+
+        if (tipo) {
+            parametros.push(
+                'tipo=' +
+                encodeURIComponent(tipo)
+            );
+        }
+
+        if (ordemSelecionada) {
+            parametros.push(
+                'ordem=' +
+                encodeURIComponent(
+                    ordemSelecionada
+                )
+            );
+        }
+
+        if (buscaSelecionada) {
+            parametros.push(
+                'busca=' +
+                encodeURIComponent(
+                    buscaSelecionada
+                )
+            );
+        }
+
+        if (categoriaSelecionada) {
+            parametros.push(
+                'categoria=' +
+                encodeURIComponent(
+                    categoriaSelecionada
+                )
+            );
+        }
+
+        if (ligaSelecionada) {
+            parametros.push(
+                'liga=' +
+                encodeURIComponent(
+                    ligaSelecionada
+                )
+            );
+        }
+
+        return '/camisas' +
+            (
+                parametros.length > 0
+                    ? '?' +
+                      parametros.join('&')
+                    : ''
+            );
+    }
+%>
+
+             <div class="filtro-tipo">
+
+        <a
+            href="<%= montarUrlTipo('') %>"
+            class="<%= tipoSelecionado === '' ? 'ativo' : '' %>"
+        >
+            Todas
+        </a>
+
+        <a
+            href="<%= montarUrlTipo('Tailandesa') %>"
+            class="<%= tipoSelecionado === 'Tailandesa' ? 'ativo' : '' %>"
+        >
+            Tailandesas
+        </a>
+
+        <a
+            href="<%= montarUrlTipo('Nacional Premium') %>"
+            class="<%= tipoSelecionado === 'Nacional Premium' ? 'ativo' : '' %>"
+        >
+            Nacional Premium
+        </a>
+
+    </div>
+
+            <form
+                action="/camisas"
+                method="GET"
+                class="ordenacao-catalogo"
+            >
+
+            <% if (buscaSelecionada) { %>
+
+    <input
+        type="hidden"
+        name="busca"
+        value="<%= buscaSelecionada %>"
+    >
+
+<% } %>
+
+<% if (categoriaSelecionada) { %>
+
+    <input
+        type="hidden"
+        name="categoria"
+        value="<%= categoriaSelecionada %>"
+    >
+
+<% } %>
+
+<% if (ligaSelecionada) { %>
+
+    <input
+        type="hidden"
+        name="liga"
+        value="<%= ligaSelecionada %>"
+    >
+
+<% } %>
+
+                <% if (tipoSelecionado) { %>
+
+                    <input
+                        type="hidden"
+                        name="tipo"
+                        value="<%= tipoSelecionado %>"
+                    >
+
+                <% } %>
+
+                <label for="ordem">
+                    Ordenar:
+                </label>
+
+                <select
+                    id="ordem"
+                    name="ordem"
+                    onchange="this.form.submit()"
+                >
+
+                    <option
+                        value="recentes"
+                        <%= ordemSelecionada === 'recentes' ? 'selected' : '' %>
+                    >
+                        Mais recentes
+                    </option>
+
+                    <option
+                        value="az"
+                        <%= ordemSelecionada === 'az' ? 'selected' : '' %>
+                    >
+                        Nome A-Z
+                    </option>
+
+                    <option
+                        value="za"
+                        <%= ordemSelecionada === 'za' ? 'selected' : '' %>
+                    >
+                        Nome Z-A
+                    </option>
+
+                    <option
+                        value="menor_preco"
+                        <%= ordemSelecionada === 'menor_preco' ? 'selected' : '' %>
+                    >
+                        Menor preço
+                    </option>
+
+                    <option
+                        value="maior_preco"
+                        <%= ordemSelecionada === 'maior_preco' ? 'selected' : '' %>
+                    >
+                        Maior preço
+                    </option>
+
+                    <option
+                        value="menor_estoque"
+                        <%= ordemSelecionada === 'menor_estoque' ? 'selected' : '' %>
+                    >
+                        Menor estoque
+                    </option>
+
+                    <option
+                        value="maior_estoque"
+                        <%= ordemSelecionada === 'maior_estoque' ? 'selected' : '' %>
+                    >
+                        Maior estoque
+                    </option>
+
+                </select>
+
+            </form>
+
+        </div>
+
+        <%
+    const possuiFiltro =
+        buscaSelecionada ||
+        categoriaSelecionada ||
+        ligaSelecionada ||
+        tipoSelecionado;
+%>
+
+<% if (possuiFiltro) { %>
+
+    <div class="filtros-ativos">
+
+        <div class="filtros-ativos-lista">
+
+            <% if (buscaSelecionada) { %>
+
+                <span>
+                    Busca:
+                    <strong>
+                        <%= buscaSelecionada %>
+                    </strong>
+                </span>
+
+            <% } %>
+
+            <% if (tipoSelecionado) { %>
+
+                <span>
+                    Tipo:
+                    <strong>
+                        <%= tipoSelecionado %>
+                    </strong>
+                </span>
+
+            <% } %>
+
+            <% if (categoriaSelecionada) { %>
+
+                <span>
+                    Categoria:
+                    <strong>
+                        <%= tituloCatalogo %>
+                    </strong>
+                </span>
+
+            <% } %>
+
+            <% if (ligaSelecionada) { %>
+
+                <span>
+                    Liga:
+                    <strong>
+                        <%= produtos.length > 0
+                            ? produtos[0].liga
+                            : ligaSelecionada
+                        %>
+                    </strong>
+                </span>
+
+            <% } %>
+
+        </div>
+
+        <a href="/camisas">
+            Limpar filtros
+        </a>
+
+    </div>
+
+<% } %>
+
+        <!-- ==============================================
+             CONTAGEM
+        =============================================== -->
+
+        <div class="catalogo-resultado">
+
+            <strong>
+                <%= produtos.length %>
+            </strong>
+
+            <span>
+                <%= produtos.length === 1
+                    ? 'camisa encontrada'
+                    : 'camisas encontradas'
+                %>
+            </span>
+
+        </div>
+
+        <!-- ==============================================
+             PRODUTOS
+        =============================================== -->
+
+        <% if (produtos.length > 0) { %>
+
+            <div class="grade-produtos">
+
+                <% produtos.forEach((produto) => { %>
+
+                    <article class="card-catalogo">
+
+                        <div class="card-catalogo-imagem">
+
+                            <% if (produto.temPromocao) { %>
+
+                                <span class="selo-catalogo">
+                                    OFERTA
+                                </span>
+
+                            <% } %>
+
+                            <% if (produto.destaque) { %>
+
+                                <span class="selo-destaque">
+                                    DESTAQUE
+                                </span>
+
+                            <% } %>
+
+                            <img
+                                src="<%= produto.imagem || '/images/produtos/placeholder.svg' %>"
+                                alt="<%= produto.nome %>"
+                                loading="lazy"
+                                onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                            >
+
+                        </div>
+
+                        <div class="card-catalogo-info">
+
+                            <span class="tipo-camisa">
+                                <%= produto.tipo_camisa.toUpperCase() %>
+                            </span>
+
+                            <h2>
+                                <%= produto.nome %>
+                            </h2>
+
+                            <% if (produto.temporada) { %>
+
+                                <span class="temporada-catalogo">
+                                    Temporada
+                                    <%= produto.temporada %>
+                                </span>
+
+                            <% } %>
+
+                            <div class="preco-catalogo">
+
+                                <% if (produto.temPromocao) { %>
+
+                                    <span class="preco-antigo-catalogo">
+                                        <%= produto.precoAnteriorFormatado %>
+                                    </span>
+
+                                <% } %>
+
+                                <strong>
+                                    <%= produto.precoFormatado %>
+                                </strong>
+
+                            </div>
+
+                            <% if (Number(produto.desconto_pix) > 0) { %>
+
+                                <span class="pix-catalogo">
+                                    <%= Number(produto.desconto_pix) %>%
+                                    de desconto no Pix
+                                </span>
+
+                            <% } %>
+
+                            <div class="estoque-catalogo">
+
+                                <% if (produto.estoqueTotal > 5) { %>
+
+                                    <span class="estoque-disponivel">
+                                        Em estoque
+                                    </span>
+
+                                <% } else if (produto.estoqueTotal > 0) { %>
+
+                                    <span class="estoque-baixo-catalogo">
+                                        Últimas
+                                        <%= produto.estoqueTotal %>
+                                        unidades
+                                    </span>
+
+                                <% } else { %>
+
+                                    <span class="sem-estoque-catalogo">
+                                        Produto indisponível
+                                    </span>
+
+                                <% } %>
+
+                            </div>
+
+                            <a
+                                href="/produto/<%= produto.slug %>"
+                                class="
+                                    botao-ver-produto
+                                    <%= produto.estoqueTotal === 0
+                                        ? 'indisponivel'
+                                        : ''
+                                    %>
+                                "
+                            >
+                                Ver produto
+                            </a>
+
+                        </div>
+
+                    </article>
+
+                <% }) %>
+
+            </div>
+
+        <% } else { %>
+
+            <div class="catalogo-vazio">
+
+                <strong>
+                    Nenhuma camisa encontrada.
+                </strong>
+
+                <p>
+                    Não existem produtos disponíveis
+                    para este filtro no momento.
+                </p>
+
+                <a href="/camisas">
+                    Ver todas as camisas
+                </a>
+
+            </div>
+
+        <% } %>
+
+    </section>
+
+</main>
+
+<%- include('../partials/footer') %>

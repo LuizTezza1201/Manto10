@@ -1,0 +1,129 @@
+<footer class="rodape">
+
+    <div class="rodape-container">
+
+        <div class="rodape-coluna">
+
+            <a
+                href="/"
+                class="logo-manto logo-rodape"
+            >
+
+                <span class="logo-manto-texto">
+                    MANTO
+                </span>
+
+                <span class="logo-manto-numero">
+                    10
+                </span>
+
+            </a>
+
+            <p>
+                Sua paixão por futebol vestida com estilo.
+            </p>
+
+        </div>
+
+        <div class="rodape-coluna">
+
+            <h3>
+                Manto 10
+            </h3>
+
+            <a href="/">
+                Início
+            </a>
+
+            <a href="/camisas?categoria=lancamentos">
+                Lançamentos
+            </a>
+
+            <a href="/camisas?categoria=retro">
+                Retrô
+            </a>
+
+            <a href="/camisas?categoria=infantil">
+                Infantil
+            </a>
+
+        </div>
+
+        <div class="rodape-coluna">
+
+            <h3>
+                Atendimento
+            </h3>
+
+            <a href="#">
+                Fale conosco
+            </a>
+
+            <a href="#">
+                Meus pedidos
+            </a>
+
+            <a href="#">
+                Minha conta
+            </a>
+
+        </div>
+
+        <div class="rodape-coluna">
+
+            <h3>
+                Compra segura
+            </h3>
+
+            <p>
+                Seus dados são tratados com segurança durante sua navegação.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="rodape-inferior">
+
+        <p>
+            &copy; 2026 Manto 10. Todos os direitos reservados.
+        </p>
+
+        <p>
+            Projeto de TCC
+        </p>
+
+    </div>
+
+</footer>
+
+<button
+    type="button"
+    class="whatsapp-flutuante"
+    id="whatsappFlutuante"
+    title="Falar pelo WhatsApp"
+    aria-label="Falar pelo WhatsApp"
+>
+
+    <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+    >
+        <path
+            d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.6 4.1 1.6 5.9L.2 24l6.5-1.7a11.6 11.6 0 0 0 5.4 1.4h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.2-6.1-3.5-8.4Z"
+        ></path>
+    </svg>
+
+</button>
+
+<%- include('carrinho-lateral') %>
+
+<!-- Carrinho é carregado antes do main.js
+     para assumir o formulário do produto. -->
+
+<script src="/js/carrinho.js"></script>
+<script src="/js/main.js"></script>
+
+</body>
+
+</html>

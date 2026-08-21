@@ -1,0 +1,890 @@
+/* =========================================================
+   MANTO 10
+   CSS GLOBAL
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --roxo: #9d00de;
+    --roxo-escuro: #7800aa;
+    --preto: #000000;
+    --branco: #ffffff;
+
+    --cinza-50: #fafafa;
+    --cinza-100: #f3f3f3;
+    --cinza-200: #e4e4e4;
+    --cinza-500: #777777;
+    --cinza-700: #333333;
+
+    --verde-whatsapp: #25d366;
+
+    --largura-maxima: 1280px;
+
+    --sombra-suave:
+        0 8px 30px rgba(0, 0, 0, 0.08);
+
+    --transicao:
+        0.25s ease;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background-color: var(--branco);
+    color: var(--preto);
+
+    line-height: 1.5;
+}
+
+body,
+button,
+input {
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+button,
+input {
+    font-size: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.cabecalho-principal {
+    position: relative;
+    z-index: 100;
+
+    width: 100%;
+
+    background-color: var(--roxo);
+}
+
+.cabecalho-container {
+    width: min(
+        calc(100% - 40px),
+        var(--largura-maxima)
+    );
+
+    min-height: 92px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        auto minmax(300px, 1fr) auto;
+
+    align-items: center;
+
+    gap: 40px;
+}
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo-manto {
+    display: inline-flex;
+    align-items: center;
+
+    color: var(--branco);
+
+    font-weight: 900;
+
+    letter-spacing: -2px;
+
+    line-height: 1;
+}
+
+.logo-manto-texto {
+    font-size: 24px;
+}
+
+.logo-manto-numero {
+    margin-left: 5px;
+
+    font-size: 39px;
+    font-style: italic;
+}
+
+/* =========================================================
+   PESQUISA
+========================================================= */
+
+.pesquisa-topo {
+    width: 100%;
+
+    height: 48px;
+
+    display: flex;
+
+    background-color: var(--branco);
+
+    border-radius: 30px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.12);
+}
+
+.pesquisa-topo input {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 0 8px 0 22px;
+
+    border: none;
+    outline: none;
+
+    color: var(--preto);
+
+    background-color: transparent;
+}
+
+.pesquisa-topo input::placeholder {
+    color: #8b8b8b;
+}
+
+.botao-pesquisa {
+    width: 58px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: transparent;
+
+    color: var(--roxo);
+
+    transition:
+        background-color var(--transicao);
+}
+
+.botao-pesquisa:hover {
+    background-color: var(--cinza-100);
+}
+
+.botao-pesquisa svg {
+    width: 23px;
+    height: 23px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* =========================================================
+   AÇÕES DO TOPO
+========================================================= */
+
+.acoes-topo {
+    display: flex;
+    align-items: center;
+
+    gap: 22px;
+}
+
+.acao-topo {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 5px;
+
+    background: transparent;
+
+    color: var(--branco);
+
+    transition:
+        opacity var(--transicao);
+}
+
+.acao-topo:hover {
+    opacity: 0.82;
+}
+
+.acao-topo > svg,
+.icone-carrinho-container > svg {
+    width: 29px;
+    height: 29px;
+
+    fill: none;
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.acao-texto {
+    display: flex;
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    line-height: 1.1;
+}
+
+.acao-texto small {
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.acao-texto strong {
+    margin-top: 3px;
+
+    font-size: 13px;
+}
+
+.icone-carrinho-container {
+    position: relative;
+
+    display: flex;
+}
+
+.contador-carrinho {
+    position: absolute;
+
+    top: -11px;
+    right: -12px;
+
+    min-width: 20px;
+    height: 20px;
+
+    padding: 0 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid var(--roxo);
+
+    border-radius: 50%;
+
+    background-color: var(--branco);
+    color: var(--roxo);
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   MENU
+========================================================= */
+
+.menu-principal {
+    position: relative;
+    z-index: 90;
+
+    background-color: var(--preto);
+
+    color: var(--branco);
+}
+
+.menu-container {
+    width: min(
+        calc(100% - 40px),
+        var(--largura-maxima)
+    );
+
+    min-height: 54px;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 15px;
+}
+
+.menu-container a {
+    position: relative;
+
+    padding: 17px 22px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+        color var(--transicao);
+}
+
+.menu-container a::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 9px;
+
+    width: 0;
+    height: 2px;
+
+    transform: translateX(-50%);
+
+    background-color: var(--roxo);
+
+    transition:
+        width var(--transicao);
+}
+
+.menu-container a:hover,
+.menu-container a.ativo {
+    color: #d993f7;
+}
+
+.menu-container a:hover::after,
+.menu-container a.ativo::after {
+    width: calc(100% - 42px);
+}
+
+/* =========================================================
+   BARRA DE ATENDIMENTO
+========================================================= */
+
+.barra-atendimento {
+    padding: 9px 20px;
+
+    text-align: center;
+
+    background-color: var(--branco);
+
+    border-bottom:
+        1px solid var(--cinza-200);
+
+    color: var(--cinza-700);
+
+    font-size: 13px;
+}
+
+/* =========================================================
+   BOTÃO MENU MOBILE
+========================================================= */
+
+.botao-menu-mobile {
+    width: 38px;
+    height: 38px;
+
+    display: none;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    border-radius: 6px;
+
+    background: transparent;
+}
+
+.botao-menu-mobile span {
+    display: block;
+
+    width: 24px;
+    height: 2px;
+
+    background-color: var(--branco);
+
+    transition:
+        transform var(--transicao),
+        opacity var(--transicao);
+}
+
+.botao-menu-mobile.ativo span:nth-child(1) {
+    transform:
+        translateY(7px)
+        rotate(45deg);
+}
+
+.botao-menu-mobile.ativo span:nth-child(2) {
+    opacity: 0;
+}
+
+.botao-menu-mobile.ativo span:nth-child(3) {
+    transform:
+        translateY(-7px)
+        rotate(-45deg);
+}
+
+/* =========================================================
+   ÁREA PRINCIPAL
+========================================================= */
+
+.conteudo-principal {
+    min-height: 500px;
+}
+
+.layout-base-teste {
+    min-height: 520px;
+
+    padding: 70px 20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--cinza-50),
+            var(--branco)
+        );
+}
+
+.layout-base-conteudo {
+    width: 100%;
+    max-width: 750px;
+
+    padding: 50px;
+
+    border:
+        1px solid var(--cinza-200);
+
+    border-radius: 24px;
+
+    background-color: var(--branco);
+
+    text-align: center;
+
+    box-shadow: var(--sombra-suave);
+}
+
+.etiqueta-layout {
+    display: inline-flex;
+
+    padding: 7px 17px;
+
+    margin-bottom: 18px;
+
+    border-radius: 20px;
+
+    background-color:
+        rgba(157, 0, 222, 0.1);
+
+    color: var(--roxo);
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+}
+
+.layout-base-conteudo h1 {
+    margin-bottom: 15px;
+
+    font-size:
+        clamp(30px, 5vw, 48px);
+
+    line-height: 1.1;
+}
+
+.layout-base-conteudo > p {
+    max-width: 580px;
+
+    margin: 0 auto;
+
+    color: var(--cinza-500);
+
+    font-size: 16px;
+}
+
+.cores-projeto {
+    margin-top: 35px;
+
+    display: flex;
+    justify-content: center;
+
+    gap: 30px;
+
+    flex-wrap: wrap;
+}
+
+.cor-projeto {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    color: var(--cinza-700);
+
+    font-size: 13px;
+}
+
+.cor {
+    width: 30px;
+    height: 30px;
+
+    display: block;
+
+    border:
+        1px solid var(--cinza-200);
+
+    border-radius: 50%;
+}
+
+.cor.roxo {
+    background-color: var(--roxo);
+}
+
+.cor.preto {
+    background-color: var(--preto);
+}
+
+.cor.branco {
+    background-color: var(--branco);
+}
+
+/* =========================================================
+   RODAPÉ
+========================================================= */
+
+.rodape {
+    background-color: var(--preto);
+    color: var(--branco);
+}
+
+.rodape-container {
+    width: min(
+        calc(100% - 40px),
+        var(--largura-maxima)
+    );
+
+    margin: 0 auto;
+
+    padding: 55px 0;
+
+    display: grid;
+
+    grid-template-columns:
+        1.4fr 1fr 1fr 1.3fr;
+
+    gap: 45px;
+}
+
+.rodape-coluna {
+    display: flex;
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 11px;
+}
+
+.logo-rodape {
+    margin-bottom: 9px;
+}
+
+.rodape-coluna h3 {
+    margin-bottom: 7px;
+
+    font-size: 15px;
+}
+
+.rodape-coluna p,
+.rodape-coluna a {
+    color: #bebebe;
+
+    font-size: 13px;
+}
+
+.rodape-coluna a {
+    transition:
+        color var(--transicao);
+}
+
+.rodape-coluna a:hover {
+    color: var(--roxo);
+}
+
+.rodape-inferior {
+    width: min(
+        calc(100% - 40px),
+        var(--largura-maxima)
+    );
+
+    margin: 0 auto;
+
+    padding: 20px 0;
+
+    display: flex;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-top:
+        1px solid #222222;
+
+    color: #777777;
+
+    font-size: 12px;
+}
+
+/* =========================================================
+   WHATSAPP
+========================================================= */
+
+.whatsapp-flutuante {
+    position: fixed;
+
+    right: 25px;
+    bottom: 25px;
+
+    z-index: 300;
+
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background-color:
+        var(--verde-whatsapp);
+
+    color: var(--branco);
+
+    box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, 0.22);
+
+    transition:
+        transform var(--transicao);
+}
+
+.whatsapp-flutuante:hover {
+    transform: scale(1.08);
+}
+
+.whatsapp-flutuante svg {
+    width: 31px;
+    height: 31px;
+
+    fill: currentColor;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .cabecalho-container {
+        grid-template-columns:
+            auto 1fr auto;
+
+        gap: 20px;
+    }
+
+    .acao-texto {
+        display: none;
+    }
+
+    .rodape-container {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 720px) {
+
+    .cabecalho-container {
+        width:
+            min(
+                calc(100% - 28px),
+                var(--largura-maxima)
+            );
+
+        padding: 14px 0;
+
+        grid-template-columns:
+            1fr auto;
+
+        gap: 14px;
+    }
+
+    .logo-manto-texto {
+        font-size: 19px;
+    }
+
+    .logo-manto-numero {
+        font-size: 31px;
+    }
+
+    .pesquisa-topo {
+        grid-column:
+            1 / -1;
+
+        grid-row: 2;
+
+        height: 44px;
+    }
+
+    .acoes-topo {
+        justify-self: end;
+
+        gap: 12px;
+    }
+
+    .acao-topo {
+        padding: 3px;
+    }
+
+    .acao-topo > svg,
+    .icone-carrinho-container > svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .botao-menu-mobile {
+        display: flex;
+    }
+
+    .menu-principal {
+        display: none;
+    }
+
+    .menu-principal.menu-aberto {
+        display: block;
+    }
+
+    .menu-container {
+        width: 100%;
+
+        padding: 10px 20px 18px;
+
+        min-height: auto;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 0;
+    }
+
+    .menu-container a {
+        padding: 13px 5px;
+
+        border-bottom:
+            1px solid #222222;
+    }
+
+    .menu-container a:last-child {
+        border-bottom: none;
+    }
+
+    .menu-container a::after {
+        display: none;
+    }
+
+    .barra-atendimento {
+        font-size: 11px;
+    }
+
+    .layout-base-teste {
+        min-height: 450px;
+
+        padding: 45px 16px;
+    }
+
+    .layout-base-conteudo {
+        padding: 35px 22px;
+    }
+
+    .cores-projeto {
+        gap: 15px;
+    }
+
+    .rodape-container {
+        grid-template-columns: 1fr;
+
+        gap: 35px;
+
+        padding: 45px 0;
+    }
+
+    .rodape-inferior {
+        flex-direction: column;
+
+        align-items: center;
+
+        text-align: center;
+    }
+
+    .whatsapp-flutuante {
+        right: 18px;
+        bottom: 18px;
+
+        width: 53px;
+        height: 53px;
+    }
+
+}
+
+/* =========================================================
+   TELAS MUITO PEQUENAS
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .acao-topo:first-child {
+        display: none;
+    }
+
+}

@@ -1,0 +1,363 @@
+<%- include('../partials/header') %>
+
+<main class="produto-detalhe">
+
+    <div class="produto-detalhe-container">
+
+        <!-- ==============================================
+             IMAGEM DO PRODUTO
+        =============================================== -->
+
+        <section class="produto-galeria produto-galeria-unica">
+
+            <div class="produto-imagem-principal">
+
+                <img
+                    src="<%= imagens[0].caminho %>"
+                    alt="<%= imagens[0].texto_alternativo || produto.nome %>"
+                    onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                >
+
+            </div>
+
+        </section>
+
+        <!-- ==============================================
+             INFORMAÇÕES DO PRODUTO
+        =============================================== -->
+
+        <section class="produto-detalhe-info">
+
+            <span class="produto-detalhe-tipo">
+                <%= produto.tipo_camisa.toUpperCase() %>
+            </span>
+
+            <h1>
+                <%= produto.nome %>
+            </h1>
+
+            <div class="produto-detalhe-meta">
+
+                <% if (produto.temporada) { %>
+
+                    <span>
+                        Temporada:
+                        <strong>
+                            <%= produto.temporada %>
+                        </strong>
+                    </span>
+
+                <% } %>
+
+                <span>
+                    Código:
+                    <strong>
+                        <%= produto.codigo %>
+                    </strong>
+                </span>
+
+            </div>
+
+            <!-- ==========================================
+                 PREÇOS
+            =========================================== -->
+
+            <div class="produto-detalhe-precos">
+
+                <% if (produto.temPromocao) { %>
+
+                    <div class="produto-preco-anterior">
+                        De:
+                        <span>
+                            <%= produto.precoAnteriorFormatado %>
+                        </span>
+                    </div>
+
+                <% } %>
+
+                <div class="produto-preco-atual">
+
+                    <% if (produto.temPromocao) { %>
+                        Por:
+                    <% } %>
+
+                    <strong>
+                        <%= produto.precoFormatado %>
+                    </strong>
+
+                </div>
+
+                <% if (Number(produto.desconto_pix) > 0) { %>
+
+                    <span class="produto-desconto-pix">
+                        <%= Number(produto.desconto_pix) %>%
+                        de desconto pagando no Pix
+                    </span>
+
+                <% } %>
+
+            </div>
+
+            <!-- ==========================================
+                 DESCRIÇÃO
+            =========================================== -->
+
+            <% if (produto.descricao) { %>
+
+                <div class="produto-descricao">
+
+                    <p>
+                        <%= produto.descricao %>
+                    </p>
+
+                </div>
+
+            <% } %>
+
+            <!-- ==========================================
+                 COMPRA
+            =========================================== -->
+
+            <form
+                class="produto-formulario"
+                id="formAdicionarCarrinho"
+            >
+
+                <input
+                    type="hidden"
+                    id="produtoId"
+                    value="<%= produto.id %>"
+                >
+
+                <input
+                    type="hidden"
+                    id="produtoSlug"
+                    value="<%= produto.slug %>"
+                >
+
+                <!-- TAMANHOS -->
+
+                <fieldset class="produto-tamanhos">
+
+                    <legend>
+                        Tamanho:
+                    </legend>
+
+                    <div class="produto-tamanhos-lista">
+
+                        <% tamanhos.forEach((item) => { %>
+
+                            <% if (item.estoque === 0) { %>
+
+                                <label class="tamanho-opcao indisponivel">
+
+                                    <input
+                                        type="radio"
+                                        name="produto_tamanho_id"
+                                        value="<%= item.produto_tamanho_id %>"
+                                        data-estoque="<%= item.estoque %>"
+                                        disabled
+                                    >
+
+                                    <span>
+                                        <%= item.tamanho %>
+                                    </span>
+
+                                </label>
+
+                            <% } else { %>
+
+                                <label class="tamanho-opcao">
+
+                                    <input
+                                        type="radio"
+                                        name="produto_tamanho_id"
+                                        value="<%= item.produto_tamanho_id %>"
+                                        data-estoque="<%= item.estoque %>"
+                                    >
+
+                                    <span>
+                                        <%= item.tamanho %>
+                                    </span>
+
+                                </label>
+
+                            <% } %>
+
+                        <% }) %>
+
+                    </div>
+
+                    <p
+                        class="mensagem-tamanho"
+                        id="mensagemTamanho"
+                    ></p>
+
+                </fieldset>
+
+                <!-- QUANTIDADE -->
+
+                <div class="produto-quantidade-bloco">
+
+                    <span class="produto-label">
+                        Quantidade:
+                    </span>
+
+                    <div class="controle-quantidade">
+
+                        <button
+                            type="button"
+                            id="diminuirQuantidade"
+                            aria-label="Diminuir quantidade"
+                        >
+                            −
+                        </button>
+
+                        <input
+                            type="number"
+                            id="quantidadeProduto"
+                            name="quantidade"
+                            value="1"
+                            min="1"
+                            readonly
+                        >
+
+                        <button
+                            type="button"
+                            id="aumentarQuantidade"
+                            aria-label="Aumentar quantidade"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+                    <span
+                        class="produto-estoque-selecionado"
+                        id="estoqueSelecionado"
+                    >
+                        Selecione um tamanho
+                    </span>
+
+                </div>
+
+                <!-- BOTÃO -->
+
+                <% if (produto.estoqueTotal > 0) { %>
+
+                    <div class="produto-acoes">
+
+                        <button
+                            type="submit"
+                            class="botao-adicionar-carrinho"
+                        >
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M3 4H5L7.5 15H18L21 8H7"
+                                ></path>
+
+                                <circle
+                                    cx="9"
+                                    cy="20"
+                                    r="1"
+                                ></circle>
+
+                                <circle
+                                    cx="18"
+                                    cy="20"
+                                    r="1"
+                                ></circle>
+                            </svg>
+
+                            ADICIONAR AO CARRINHO
+
+                        </button>
+
+                    </div>
+
+                <% } else { %>
+
+                    <button
+                        type="button"
+                        class="botao-produto-indisponivel"
+                        disabled
+                    >
+                        PRODUTO INDISPONÍVEL
+                    </button>
+
+                <% } %>
+
+                <div
+                    class="mensagem-produto"
+                    id="mensagemProduto"
+                ></div>
+
+            </form>
+
+            <!-- ==========================================
+                 INFORMAÇÕES EXTRAS
+            =========================================== -->
+
+            <div class="produto-informacoes-extras">
+
+                <div>
+                    <strong>
+                        Tipo
+                    </strong>
+
+                    <span>
+                        <%= produto.tipo_camisa %>
+                    </span>
+                </div>
+
+                <% if (produto.time) { %>
+
+                    <div>
+                        <strong>
+                            Time
+                        </strong>
+
+                        <span>
+                            <%= produto.time %>
+                        </span>
+                    </div>
+
+                <% } %>
+
+                <% if (produto.liga) { %>
+
+                    <div>
+                        <strong>
+                            Liga
+                        </strong>
+
+                        <span>
+                            <%= produto.liga %>
+                        </span>
+                    </div>
+
+                <% } %>
+
+                <div>
+                    <strong>
+                        Categoria
+                    </strong>
+
+                    <span>
+                        <%= produto.categoria %>
+                    </span>
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<%- include('../partials/footer') %>
