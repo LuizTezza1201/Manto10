@@ -1,6 +1,12 @@
 <%- include('../partials/header') %>
 
-<main class="admin-pagina">
+<div class="admin-layout">
+
+    <%- include('../partials/admin-sidebar', {
+        secaoAdmin: 'produtos'
+    }) %>
+
+    <main class="admin-pagina admin-conteudo">
 
     <div class="admin-container">
 
@@ -22,22 +28,33 @@
 
             </div>
 
-            <a
-                href="/admin"
-                class="admin-botao-secundario"
-            >
-                Voltar ao dashboard
-            </a>
+            <div class="admin-topo-acoes">
+
+    <a
+        href="/admin"
+        class="admin-botao-secundario"
+    >
+        Voltar ao dashboard
+    </a>
+
+    <a
+        href="/admin/produtos/novo"
+        class="admin-botao-principal"
+    >
+        Nova camisa
+    </a>
+
+</div>
 
         </div>
 
-        <% if (sucesso) { %>
+        <% if (mensagemSucesso) { %>
 
-            <div class="admin-alerta-sucesso">
-                Estoque atualizado com sucesso.
-            </div>
+    <div class="admin-alerta-sucesso">
+        <%= mensagemSucesso %>
+    </div>
 
-        <% } %>
+<% } %>
 
         <!-- ==============================================
              FILTROS
@@ -386,6 +403,34 @@
 
                         </div>
 
+                        <div class="admin-produto-acoes-lateral">
+
+    <a
+        href="/admin/produtos/<%= produto.id %>/editar"
+        class="admin-acao-editar"
+    >
+        Editar
+    </a>
+
+    <form
+        action="/admin/produtos/<%= produto.id %>/status"
+        method="POST"
+    >
+
+        <button
+            type="submit"
+            class="admin-acao-status"
+        >
+            <%= produto.status === 'Ativo'
+                ? 'Desativar'
+                : 'Ativar'
+            %>
+        </button>
+
+    </form>
+
+</div>
+
                     </div>
 
                     <!-- ==================================
@@ -522,6 +567,8 @@
 
     </div>
 
-</main>
+    </main>
+
+</div>
 
 <%- include('../partials/footer') %>

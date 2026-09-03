@@ -1,0 +1,761 @@
+/* =========================================================
+   MANTO 10 - MINHA CONTA
+========================================================= */
+
+.conta-pagina {
+    min-height: 600px;
+    padding: 45px 20px 70px;
+    background: #f7f7f7;
+}
+
+.conta-container {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+.conta-cabecalho {
+    margin-bottom: 25px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.conta-etiqueta {
+    color: #9d00de;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+.conta-cabecalho h1 {
+    margin: 5px 0;
+
+    color: #111111;
+
+    font-size: 30px;
+}
+
+.conta-cabecalho p {
+    margin: 0;
+
+    color: #777777;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   RESUMO DA CONTA
+========================================================= */
+
+.conta-resumo {
+    margin-bottom: 25px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.conta-card {
+    min-height: 100px;
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+
+    background: #ffffff;
+}
+
+.conta-card span {
+    margin-bottom: 7px;
+
+    color: #888888;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+.conta-card strong {
+    color: #111111;
+
+    font-size: 13px;
+}
+
+.conta-card .conta-numero {
+    color: #9d00de;
+
+    font-size: 25px;
+}
+
+
+/* =========================================================
+   HISTÓRICO
+========================================================= */
+
+.conta-pedidos,
+.conta-bloco {
+    padding: 22px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+
+    background: #ffffff;
+}
+
+.conta-secao-topo {
+    margin-bottom: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.conta-secao-topo span {
+    color: #9d00de;
+
+    font-size: 9px;
+    font-weight: 900;
+}
+
+.conta-secao-topo h2 {
+    margin: 3px 0 0;
+
+    font-size: 20px;
+}
+
+.conta-secao-topo a,
+.conta-voltar {
+    padding: 10px 15px;
+
+    border-radius: 7px;
+
+    background: #111111;
+
+    color: #ffffff;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-decoration: none;
+}
+
+.conta-secao-topo a:hover,
+.conta-voltar:hover {
+    background: #9d00de;
+}
+
+
+/* =========================================================
+   PEDIDOS
+========================================================= */
+
+.conta-pedidos-lista {
+    display: grid;
+}
+
+.conta-pedido {
+    padding: 18px 0;
+
+    display: grid;
+
+    grid-template-columns:
+        165px
+        70px
+        120px
+        105px
+        100px
+        100px;
+
+    gap: 15px;
+
+    align-items: center;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+.conta-pedido:last-child {
+    border-bottom: 0;
+}
+
+.conta-pedido span,
+.conta-item-pedido > div > span {
+    margin-bottom: 5px;
+
+    display: block;
+
+    color: #999999;
+
+    font-size: 8px;
+}
+
+.conta-pedido strong {
+    color: #222222;
+
+    font-size: 10px;
+}
+
+.conta-pedido-principal strong {
+    display: block;
+
+    color: #9d00de;
+
+    font-size: 11px;
+}
+
+.conta-pedido-principal small {
+    margin-top: 3px;
+
+    display: block;
+
+    color: #999999;
+
+    font-size: 8px;
+}
+
+.conta-pedido-total strong {
+    color: #9d00de;
+
+    font-size: 13px;
+}
+
+.conta-ver-pedido {
+    min-height: 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 6px;
+
+    background: #9d00de;
+
+    color: #ffffff;
+
+    font-size: 8px;
+    font-weight: 900;
+
+    text-decoration: none;
+}
+
+.conta-ver-pedido:hover {
+    background: #7d00b0;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.conta-status {
+    font-weight: 900;
+}
+
+.conta-status-pendente {
+    color: #9b7200 !important;
+}
+
+.conta-status-pago,
+.conta-status-entregue {
+    color: #16823c !important;
+}
+
+.conta-status-preparando {
+    color: #6330b7 !important;
+}
+
+.conta-status-enviado {
+    color: #2563a8 !important;
+}
+
+.conta-status-cancelado {
+    color: #ae2929 !important;
+}
+
+
+/* =========================================================
+   SEM PEDIDOS
+========================================================= */
+
+.conta-sem-pedidos {
+    padding: 50px 20px;
+
+    text-align: center;
+}
+
+.conta-sem-pedidos h3 {
+    margin: 0 0 7px;
+}
+
+.conta-sem-pedidos p {
+    margin-bottom: 20px;
+
+    color: #777777;
+
+    font-size: 11px;
+}
+
+.conta-sem-pedidos a {
+    display: inline-flex;
+
+    padding: 11px 18px;
+
+    border-radius: 7px;
+
+    background: #9d00de;
+
+    color: #ffffff;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   DETALHE DO PEDIDO
+========================================================= */
+
+.conta-pedido-informacoes {
+    margin-bottom: 20px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.conta-pedido-informacoes article {
+    padding: 20px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+
+    background: #ffffff;
+}
+
+.conta-pedido-informacoes span {
+    margin-bottom: 7px;
+
+    display: block;
+
+    color: #888888;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.conta-pedido-informacoes strong {
+    display: block;
+
+    font-size: 14px;
+}
+
+.conta-pedido-informacoes small {
+    margin-top: 5px;
+
+    display: block;
+
+    color: #888888;
+}
+
+.conta-destaque {
+    color: #9d00de;
+}
+
+
+/* =========================================================
+   LAYOUT DO PEDIDO
+========================================================= */
+
+.conta-pedido-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        300px;
+
+    gap: 20px;
+
+    align-items: start;
+}
+
+.conta-bloco {
+    margin-bottom: 20px;
+}
+
+.conta-bloco-titulo {
+    margin-bottom: 18px;
+}
+
+.conta-bloco-titulo h2 {
+    margin: 0;
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   ITEM
+========================================================= */
+
+.conta-item-pedido {
+    padding: 15px 0;
+
+    display: grid;
+
+    grid-template-columns:
+        65px
+        minmax(180px, 1fr)
+        80px
+        100px
+        100px;
+
+    gap: 15px;
+
+    align-items: center;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+.conta-item-pedido:last-child {
+    border-bottom: 0;
+}
+
+.conta-item-imagem {
+    width: 65px;
+    height: 75px;
+
+    overflow: hidden;
+
+    border-radius: 8px;
+
+    background: #f3f3f3;
+}
+
+.conta-item-imagem img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+.conta-item-dados small {
+    color: #9d00de;
+
+    font-size: 8px;
+    font-weight: 900;
+}
+
+.conta-item-dados h3 {
+    margin: 4px 0;
+
+    font-size: 12px;
+}
+
+.conta-item-dados p {
+    margin: 0;
+
+    color: #777777;
+
+    font-size: 9px;
+}
+
+.conta-item-pedido strong {
+    font-size: 10px;
+}
+
+.conta-item-total strong {
+    color: #9d00de;
+}
+
+
+/* =========================================================
+   ENDEREÇO
+========================================================= */
+
+.conta-endereco p {
+    margin: 5px 0;
+
+    color: #666666;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   VALORES
+========================================================= */
+
+.conta-valores {
+    display: grid;
+
+    gap: 13px;
+}
+
+.conta-valores > div {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.conta-valores span {
+    color: #777777;
+
+    font-size: 10px;
+}
+
+.conta-valores strong {
+    font-size: 10px;
+}
+
+.conta-total-final {
+    margin-top: 5px;
+
+    padding-top: 15px;
+
+    border-top: 1px solid #eeeeee;
+}
+
+.conta-total-final strong {
+    color: #9d00de;
+
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .conta-pedido {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .conta-pedido-layout {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .conta-resumo,
+    .conta-pedido-informacoes {
+        grid-template-columns: 1fr;
+    }
+
+    .conta-cabecalho,
+    .conta-secao-topo {
+        flex-direction: column;
+    }
+
+    .conta-pedido {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .conta-item-pedido {
+        grid-template-columns:
+            55px
+            minmax(0, 1fr);
+    }
+
+    .conta-item-pedido > div:not(
+        .conta-item-imagem
+    ):not(
+        .conta-item-dados
+    ) {
+        grid-column: 2;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .conta-pagina {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .conta-pedido {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================================================
+   AÇÕES DO PEDIDO
+========================================================= */
+
+.conta-pedido-acoes {
+    display: grid;
+
+    gap: 6px;
+}
+
+.conta-pagar-agora,
+.conta-ver-pedido {
+    min-height: 35px;
+
+    padding: 0 11px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    border-radius: 6px;
+
+    font-size: 8px;
+    font-weight: 900;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+}
+
+.conta-pagar-agora {
+    background: #9d00de;
+
+    color: #ffffff;
+}
+
+.conta-pagar-agora:hover {
+    background: #7d00b0;
+}
+
+.conta-ver-pedido {
+    border: 1px solid #dddddd;
+
+    background: #ffffff;
+
+    color: #222222;
+}
+
+.conta-ver-pedido:hover {
+    border-color: #9d00de;
+
+    color: #9d00de;
+}
+
+
+/* =========================================================
+   AÇÕES NO TOPO DO DETALHE
+========================================================= */
+
+.conta-pedido-topo-acoes {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.conta-pagar-topo {
+    min-height: 38px;
+
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .conta-pedido-topo-acoes {
+        width: 100%;
+
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .conta-pedido-topo-acoes a {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+}
+
+/* =========================================================
+   CANCELAMENTO DE PEDIDO
+========================================================= */
+
+.conta-form-cancelar {
+    margin: 0;
+}
+
+.conta-cancelar-pedido {
+    min-height: 38px;
+
+    padding: 0 16px;
+
+    border: 1px solid #d9b4b4;
+    border-radius: 6px;
+
+    background: #ffffff;
+
+    color: #a52a2a;
+
+    font-family: inherit;
+    font-size: 8px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.conta-cancelar-pedido:hover {
+    border-color: #a52a2a;
+
+    background: #fff4f4;
+}
+
+
+@media (max-width: 700px) {
+
+    .conta-form-cancelar {
+        width: 100%;
+    }
+
+    .conta-cancelar-pedido {
+        width: 100%;
+    }
+
+}

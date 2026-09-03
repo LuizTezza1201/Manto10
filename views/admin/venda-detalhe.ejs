@@ -1,0 +1,439 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+
+    <%- include('../partials/admin-sidebar', {
+        secaoAdmin: 'vendas'
+    }) %>
+
+    <main class="admin-pagina admin-conteudo">
+
+        <div class="admin-container">
+
+            <!-- ==========================================
+                 TOPO
+            =========================================== -->
+
+            <div class="admin-topo">
+
+                <div>
+
+                    <span class="admin-etiqueta">
+                        VENDA MANUAL
+                    </span>
+
+                    <h1>
+                        #<%= venda.numero_venda %>
+                    </h1>
+
+                    <p>
+                        Detalhes da venda registrada
+                        pelo administrador.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="/admin/vendas"
+                    class="admin-botao-secundario"
+                >
+                    Voltar para vendas
+                </a>
+
+            </div>
+
+
+            <% if (sucesso) { %>
+
+                <div class="admin-alerta-sucesso">
+                    Venda cancelada e estoque
+                    restituído com sucesso.
+                </div>
+
+            <% } %>
+
+
+            <!-- ==========================================
+                 RESUMO
+            =========================================== -->
+
+            <section class="venda-manual-resumo">
+
+                <article class="venda-manual-resumo-card">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong>
+                        <%= venda.status %>
+                    </strong>
+
+                </article>
+
+
+                <article class="venda-manual-resumo-card">
+
+                    <span>
+                        Origem
+                    </span>
+
+                    <strong>
+                        <%= venda.origem %>
+                    </strong>
+
+                </article>
+
+
+                <article class="venda-manual-resumo-card">
+
+                    <span>
+                        Pagamento
+                    </span>
+
+                    <strong>
+                        <%= venda.forma_pagamento %>
+                    </strong>
+
+                </article>
+
+
+                <article class="venda-manual-resumo-card">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong class="venda-manual-total">
+                        <%= venda.total_formatado %>
+                    </strong>
+
+                </article>
+
+            </section>
+
+
+            <!-- ==========================================
+                 INFORMAÇÕES
+            =========================================== -->
+
+            <section class="venda-manual-bloco">
+
+                <div class="venda-manual-bloco-topo">
+
+                    <span>
+                        INFORMAÇÕES
+                    </span>
+
+                    <h2>
+                        Dados da venda
+                    </h2>
+
+                </div>
+
+
+                <div class="venda-manual-dados">
+
+                    <div>
+
+                        <span>
+                            Cliente
+                        </span>
+
+                        <strong>
+                            <%= venda.cliente_nome || 'Não informado' %>
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Data
+                        </span>
+
+                        <strong>
+                            <%= venda.data_formatada %>
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Registrada por
+                        </span>
+
+                        <strong>
+                            <%= venda.administrador_nome %>
+                        </strong>
+
+                        <small>
+                            <%= venda.administrador_email %>
+                        </small>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Estoque
+                        </span>
+
+                        <% if (venda.estoque_restituido) { %>
+
+                            <strong>
+                                Restituído
+                            </strong>
+
+                        <% } else { %>
+
+                            <strong>
+                                Baixado
+                            </strong>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+
+                <% if (venda.observacao) { %>
+
+                    <div class="venda-manual-observacao">
+
+                        <span>
+                            Observação
+                        </span>
+
+                        <p>
+                            <%= venda.observacao %>
+                        </p>
+
+                    </div>
+
+                <% } %>
+
+            </section>
+
+
+            <!-- ==========================================
+                 PRODUTOS
+            =========================================== -->
+
+            <section class="venda-manual-bloco">
+
+                <div class="venda-manual-bloco-topo">
+
+                    <span>
+                        PRODUTOS
+                    </span>
+
+                    <h2>
+                        Itens da venda
+                    </h2>
+
+                </div>
+
+
+                <div class="venda-manual-itens">
+
+                    <% itens.forEach((item) => { %>
+
+                        <article class="venda-manual-item">
+
+                            <div class="venda-manual-item-imagem">
+
+                                <% if (item.imagem) { %>
+
+                                    <img
+                                        src="/<%= String(item.imagem).replace(/^\/+/, '') %>"
+                                        alt="<%= item.nome_produto %>"
+                                    >
+
+                                <% } else { %>
+
+                                    <span>
+                                        Sem imagem
+                                    </span>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <div class="venda-manual-item-info">
+
+                                <span class="venda-manual-item-tipo">
+                                    <%= item.tipo_camisa %>
+                                </span>
+
+                                <h3>
+                                    <%= item.nome_produto %>
+                                </h3>
+
+                                <p>
+                                    Código:
+                                    <%= item.codigo_produto %>
+                                </p>
+
+                            </div>
+
+
+                            <div class="venda-manual-item-dado">
+
+                                <span>
+                                    Tamanho
+                                </span>
+
+                                <strong>
+                                    <%= item.tamanho %>
+                                </strong>
+
+                            </div>
+
+
+                            <div class="venda-manual-item-dado">
+
+                                <span>
+                                    Quantidade
+                                </span>
+
+                                <strong>
+                                    <%= item.quantidade %>
+                                </strong>
+
+                            </div>
+
+
+                            <div class="venda-manual-item-dado">
+
+                                <span>
+                                    Unitário
+                                </span>
+
+                                <strong>
+                                    <%= item.preco_unitario_formatado %>
+                                </strong>
+
+                            </div>
+
+
+                            <div class="venda-manual-item-dado">
+
+                                <span>
+                                    Subtotal
+                                </span>
+
+                                <strong>
+                                    <%= item.subtotal_formatado %>
+                                </strong>
+
+                            </div>
+
+                        </article>
+
+                    <% }) %>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==========================================
+                 CANCELAMENTO
+            =========================================== -->
+
+            <% if (
+                venda.status === 'Concluída' &&
+                !venda.estoque_restituido
+            ) { %>
+
+                <section
+                    class="
+                        venda-manual-bloco
+                        venda-manual-cancelamento
+                    "
+                >
+
+                    <div class="venda-manual-bloco-topo">
+
+                        <span>
+                            CANCELAMENTO
+                        </span>
+
+                        <h2>
+                            Cancelar venda
+                        </h2>
+
+                    </div>
+
+
+                    <p class="venda-manual-cancelamento-texto">
+
+                        Ao cancelar esta venda,
+                        todas as unidades serão
+                        devolvidas ao estoque e
+                        o valor deixará de ser
+                        contabilizado nas vendas.
+
+                    </p>
+
+
+                    <form
+                        action="/admin/vendas/manuais/<%= venda.id %>/cancelar"
+                        method="POST"
+
+                        onsubmit="return confirm('Tem certeza que deseja cancelar esta venda? Todas as unidades serão devolvidas ao estoque.');"
+                    >
+
+                        <button
+                            type="submit"
+                            class="venda-manual-cancelar"
+                        >
+                            Cancelar venda e restituir estoque
+                        </button>
+
+                    </form>
+
+                </section>
+
+            <% } %>
+
+
+            <% if (venda.status === 'Cancelada') { %>
+
+                <section
+                    class="
+                        venda-manual-bloco
+                        venda-manual-cancelada
+                    "
+                >
+
+                    <strong>
+                        Venda cancelada
+                    </strong>
+
+                    <p>
+                        O estoque desta venda já
+                        foi restituído e ela não
+                        está sendo contabilizada
+                        no faturamento.
+                    </p>
+
+                </section>
+
+            <% } %>
+
+        </div>
+
+    </main>
+
+</div>
+
+<%- include('../partials/footer') %>

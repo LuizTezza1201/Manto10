@@ -12,10 +12,6 @@ document.addEventListener(
                 'mensagemCarrinhoPagina'
             );
 
-        const finalizar =
-            document.getElementById(
-                'finalizarCompraWoo'
-            );
 
         async function enviar(
             url,
@@ -43,8 +39,10 @@ document.addEventListener(
                     }
                 );
 
+
             const json =
                 await resposta.json();
+
 
             if (
                 resposta.status === 401
@@ -56,6 +54,7 @@ document.addEventListener(
                 return null;
             }
 
+
             if (!resposta.ok) {
 
                 throw new Error(
@@ -64,8 +63,10 @@ document.addEventListener(
                 );
             }
 
+
             return json;
         }
+
 
         // ==================================================
         // QUANTIDADE / REMOVER
@@ -75,31 +76,34 @@ document.addEventListener(
 
             container.addEventListener(
                 'click',
-                async (evento) => {
+                async evento => {
 
                     const botao =
                         evento.target.closest(
                             '[data-carrinho-acao]'
                         );
 
+
                     if (!botao) {
                         return;
                     }
 
+
                     const acao =
                         botao.dataset
                             .carrinhoAcao;
+
 
                     const itemId =
                         Number(
                             botao.dataset.itemId
                         );
 
+
                     try {
 
                         if (
-                            acao ===
-                            'remover'
+                            acao === 'remover'
                         ) {
 
                             await enviar(
@@ -107,10 +111,12 @@ document.addEventListener(
                                 {}
                             );
 
+
                             window.location.reload();
 
                             return;
                         }
+
 
                         const quantidade =
                             Number(
@@ -118,36 +124,42 @@ document.addEventListener(
                                     .quantidade
                             );
 
+
                         const estoque =
                             Number(
                                 botao.dataset
                                     .estoque
                             );
 
+
                         let novaQuantidade =
                             quantidade;
 
+
                         if (
-                            acao ===
-                            'aumentar'
+                            acao === 'aumentar'
                         ) {
+
                             novaQuantidade++;
                         }
 
+
                         if (
-                            acao ===
-                            'diminuir'
+                            acao === 'diminuir'
                         ) {
+
                             novaQuantidade--;
                         }
 
+
                         if (
                             novaQuantidade < 1 ||
-                            novaQuantidade >
-                                estoque
+                            novaQuantidade > estoque
                         ) {
+
                             return;
                         }
+
 
                         await enviar(
                             `/carrinho/item/${itemId}/quantidade`,
@@ -157,7 +169,9 @@ document.addEventListener(
                             }
                         );
 
+
                         window.location.reload();
+
 
                     } catch (erro) {
 
@@ -167,31 +181,6 @@ document.addEventListener(
                                 erro.message;
                         }
                     }
-                }
-            );
-        }
-
-        // ==================================================
-        // WOOCOMMERCE
-        // ==================================================
-
-        if (finalizar) {
-
-            finalizar.addEventListener(
-                'click',
-                () => {
-
-                    /*
-                     * Ainda não enviamos para
-                     * WooCommerce porque as
-                     * credenciais e IDs dos
-                     * produtos serão configurados
-                     * na etapa de integração.
-                     */
-
-                    alert(
-                        'O carrinho está pronto. A finalização pelo WooCommerce será conectada na etapa de integração.'
-                    );
                 }
             );
         }

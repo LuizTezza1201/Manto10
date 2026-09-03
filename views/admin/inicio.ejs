@@ -1,205 +1,359 @@
 <%- include('../partials/header') %>
 
-<main class="admin-pagina">
+<div class="admin-layout">
 
-    <div class="admin-container">
+    <%- include('../partials/admin-sidebar', {
+        secaoAdmin: 'dashboard'
+    }) %>
 
-        <div class="admin-topo">
+    <main class="admin-pagina admin-conteudo">
 
-            <div>
+        <div class="admin-container">
 
-                <span class="admin-etiqueta">
-                    ADMINISTRADOR
-                </span>
+            <!-- ==========================================
+                 TOPO
+            =========================================== -->
 
-                <h1>
-                    Dashboard
-                </h1>
-
-                <p>
-                    Visão geral da Manto 10.
-                </p>
-
-            </div>
-
-            <a
-                href="/admin/produtos"
-                class="admin-botao-principal"
-            >
-                Gerenciar camisas
-            </a>
-
-        </div>
-
-        <!-- ==============================================
-             INDICADORES
-        =============================================== -->
-
-        <section class="admin-indicadores">
-
-            <article class="admin-card-indicador">
-
-                <span>
-                    Produtos cadastrados
-                </span>
-
-                <strong>
-                    <%= resumo.totalProdutos %>
-                </strong>
-
-                <small>
-                    Tailandesas e Nacionais Premium
-                </small>
-
-            </article>
-
-            <article class="admin-card-indicador">
-
-                <span>
-                    Unidades em estoque
-                </span>
-
-                <strong>
-                    <%= resumo.unidadesEstoque %>
-                </strong>
-
-                <small>
-                    Soma de todos os tamanhos
-                </small>
-
-            </article>
-
-            <article class="admin-card-indicador">
-
-                <span>
-                    Estoque baixo
-                </span>
-
-                <strong>
-                    <%= resumo.estoqueBaixo %>
-                </strong>
-
-                <small>
-                    Produtos entre 1 e 5 unidades
-                </small>
-
-            </article>
-
-            <article class="admin-card-indicador">
-
-                <span>
-                    Sem estoque
-                </span>
-
-                <strong>
-                    <%= resumo.semEstoque %>
-                </strong>
-
-                <small>
-                    Invisíveis no catálogo público
-                </small>
-
-            </article>
-
-        </section>
-
-        <!-- ==============================================
-             ÁREAS
-        =============================================== -->
-
-        <section class="admin-secao">
-
-            <div class="admin-secao-titulo">
+            <div class="admin-topo">
 
                 <div>
 
-                    <h2>
-                        Administração
-                    </h2>
+                    <span class="admin-etiqueta">
+                        ADMINISTRADOR
+                    </span>
+
+                    <h1>
+                        Dashboard
+                    </h1>
 
                     <p>
-                        Acesse os módulos do sistema.
+                        Visão geral da Manto 10.
                     </p>
 
                 </div>
 
-            </div>
-
-            <div class="admin-modulos">
-
                 <a
                     href="/admin/produtos"
-                    class="admin-modulo"
+                    class="admin-botao-principal"
                 >
-
-                    <strong>
-                        Camisas
-                    </strong>
-
-                    <span>
-                        Produtos, preços e estoque
-                    </span>
-
-                    <b>
-                        <%= resumo.totalProdutos %>
-                    </b>
-
+                    Gerenciar camisas
                 </a>
-
-                <div class="admin-modulo admin-modulo-futuro">
-
-                    <strong>
-                        Clientes
-                    </strong>
-
-                    <span>
-                        Usuários cadastrados
-                    </span>
-
-                    <b>
-                        <%= resumo.clientes %>
-                    </b>
-
-                </div>
-
-                <div class="admin-modulo admin-modulo-futuro">
-
-                    <strong>
-                        Pedidos
-                    </strong>
-
-                    <span>
-                        Integração com WooCommerce
-                    </span>
-
-                    <b>
-                        <%= resumo.totalPedidos %>
-                    </b>
-
-                </div>
-
-                <div class="admin-modulo admin-modulo-futuro">
-
-                    <strong>
-                        Vendas
-                    </strong>
-
-                    <span>
-                        Total registrado
-                    </span>
-
-                    <b class="admin-valor-menor">
-                        <%= resumo.totalVendasFormatado %>
-                    </b>
-
-                </div>
 
             </div>
 
-        </section>
 
-    </div>
+            <!-- ==========================================
+                 ESTOQUE
+            =========================================== -->
 
-</main>
+            <section class="admin-indicadores">
+
+                <article class="admin-card-indicador">
+
+                    <span>
+                        Produtos cadastrados
+                    </span>
+
+                    <strong>
+                        <%= resumo.totalProdutos %>
+                    </strong>
+
+                    <small>
+                        Tailandesas e Nacionais Premium
+                    </small>
+
+                </article>
+
+
+                <article class="admin-card-indicador">
+
+                    <span>
+                        Unidades em estoque
+                    </span>
+
+                    <strong>
+                        <%= resumo.unidadesEstoque %>
+                    </strong>
+
+                    <small>
+                        Soma de todos os tamanhos
+                    </small>
+
+                </article>
+
+
+                <article class="admin-card-indicador">
+
+                    <span>
+                        Estoque baixo
+                    </span>
+
+                    <strong>
+                        <%= resumo.estoqueBaixo %>
+                    </strong>
+
+                    <small>
+                        Produtos entre 1 e 5 unidades
+                    </small>
+
+                </article>
+
+
+                <article class="admin-card-indicador">
+
+                    <span>
+                        Sem estoque
+                    </span>
+
+                    <strong>
+                        <%= resumo.semEstoque %>
+                    </strong>
+
+                    <small>
+                        Invisíveis no catálogo público
+                    </small>
+
+                </article>
+
+            </section>
+
+
+            <!-- ==========================================
+                 VENDAS
+            =========================================== -->
+
+            <section class="admin-secao admin-secao-vendas">
+
+                <div class="admin-secao-titulo">
+
+                    <div>
+
+                        <h2>
+                            Resumo de vendas
+                        </h2>
+
+                        <p>
+                            Valores calculados a partir
+                            dos pedidos confirmados.
+                        </p>
+
+                    </div>
+
+                    <div class="admin-secao-acoes">
+
+    <a
+        href="/admin/vendas/nova"
+        class="admin-botao-principal"
+    >
+        Criar venda
+    </a>
+
+    <a
+        href="/admin/vendas"
+        class="admin-botao-secundario"
+    >
+        Ver vendas
+    </a>
+
+</div>
+
+                </div>
+
+
+                <div class="admin-indicadores">
+
+                    <article class="admin-card-indicador">
+
+                        <span>
+                            Hoje
+                        </span>
+
+                        <strong class="admin-valor-menor">
+                            <%= resumo.vendasHojeFormatado %>
+                        </strong>
+
+                        <small>
+                            Vendas realizadas hoje
+                        </small>
+
+                    </article>
+
+
+                    <article class="admin-card-indicador">
+
+                        <span>
+                            Esta semana
+                        </span>
+
+                        <strong class="admin-valor-menor">
+                            <%= resumo.vendasSemanaFormatado %>
+                        </strong>
+
+                        <small>
+                            Semana atual
+                        </small>
+
+                    </article>
+
+
+                    <article class="admin-card-indicador">
+
+                        <span>
+                            Este mês
+                        </span>
+
+                        <strong class="admin-valor-menor">
+                            <%= resumo.vendasMesFormatado %>
+                        </strong>
+
+                        <small>
+                            Mês atual
+                        </small>
+
+                    </article>
+
+
+                    <article class="admin-card-indicador">
+
+                        <span>
+                            Este ano
+                        </span>
+
+                        <strong class="admin-valor-menor">
+                            <%= resumo.vendasAnoFormatado %>
+                        </strong>
+
+                        <small>
+                            Ano atual
+                        </small>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==========================================
+                 ADMINISTRAÇÃO
+            =========================================== -->
+
+            <section class="admin-secao">
+
+                <div class="admin-secao-titulo">
+
+                    <div>
+
+                        <h2>
+                            Administração
+                        </h2>
+
+                        <p>
+                            Acesse os módulos do sistema.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="admin-modulos">
+
+                    <!-- CAMISAS -->
+
+                    <a
+                        href="/admin/produtos"
+                        class="admin-modulo"
+                    >
+
+                        <strong>
+                            Camisas
+                        </strong>
+
+                        <span>
+                            Produtos, preços e estoque
+                        </span>
+
+                        <b>
+                            <%= resumo.totalProdutos %>
+                        </b>
+
+                    </a>
+
+
+                    <!-- USUÁRIOS -->
+
+                    <a
+                        href="/admin/usuarios"
+                        class="admin-modulo"
+                    >
+
+                        <strong>
+                            Usuários
+                        </strong>
+
+                        <span>
+                            Clientes e administradores
+                        </span>
+
+                        <b>
+                            <%= resumo.totalUsuarios %>
+                        </b>
+
+                    </a>
+
+
+                    <!-- PEDIDOS -->
+
+                    <a
+                        href="/admin/pedidos"
+                        class="admin-modulo"
+                    >
+
+                        <strong>
+                            Pedidos
+                        </strong>
+
+                        <span>
+                            Acompanhar pedidos da loja
+                        </span>
+
+                        <b>
+                            <%= resumo.totalPedidos %>
+                        </b>
+
+                    </a>
+
+
+                    <!-- VENDAS -->
+
+                    <a
+                        href="/admin/vendas"
+                        class="admin-modulo"
+                    >
+
+                        <strong>
+                            Vendas
+                        </strong>
+
+                        <span>
+                            Total de vendas confirmadas
+                        </span>
+
+                        <b class="admin-valor-menor">
+                            <%= resumo.totalVendasFormatado %>
+                        </b>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
 
 <%- include('../partials/footer') %>

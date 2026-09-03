@@ -1,0 +1,576 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+
+    <%- include('../partials/admin-sidebar', {
+        secaoAdmin: 'produtos'
+    }) %>
+
+    <main class="admin-pagina admin-conteudo">
+
+    <div class="admin-container">
+
+        <!-- ==============================================
+             TOPO
+        =============================================== -->
+
+        <div class="admin-topo">
+
+            <div>
+
+                <span class="admin-etiqueta">
+                    ADMINISTRADOR
+                </span>
+
+                <h1>
+                    Nova camisa
+                </h1>
+
+                <p>
+                    Cadastre um novo produto,
+                    sua foto e estoque inicial.
+                </p>
+
+            </div>
+
+            <a
+                href="/admin/produtos"
+                class="admin-botao-secundario"
+            >
+                Voltar para camisas
+            </a>
+
+        </div>
+
+        <!-- ==============================================
+             MENSAGENS
+        =============================================== -->
+
+        <% if (sucesso) { %>
+
+            <div class="admin-alerta-sucesso">
+
+                Camisa cadastrada com sucesso.
+
+                <a href="/admin/produtos">
+                    Ver camisas cadastradas
+                </a>
+
+            </div>
+
+        <% } %>
+
+        <% if (erro) { %>
+
+            <div class="admin-alerta-erro">
+                <%= erro %>
+            </div>
+
+        <% } %>
+
+        <!-- ==============================================
+             FORMULÁRIO
+        =============================================== -->
+
+        <section class="admin-secao admin-cadastro-produto">
+
+            <form
+                action="/admin/produtos/novo"
+                method="POST"
+                enctype="multipart/form-data"
+                class="admin-form-produto"
+            >
+
+                <div class="admin-form-grid">
+
+                    <!-- CÓDIGO -->
+
+                    <label>
+
+                        <span>
+                            Código
+                        </span>
+
+                        <input
+                            type="text"
+                            name="codigo"
+                            maxlength="50"
+                            value="<%= valores.codigo %>"
+                            placeholder="Ex.: COR-H-2526-TAI"
+                            required
+                        >
+
+                    </label>
+
+                    <!-- TIPO -->
+
+                    <label>
+
+                        <span>
+                            Tipo da camisa
+                        </span>
+
+                        <select
+                            name="tipo_camisa"
+                            id="tipoNovaCamisa"
+                            required
+                        >
+
+                            <option
+                                value="Tailandesa"
+                                <%= valores.tipo_camisa === 'Tailandesa'
+                                    ? 'selected'
+                                    : ''
+                                %>
+                            >
+                                Tailandesa
+                            </option>
+
+                            <option
+                                value="Nacional Premium"
+                                <%= valores.tipo_camisa === 'Nacional Premium'
+                                    ? 'selected'
+                                    : ''
+                                %>
+                            >
+                                Nacional Premium
+                            </option>
+
+                        </select>
+
+                    </label>
+
+                    <!-- NOME -->
+
+                    <label class="admin-form-campo-largo">
+
+                        <span>
+                            Nome
+                        </span>
+
+                        <input
+                            type="text"
+                            name="nome"
+                            maxlength="180"
+                            value="<%= valores.nome %>"
+                            placeholder="Ex.: Camisa Corinthians Home 2025/26"
+                            required
+                        >
+
+                    </label>
+
+                    <!-- CATEGORIA -->
+
+                    <label>
+
+                        <span>
+                            Categoria
+                        </span>
+
+                        <select
+                            name="categoria_id"
+                            required
+                        >
+
+                            <option value="">
+                                Selecione
+                            </option>
+
+                            <% categorias.forEach((categoria) => { %>
+
+                                <option
+                                    value="<%= categoria.id %>"
+                                    <%= Number(valores.categoria_id) === Number(categoria.id)
+                                        ? 'selected'
+                                        : ''
+                                    %>
+                                >
+                                    <%= categoria.nome %>
+                                </option>
+
+                            <% }) %>
+
+                        </select>
+
+                    </label>
+
+                    <!-- TIME -->
+
+                    <label>
+
+                        <span>
+                            Time
+                        </span>
+
+                        <select
+                            name="time_id"
+                        >
+
+                            <option value="">
+                                Não definido
+                            </option>
+
+                            <% times.forEach((time) => { %>
+
+                                <option
+                                    value="<%= time.id %>"
+                                    <%= Number(valores.time_id) === Number(time.id)
+                                        ? 'selected'
+                                        : ''
+                                    %>
+                                >
+                                    <%= time.nome %>
+                                </option>
+
+                            <% }) %>
+
+                        </select>
+
+                    </label>
+
+                    <!-- TEMPORADA -->
+
+                    <label>
+
+                        <span>
+                            Temporada
+                        </span>
+
+                        <input
+                            type="text"
+                            name="temporada"
+                            maxlength="30"
+                            value="<%= valores.temporada %>"
+                            placeholder="Ex.: 2025/26"
+                        >
+
+                    </label>
+
+                    <!-- DESCONTO PIX -->
+
+                    <label>
+
+                        <span>
+                            Desconto Pix (%)
+                        </span>
+
+                        <input
+                            type="number"
+                            name="desconto_pix"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                            value="<%= valores.desconto_pix %>"
+                        >
+
+                    </label>
+
+                    <!-- PREÇO NORMAL -->
+
+                    <label>
+
+                        <span>
+                            Preço original
+                        </span>
+
+                        <input
+                            type="number"
+                            name="preco"
+                            id="precoNovaCamisa"
+                            min="0.01"
+                            step="0.01"
+                            value="<%= valores.preco %>"
+                            required
+                        >
+
+                    </label>
+
+                    <!-- PREÇO PROMOCIONAL -->
+
+                    <label>
+
+                        <span>
+                            Preço promocional
+                        </span>
+
+                        <input
+                            type="number"
+                            name="preco_promocional"
+                            id="precoPromocionalNovaCamisa"
+                            min="0"
+                            step="0.01"
+                            value="<%= valores.preco_promocional %>"
+                        >
+
+                    </label>
+
+                    <!-- FOTO -->
+
+                    <label class="admin-form-campo-largo">
+
+                        <span>
+                            Foto frontal da camisa
+                        </span>
+
+                        <input
+                            type="file"
+                            name="imagem"
+                            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                        >
+
+                        <small>
+                            JPG, PNG ou WEBP.
+                            Máximo de 5 MB.
+                        </small>
+
+                    </label>
+
+                    <!-- DESCRIÇÃO -->
+
+                    <label class="admin-form-campo-largo">
+
+                        <span>
+                            Descrição
+                        </span>
+
+                        <textarea
+                            name="descricao"
+                            rows="6"
+                            placeholder="Descrição da camisa..."
+                        ><%= valores.descricao %></textarea>
+
+                    </label>
+
+                </div>
+
+                <!-- ======================================
+                     ESTOQUE INICIAL
+                ======================================= -->
+
+                <div class="admin-secao-titulo">
+
+                    <h2>
+                        Estoque inicial
+                    </h2>
+
+                    <p>
+                        Informe a quantidade disponível
+                        de cada tamanho.
+                    </p>
+
+                </div>
+
+                <div
+                    class="admin-tamanhos"
+                    style="margin-top: 16px;"
+                >
+
+                    <label>
+
+                        <span>
+                            P
+                        </span>
+
+                        <input
+                            type="number"
+                            name="estoque_p"
+                            min="0"
+                            step="1"
+                            value="<%= valores.estoque_p %>"
+                            required
+                        >
+
+                    </label>
+
+                    <label>
+
+                        <span>
+                            M
+                        </span>
+
+                        <input
+                            type="number"
+                            name="estoque_m"
+                            min="0"
+                            step="1"
+                            value="<%= valores.estoque_m %>"
+                            required
+                        >
+
+                    </label>
+
+                    <label>
+
+                        <span>
+                            G
+                        </span>
+
+                        <input
+                            type="number"
+                            name="estoque_g"
+                            min="0"
+                            step="1"
+                            value="<%= valores.estoque_g %>"
+                            required
+                        >
+
+                    </label>
+
+                    <label>
+
+                        <span>
+                            GG
+                        </span>
+
+                        <input
+                            type="number"
+                            name="estoque_gg"
+                            min="0"
+                            step="1"
+                            value="<%= valores.estoque_gg %>"
+                            required
+                        >
+
+                    </label>
+
+                </div>
+
+                <!-- ======================================
+                     OPÇÕES
+                ======================================= -->
+
+                <div class="admin-form-opcoes">
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            name="destaque"
+                            value="1"
+                            <%= valores.destaque
+                                ? 'checked'
+                                : ''
+                            %>
+                        >
+
+                        <span>
+                            Produto em destaque
+                        </span>
+
+                    </label>
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            name="mais_vendido"
+                            value="1"
+                            <%= valores.mais_vendido
+                                ? 'checked'
+                                : ''
+                            %>
+                        >
+
+                        <span>
+                            Marcar como mais vendido
+                        </span>
+
+                    </label>
+
+                </div>
+
+                <!-- ======================================
+                     BOTÕES
+                ======================================= -->
+
+                <div class="admin-form-acoes">
+
+                    <a
+                        href="/admin/produtos"
+                        class="admin-form-cancelar"
+                    >
+                        Cancelar
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="admin-form-salvar"
+                    >
+                        Cadastrar camisa
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+    </main>
+
+</div>
+
+<script>
+
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        const tipo =
+            document.getElementById(
+                'tipoNovaCamisa'
+            );
+
+        const preco =
+            document.getElementById(
+                'precoNovaCamisa'
+            );
+
+        const promocional =
+            document.getElementById(
+                'precoPromocionalNovaCamisa'
+            );
+
+        if (
+            !tipo ||
+            !preco ||
+            !promocional
+        ) {
+
+            return;
+        }
+
+        tipo.addEventListener(
+            'change',
+            () => {
+
+                if (
+                    tipo.value ===
+                    'Tailandesa'
+                ) {
+
+                    preco.value =
+                        '149.99';
+
+                    promocional.value =
+                        '119.99';
+
+                } else {
+
+                    preco.value =
+                        '59.99';
+
+                    promocional.value =
+                        '39.99';
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+<%- include('../partials/footer') %>

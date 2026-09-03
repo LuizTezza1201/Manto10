@@ -1,0 +1,380 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+
+    <%- include('../partials/admin-sidebar', {
+        secaoAdmin: 'produtos'
+    }) %>
+
+    <main class="admin-pagina admin-conteudo">
+
+    <div class="admin-container">
+
+        <div class="admin-topo">
+
+            <div>
+
+                <span class="admin-etiqueta">
+                    ADMINISTRADOR
+                </span>
+
+                <h1>
+                    Editar camisa
+                </h1>
+
+                <p>
+                    Atualize as informações do produto.
+                </p>
+
+            </div>
+
+            <a
+                href="/admin/produtos"
+                class="admin-botao-secundario"
+            >
+                Voltar para camisas
+            </a>
+
+        </div>
+
+        <% if (sucesso) { %>
+
+            <div class="admin-alerta-sucesso">
+                Camisa atualizada com sucesso.
+            </div>
+
+        <% } %>
+
+        <% if (erro) { %>
+
+            <div class="admin-alerta-erro">
+                <%= erro %>
+            </div>
+
+        <% } %>
+
+        <section class="admin-editar-produto admin-cadastro-produto">
+            <aside class="admin-editar-imagem">
+
+                <div class="admin-editar-imagem-box">
+
+                    <img
+                        src="<%= produto.imagem || '/images/produtos/placeholder.svg' %>"
+                        alt="<%= produto.nome %>"
+                        onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                    >
+
+                </div>
+
+                <span
+                    class="admin-status <%= produto.status === 'Ativo'
+                        ? 'ativo'
+                        : 'inativo'
+                    %>"
+                >
+                    <%= produto.status %>
+                </span>
+
+                <p>
+                    A troca da imagem será adicionada
+                    na próxima etapa do painel.
+                </p>
+
+            </aside>
+
+            <form
+                action="/admin/produtos/<%= produto.id %>/editar"
+                method="POST"
+                class="admin-form-produto"
+            >
+
+                <div class="admin-form-grid">
+
+                    <label>
+
+                        <span>
+                            Código
+                        </span>
+
+                        <input
+                            type="text"
+                            name="codigo"
+                            maxlength="50"
+                            value="<%= produto.codigo %>"
+                            required
+                        >
+
+                    </label>
+
+                    <label>
+
+                        <span>
+                            Tipo da camisa
+                        </span>
+
+                        <select
+                            name="tipo_camisa"
+                            required
+                        >
+
+                            <option
+                                value="Tailandesa"
+                                <%= produto.tipo_camisa === 'Tailandesa'
+                                    ? 'selected'
+                                    : ''
+                                %>
+                            >
+                                Tailandesa
+                            </option>
+
+                            <option
+                                value="Nacional Premium"
+                                <%= produto.tipo_camisa === 'Nacional Premium'
+                                    ? 'selected'
+                                    : ''
+                                %>
+                            >
+                                Nacional Premium
+                            </option>
+
+                        </select>
+
+                    </label>
+
+                    <label class="admin-form-campo-largo">
+
+                        <span>
+                            Nome
+                        </span>
+
+                        <input
+                            type="text"
+                            name="nome"
+                            maxlength="180"
+                            value="<%= produto.nome %>"
+                            required
+                        >
+
+                    </label>
+
+                    <label>
+
+                        <span>
+                            Categoria
+                        </span>
+
+                        <select
+                            name="categoria_id"
+                            required
+                        >
+
+                            <% categorias.forEach((categoria) => { %>
+
+                                <option
+                                    value="<%= categoria.id %>"
+                                    <%= Number(produto.categoria_id) === Number(categoria.id)
+                                        ? 'selected'
+                                        : ''
+                                    %>
+                                >
+                                    <%= categoria.nome %>
+                                    <%= categoria.status === 'Inativo'
+                                        ? ' - Inativa'
+                                        : ''
+                                    %>
+                                </option>
+
+                            <% }) %>
+
+                        </select>
+
+                    </label>
+
+                    <label>
+
+                        <span>
+                            Time
+                        </span>
+
+                        <select name="time_id">
+
+                            <option value="">
+                                Não definido
+                            </option>
+
+                            <% times.forEach((time) => { %>
+
+                                <option
+                                    value="<%= time.id %>"
+                                    <%= Number(produto.time_id) === Number(time.id)
+                                        ? 'selected'
+                                        : ''
+                                    %>
+                                >
+                                    <%= time.nome %>
+                                    <%= time.status === 'Inativo'
+                                        ? ' - Inativo'
+                                        : ''
+                                    %>
+                                </option>
+
+                            <% }) %>
+
+                        </select>
+
+                    </label>
+
+                    <label>
+
+                        <span>
+                            Temporada
+                        </span>
+
+                        <input
+                            type="text"
+                            name="temporada"
+                            maxlength="30"
+                            value="<%= produto.temporada || '' %>"
+                            placeholder="Ex.: 2025/26"
+                        >
+
+                    </label>
+
+                    <label>
+
+                        <span>
+                            Preço original
+                        </span>
+
+                        <input
+                            type="number"
+                            name="preco"
+                            min="0.01"
+                            step="0.01"
+                            value="<%= Number(produto.preco).toFixed(2) %>"
+                            required
+                        >
+
+                    </label>
+
+                    <label>
+
+                        <span>
+                            Preço promocional
+                        </span>
+
+                        <input
+                            type="number"
+                            name="preco_promocional"
+                            min="0"
+                            step="0.01"
+                            value="<%= produto.preco_promocional !== null
+                                ? Number(produto.preco_promocional).toFixed(2)
+                                : ''
+                            %>"
+                        >
+
+                    </label>
+
+                    <label>
+
+                        <span>
+                            Desconto Pix (%)
+                        </span>
+
+                        <input
+                            type="number"
+                            name="desconto_pix"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                            value="<%= Number(produto.desconto_pix || 0).toFixed(2) %>"
+                        >
+
+                    </label>
+
+                    <label class="admin-form-campo-largo">
+
+                        <span>
+                            Descrição
+                        </span>
+
+                        <textarea
+                            name="descricao"
+                            rows="6"
+                            placeholder="Descrição da camisa..."
+                        ><%= produto.descricao || '' %></textarea>
+
+                    </label>
+
+                </div>
+
+                <div class="admin-form-opcoes">
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            name="destaque"
+                            value="1"
+                            <%= produto.destaque
+                                ? 'checked'
+                                : ''
+                            %>
+                        >
+
+                        <span>
+                            Produto em destaque
+                        </span>
+
+                    </label>
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            name="mais_vendido"
+                            value="1"
+                            <%= produto.mais_vendido
+                                ? 'checked'
+                                : ''
+                            %>
+                        >
+
+                        <span>
+                            Marcar como mais vendido
+                        </span>
+
+                    </label>
+
+                </div>
+
+                <div class="admin-form-acoes">
+
+                    <a
+                        href="/admin/produtos"
+                        class="admin-form-cancelar"
+                    >
+                        Cancelar
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="admin-form-salvar"
+                    >
+                        Salvar alterações
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+    </main>
+
+</div>
+
+<%- include('../partials/footer') %>

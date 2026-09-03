@@ -1,0 +1,570 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+
+    <%- include('../partials/admin-sidebar', {
+        secaoAdmin: 'pedidos'
+    }) %>
+
+    <main class="admin-pagina admin-conteudo">
+
+        <div class="admin-container">
+
+            <!-- ==========================================
+                 TOPO
+            =========================================== -->
+
+            <div class="admin-topo">
+
+                <div>
+
+                    <span class="admin-etiqueta">
+                        PEDIDO
+                    </span>
+
+                    <h1>
+                        #<%= pedido.numero_pedido %>
+                    </h1>
+
+                    <p>
+                        Criado em
+                        <%= pedido.criado_em_formatado %>
+                    </p>
+
+                </div>
+
+                <a
+                    href="/admin/pedidos"
+                    class="admin-botao-secundario"
+                >
+                    Voltar aos pedidos
+                </a>
+
+            </div>
+
+            <% if (sucesso === 'status') { %>
+
+    <div class="admin-alerta-sucesso">
+
+        Status do pedido atualizado
+        com sucesso.
+
+    </div>
+
+<% } %>
+
+
+<% if (sucesso === 'cancelamento') { %>
+
+    <div class="admin-alerta-sucesso">
+
+        Pedido cancelado e estoque
+        restituído com sucesso.
+
+    </div>
+
+<% } %>
+
+            <!-- ==========================================
+                 RESUMO
+            =========================================== -->
+
+            <section class="pedido-detalhe-grid">
+
+                <!-- CLIENTE -->
+
+                <article class="pedido-detalhe-card">
+
+                    <span class="pedido-detalhe-titulo">
+                        Cliente
+                    </span>
+
+                    <strong>
+                        <%= pedido.cliente_nome %>
+                    </strong>
+
+                    <p>
+                        <%= pedido.cliente_email %>
+                    </p>
+
+                </article>
+
+                <!-- STATUS -->
+
+                <article class="pedido-detalhe-card">
+
+                    <span class="pedido-detalhe-titulo">
+                        Status do pedido
+                    </span>
+
+                    <strong>
+                        <%= pedido.status %>
+                    </strong>
+
+                    <p>
+                        Atualizado em
+                        <%= pedido.atualizado_em_formatado %>
+                    </p>
+
+                </article>
+
+                <% if (
+    !pedido.estoque_restituido &&
+    (
+        pedido.status === 'Pendente' ||
+        pedido.status === 'Cancelado'
+    )
+) { %>
+
+    <section class="pedido-bloco pedido-bloco-cancelamento">
+
+        <div class="pedido-bloco-cabecalho">
+
+            <h2>
+                Cancelamento
+            </h2>
+
+        </div>
+
+
+        <% if (pedido.status === 'Pendente') { %>
+
+            <p class="pedido-cancelamento-texto">
+                Cancela o pedido e devolve
+                todas as unidades ao estoque.
+            </p>
+
+        <% } else { %>
+
+            <p class="pedido-cancelamento-texto">
+                Este pedido já está cancelado,
+                mas o estoque ainda não foi
+                restituído.
+            </p>
+
+        <% } %>
+
+
+        <form
+            action="/admin/pedidos/<%= pedido.id %>/cancelar"
+            method="POST"
+            onsubmit="return confirm('Confirma o cancelamento e a restituição do estoque?');"
+        >
+
+            <button
+                type="submit"
+                class="pedido-cancelar-botao"
+            >
+
+                <%= pedido.status === 'Pendente'
+                    ? 'Cancelar e restituir estoque'
+                    : 'Restituir estoque'
+                %>
+
+            </button>
+
+        </form>
+
+    </section>
+
+<% } %>
+
+                <!-- PAGAMENTO -->
+
+                <article class="pedido-detalhe-card">
+
+                    <span class="pedido-detalhe-titulo">
+                        Pagamento
+                    </span>
+
+                    <% if (pedido.forma_pagamento) { %>
+
+                        <strong>
+                            <%= pedido.forma_pagamento %>
+                        </strong>
+
+                        <p>
+                            <%= pedido.pagamento_status %>
+                        </p>
+
+                    <% } else { %>
+
+                        <strong>
+                            Não informado
+                        </strong>
+
+                        <p>
+                            Nenhum pagamento registrado.
+                        </p>
+
+                    <% } %>
+
+                </article>
+
+                <article class="pedido-detalhe-card">
+
+    <span class="pedido-detalhe-titulo">
+        Estoque
+    </span>
+
+    <% if (pedido.estoque_restituido) { %>
+
+        <strong>
+            Restituído
+        </strong>
+
+        <p>
+            As unidades voltaram ao estoque.
+        </p>
+
+    <% } else { %>
+
+        <strong>
+            Reservado
+        </strong>
+
+        <p>
+            As unidades permanecem vinculadas
+            ao pedido.
+        </p>
+
+    <% } %>
+
+</article>
+
+            </section>
+
+            <!-- ==========================================
+                 CONTEÚDO
+            =========================================== -->
+
+            <div class="pedido-detalhe-layout">
+
+                <div>
+
+                    <!-- ITENS -->
+
+                    <section class="pedido-bloco">
+
+                        <div class="pedido-bloco-cabecalho">
+
+                            <h2>
+                                Produtos
+                            </h2>
+
+                            <span>
+                                <%= itens.length %>
+                                item(ns)
+                            </span>
+
+                        </div>
+
+                        <% if (itens.length > 0) { %>
+
+                            <div class="pedido-itens">
+
+                                <% itens.forEach((item) => { %>
+
+                                    <article class="pedido-item">
+
+                                        <div class="pedido-item-imagem">
+
+                                            <img
+                                                src="<%= item.imagem || '/images/produtos/placeholder.svg' %>"
+                                                alt="<%= item.nome_produto %>"
+                                                onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                                            >
+
+                                        </div>
+
+                                        <div class="pedido-item-dados">
+
+                                            <span>
+                                                <%= item.codigo_produto %>
+                                            </span>
+
+                                            <h3>
+                                                <%= item.nome_produto %>
+                                            </h3>
+
+                                            <p>
+                                                Tamanho:
+                                                <strong>
+                                                    <%= item.tamanho %>
+                                                </strong>
+                                            </p>
+
+                                        </div>
+
+                                        <div class="pedido-item-quantidade">
+
+                                            <span>
+                                                Quantidade
+                                            </span>
+
+                                            <strong>
+                                                <%= item.quantidade %>
+                                            </strong>
+
+                                        </div>
+
+                                        <div class="pedido-item-preco">
+
+                                            <span>
+                                                Unitário
+                                            </span>
+
+                                            <strong>
+                                                <%= item.preco_unitario_formatado %>
+                                            </strong>
+
+                                        </div>
+
+                                        <div class="pedido-item-subtotal">
+
+                                            <span>
+                                                Subtotal
+                                            </span>
+
+                                            <strong>
+                                                <%= item.subtotal_formatado %>
+                                            </strong>
+
+                                        </div>
+
+                                    </article>
+
+                                <% }) %>
+
+                            </div>
+
+                        <% } else { %>
+
+                            <p class="pedido-texto-vazio">
+                                Nenhum item registrado.
+                            </p>
+
+                        <% } %>
+
+                    </section>
+
+                    <!-- ENDEREÇO -->
+
+                    <section class="pedido-bloco">
+
+                        <div class="pedido-bloco-cabecalho">
+
+                            <h2>
+                                Endereço de entrega
+                            </h2>
+
+                        </div>
+
+                        <div class="pedido-endereco">
+
+                            <p>
+                                <strong>
+                                    <%= pedido.logradouro %>,
+                                    <%= pedido.endereco_numero %>
+                                </strong>
+                            </p>
+
+                            <% if (pedido.complemento) { %>
+
+                                <p>
+                                    <%= pedido.complemento %>
+                                </p>
+
+                            <% } %>
+
+                            <p>
+                                <%= pedido.bairro %>
+                            </p>
+
+                            <p>
+                                <%= pedido.cidade %>
+                                -
+                                <%= pedido.estado %>
+                            </p>
+
+                            <p>
+                                CEP:
+                                <%= pedido.cep %>
+                            </p>
+
+                        </div>
+
+                    </section>
+
+                    <% if (pedido.observacao) { %>
+
+                        <section class="pedido-bloco">
+
+                            <div class="pedido-bloco-cabecalho">
+
+                                <h2>
+                                    Observação
+                                </h2>
+
+                            </div>
+
+                            <p class="pedido-observacao">
+                                <%= pedido.observacao %>
+                            </p>
+
+                        </section>
+
+                    <% } %>
+
+                </div>
+
+                <!-- ======================================
+                     LATERAL
+                ======================================= -->
+
+                <aside class="pedido-lateral">
+
+                    <section class="pedido-bloco">
+
+                        <div class="pedido-bloco-cabecalho">
+
+                            <h2>
+                                Resumo
+                            </h2>
+
+                        </div>
+
+                        <div class="pedido-valores">
+
+                            <div>
+
+                                <span>
+                                    Subtotal
+                                </span>
+
+                                <strong>
+                                    <%= pedido.subtotal_formatado %>
+                                </strong>
+
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    Frete
+                                </span>
+
+                                <strong>
+                                    <%= pedido.frete_formatado %>
+                                </strong>
+
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    Desconto
+                                </span>
+
+                                <strong>
+                                    - <%= pedido.desconto_formatado %>
+                                </strong>
+
+                            </div>
+
+                            <% if (pedido.cupom_codigo) { %>
+
+                                <div>
+
+                                    <span>
+                                        Cupom
+                                    </span>
+
+                                    <strong>
+                                        <%= pedido.cupom_codigo %>
+                                    </strong>
+
+                                </div>
+
+                            <% } %>
+
+                            <div class="pedido-valor-total">
+
+                                <span>
+                                    Total
+                                </span>
+
+                                <strong>
+                                    <%= pedido.total_formatado %>
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <!-- STATUS -->
+
+                    <section class="pedido-bloco">
+
+                        <div class="pedido-bloco-cabecalho">
+
+                            <h2>
+                                Atualizar status
+                            </h2>
+
+                        </div>
+
+                        <form
+                            action="/admin/pedidos/<%= pedido.id %>/status"
+                            method="POST"
+                            class="pedido-status-form"
+                        >
+
+                            <select
+                                name="status"
+                                required
+                            >
+
+                                <% [
+    'Pendente',
+    'Pago',
+    'Preparando',
+    'Enviado',
+    'Entregue'
+].forEach((status) => { %>
+
+                                    <option
+                                        value="<%= status %>"
+                                        <%= pedido.status === status
+                                            ? 'selected'
+                                            : ''
+                                        %>
+                                    >
+                                        <%= status %>
+                                    </option>
+
+                                <% }) %>
+
+                            </select>
+
+                            <button type="submit">
+                                Atualizar status
+                            </button>
+
+                        </form>
+
+                    </section>
+
+                </aside>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<%- include('../partials/footer') %>

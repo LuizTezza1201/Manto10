@@ -1,0 +1,1569 @@
+/* =========================================================
+   MANTO 10 - ADMIN VENDAS
+========================================================= */
+
+
+/* RESUMO */
+
+.vendas-resumo {
+    margin-bottom: 20px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.venda-resumo-card {
+    min-height: 125px;
+
+    padding: 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;
+
+    background: #ffffff;
+}
+
+.venda-resumo-card span {
+    color: #777777;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+.venda-resumo-card strong {
+    margin: 8px 0 5px;
+
+    color: #9d00de;
+
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.venda-resumo-card small {
+    color: #999999;
+
+    font-size: 9px;
+}
+
+
+/* TOTAL */
+
+.vendas-total-pedidos {
+    margin-bottom: 20px;
+
+    padding: 18px 20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-radius: 12px;
+
+    background: #111111;
+
+    color: #ffffff;
+}
+
+.vendas-total-pedidos div {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.vendas-total-pedidos span {
+    font-size: 10px;
+}
+
+.vendas-total-pedidos strong {
+    color: #9d00de;
+
+    font-size: 24px;
+}
+
+.vendas-total-pedidos p {
+    margin: 0;
+
+    color: #aaaaaa;
+
+    font-size: 9px;
+}
+
+
+/* BLOCO */
+
+.vendas-bloco {
+    padding: 22px;
+
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;
+
+    background: #ffffff;
+}
+
+.vendas-bloco-topo {
+    margin-bottom: 18px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.vendas-bloco-topo span {
+    color: #9d00de;
+
+    font-size: 8px;
+    font-weight: 900;
+}
+
+.vendas-bloco-topo h2 {
+    margin: 3px 0 0;
+
+    color: #111111;
+
+    font-size: 18px;
+}
+
+.vendas-bloco-topo a {
+    color: #9d00de;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    text-decoration: none;
+}
+
+
+/* LISTA */
+
+.vendas-lista {
+    display: grid;
+}
+
+.venda-item {
+    padding: 16px 0;
+
+    display: grid;
+
+    grid-template-columns:
+        150px
+        minmax(180px, 1fr)
+        55px
+        135px
+        90px
+        100px
+        75px;
+
+    gap: 15px;
+
+    align-items: center;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+.venda-item:last-child {
+    border-bottom: 0;
+}
+
+.venda-item span {
+    margin-bottom: 4px;
+
+    display: block;
+
+    color: #999999;
+
+    font-size: 8px;
+}
+
+.venda-item strong {
+    color: #222222;
+
+    font-size: 10px;
+}
+
+.venda-numero strong {
+    color: #9d00de;
+}
+
+.venda-cliente {
+    min-width: 0;
+}
+
+.venda-cliente strong {
+    display: block;
+}
+
+.venda-cliente small {
+    margin-top: 3px;
+
+    display: block;
+
+    color: #888888;
+
+    font-size: 8px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.venda-status {
+    font-size: 9px !important;
+}
+
+.venda-valor strong {
+    color: #9d00de;
+
+    font-size: 12px;
+}
+
+.venda-detalhes {
+    min-height: 34px;
+
+    padding: 0 10px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 6px;
+
+    background: #111111;
+
+    color: #ffffff;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    text-decoration: none;
+}
+
+.venda-detalhes:hover {
+    background: #9d00de;
+}
+
+
+/* RESPONSIVO */
+
+@media (max-width: 1100px) {
+
+    .vendas-resumo {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .venda-item {
+        grid-template-columns:
+            130px
+            minmax(170px, 1fr)
+            55px
+            110px;
+
+        align-items: start;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .vendas-resumo {
+        grid-template-columns: 1fr;
+    }
+
+    .vendas-total-pedidos {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .vendas-bloco-topo {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .venda-item {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .venda-detalhes {
+        grid-column: 1 / -1;
+    }
+
+}
+
+/* =========================================================
+   NOVA VENDA
+========================================================= */
+
+.admin-secao-acoes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+
+.nova-venda-form {
+    display: grid;
+    gap: 22px;
+}
+
+
+.nova-venda-bloco {
+    padding: 22px;
+
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+
+    background: #ffffff;
+}
+
+
+.nova-venda-bloco-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+
+.nova-venda-bloco-topo span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #9d00de;
+
+    font-size: 9px;
+    font-weight: 900;
+}
+
+
+.nova-venda-bloco-topo h2 {
+    margin: 0;
+
+    font-size: 17px;
+}
+
+
+.nova-venda-dados {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 16px;
+}
+
+
+.nova-venda-campo {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+
+.nova-venda-campo label {
+    font-size: 9px;
+    font-weight: 900;
+
+    color: #444444;
+}
+
+
+.nova-venda-campo input,
+.nova-venda-campo select,
+.nova-venda-campo textarea {
+    width: 100%;
+
+    border: 1px solid #dddddd;
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    padding: 11px 12px;
+
+    font-family: inherit;
+}
+
+
+.nova-venda-campo textarea {
+    resize: vertical;
+}
+
+
+.nova-venda-campo small {
+    color: #777777;
+
+    font-size: 9px;
+}
+
+
+.nova-venda-adicionar {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        120px
+        auto;
+
+    gap: 12px;
+
+    align-items: end;
+
+    margin-bottom: 20px;
+}
+
+
+.nova-venda-itens-vazio {
+    padding: 18px;
+
+    border: 1px dashed #d8d8d8;
+    border-radius: 8px;
+
+    color: #777777;
+
+    text-align: center;
+
+    font-size: 10px;
+}
+
+
+.nova-venda-itens {
+    display: grid;
+
+    gap: 9px;
+}
+
+
+.nova-venda-item {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        80px
+        110px
+        auto;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px 14px;
+
+    border: 1px solid #ededed;
+    border-radius: 8px;
+
+    background: #fafafa;
+}
+
+
+.nova-venda-item-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.nova-venda-item-info strong {
+    font-size: 10px;
+}
+
+
+.nova-venda-item-info span {
+    color: #777777;
+
+    font-size: 9px;
+}
+
+
+.nova-venda-item-quantidade {
+    font-size: 10px;
+    font-weight: 800;
+
+    text-align: center;
+}
+
+
+.nova-venda-item-valor {
+    font-size: 10px;
+
+    text-align: right;
+}
+
+
+.nova-venda-remover {
+    min-height: 36px;
+
+    padding: 0 12px;
+
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+
+    background: #ffffff;
+
+    color: #9b2929;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+
+.nova-venda-remover:hover {
+    border-color: #9b2929;
+
+    background: #fff5f5;
+}
+
+
+.nova-venda-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-top: 20px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid #ededed;
+}
+
+
+.nova-venda-total span {
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+.nova-venda-total strong {
+    color: #9d00de;
+
+    font-size: 22px;
+}
+
+
+.nova-venda-finalizar {
+    width: 100%;
+
+    margin-top: 18px;
+}
+
+
+.venda-detalhes-manual {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: default;
+
+    opacity: 0.65;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .nova-venda-dados {
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+
+    .nova-venda-adicionar {
+        grid-template-columns:
+            1fr 120px;
+    }
+
+
+    .nova-venda-adicionar
+    .admin-botao-secundario {
+        grid-column:
+            1 / -1;
+    }
+
+
+    .nova-venda-item {
+        grid-template-columns:
+            minmax(0, 1fr)
+            70px
+            100px;
+    }
+
+
+    .nova-venda-remover {
+        grid-column:
+            1 / -1;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .admin-secao-acoes {
+        width: 100%;
+    }
+
+
+    .admin-secao-acoes a {
+        flex: 1;
+
+        justify-content: center;
+    }
+
+
+    .nova-venda-dados {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .nova-venda-adicionar {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .nova-venda-item {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .nova-venda-item-quantidade,
+    .nova-venda-item-valor {
+        text-align: left;
+    }
+
+
+    .nova-venda-total {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+/* =========================================================
+   PESQUISA DE PRODUTOS
+========================================================= */
+
+.venda-pesquisa-produto {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    margin-bottom: 12px;
+}
+
+.venda-pesquisa-produto label {
+    font-size: 9px;
+    font-weight: 900;
+    color: #333333;
+}
+
+.venda-pesquisa-produto input {
+    width: 100%;
+    min-height: 44px;
+
+    padding: 0 14px;
+
+    border: 1px solid #dddddd;
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    font-family: inherit;
+}
+
+.venda-pesquisa-produto input:focus {
+    outline: none;
+    border-color: #9d00de;
+}
+
+
+.venda-total-produtos {
+    margin: 0 0 14px;
+
+    color: #777777;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   LISTA
+========================================================= */
+
+.venda-produtos-lista {
+    display: grid;
+    gap: 14px;
+}
+
+
+/* =========================================================
+   CARD DO PRODUTO
+========================================================= */
+
+.venda-produto-card {
+    display: grid;
+
+    grid-template-columns:
+        105px
+        minmax(220px, 1fr)
+        minmax(330px, 1.15fr);
+
+    gap: 20px;
+
+    align-items: center;
+
+    padding: 18px 20px;
+
+    border: 1px solid #e2e2e2;
+    border-radius: 11px;
+
+    background: #ffffff;
+}
+
+
+.venda-produto-card[hidden] {
+    display: none;
+}
+
+
+/* =========================================================
+   IMAGEM
+========================================================= */
+
+.venda-produto-imagem {
+    width: 95px;
+    height: 115px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 8px;
+
+    background: #f1f1f1;
+}
+
+
+.venda-produto-imagem img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.venda-produto-imagem span {
+    padding: 8px;
+
+    color: #888888;
+
+    font-size: 8px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   INFORMAÇÕES
+========================================================= */
+
+.venda-produto-info {
+    min-width: 0;
+}
+
+
+.venda-produto-etiquetas {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 8px;
+}
+
+
+.venda-produto-tipo {
+    padding: 5px 8px;
+
+    border-radius: 20px;
+
+    background: #f2ddfb;
+
+    color: #9d00de;
+
+    font-size: 8px;
+    font-weight: 900;
+}
+
+
+.venda-produto-estoque {
+    padding: 5px 8px;
+
+    border-radius: 20px;
+
+    background: #edf8ef;
+
+    color: #28723a;
+
+    font-size: 8px;
+    font-weight: 900;
+}
+
+
+.venda-produto-info h3 {
+    margin: 0 0 7px;
+
+    font-size: 14px;
+    line-height: 1.25;
+}
+
+
+.venda-produto-info p {
+    margin: 0 0 11px;
+
+    color: #777777;
+
+    font-size: 9px;
+}
+
+
+.venda-produto-preco strong {
+    color: #111111;
+
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   SELEÇÃO
+========================================================= */
+
+.venda-produto-selecao {
+    padding-left: 20px;
+
+    border-left: 1px solid #eeeeee;
+}
+
+
+.venda-produto-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #333333;
+
+    font-size: 9px;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   TAMANHOS
+========================================================= */
+
+.venda-tamanhos {
+    display: flex;
+    gap: 8px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 14px;
+}
+
+
+.venda-tamanho-botao {
+    min-width: 55px;
+    min-height: 48px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 2px;
+
+    padding: 6px 10px;
+
+    border: 1px solid #dddddd;
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #111111;
+
+    cursor: pointer;
+}
+
+
+.venda-tamanho-botao strong {
+    font-size: 10px;
+}
+
+
+.venda-tamanho-botao small {
+    color: #888888;
+
+    font-size: 8px;
+}
+
+
+.venda-tamanho-botao:hover {
+    border-color: #9d00de;
+}
+
+
+.venda-tamanho-botao.selecionado {
+    border-color: #9d00de;
+
+    background: #9d00de;
+
+    color: #ffffff;
+}
+
+
+.venda-tamanho-botao.selecionado small {
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   AÇÕES
+========================================================= */
+
+.venda-produto-acoes {
+    display: grid;
+
+    grid-template-columns:
+        105px
+        minmax(150px, 1fr);
+
+    gap: 10px;
+
+    align-items: end;
+}
+
+
+.venda-produto-quantidade {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+
+.venda-produto-quantidade label {
+    color: #555555;
+
+    font-size: 8px;
+    font-weight: 900;
+}
+
+
+.venda-produto-quantidade input {
+    width: 100%;
+    height: 40px;
+
+    padding: 0 10px;
+
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+
+    font-family: inherit;
+}
+
+
+.venda-adicionar-produto {
+    min-height: 40px;
+
+    padding: 0 16px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: #000000;
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+
+.venda-adicionar-produto:hover {
+    background: #9d00de;
+}
+
+
+/* =========================================================
+   NENHUM RESULTADO
+========================================================= */
+
+.venda-sem-pesquisa {
+    padding: 25px;
+
+    border: 1px dashed #dddddd;
+    border-radius: 8px;
+
+    color: #777777;
+
+    text-align: center;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   PRODUTOS JÁ ADICIONADOS
+========================================================= */
+
+.venda-itens-selecionados {
+    margin-top: 30px;
+
+    padding-top: 24px;
+
+    border-top: 1px solid #e7e7e7;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .venda-produto-card {
+        grid-template-columns:
+            95px
+            minmax(0, 1fr);
+    }
+
+
+    .venda-produto-selecao {
+        grid-column:
+            1 / -1;
+
+        padding-left: 0;
+        padding-top: 16px;
+
+        border-left: 0;
+        border-top: 1px solid #eeeeee;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .venda-produto-card {
+        grid-template-columns:
+            80px
+            minmax(0, 1fr);
+
+        gap: 14px;
+
+        padding: 14px;
+    }
+
+
+    .venda-produto-imagem {
+        width: 80px;
+        height: 100px;
+    }
+
+
+    .venda-produto-info h3 {
+        font-size: 12px;
+    }
+
+
+    .venda-produto-selecao {
+        grid-column:
+            1 / -1;
+    }
+
+
+    .venda-produto-acoes {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .venda-tamanhos {
+        width: 100%;
+    }
+
+
+    .venda-tamanho-botao {
+        flex: 1;
+
+        min-width: 50px;
+    }
+}
+
+/* =========================================================
+   DETALHES DA VENDA MANUAL
+========================================================= */
+
+.venda-manual-resumo {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+
+    margin-bottom: 20px;
+}
+
+
+.venda-manual-resumo-card {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    padding: 18px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 9px;
+
+    background: #ffffff;
+}
+
+
+.venda-manual-resumo-card span {
+    color: #777777;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+
+.venda-manual-resumo-card strong {
+    font-size: 14px;
+}
+
+
+.venda-manual-resumo-card
+.venda-manual-total {
+    color: #9d00de;
+
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   BLOCOS
+========================================================= */
+
+.venda-manual-bloco {
+    margin-bottom: 20px;
+
+    padding: 22px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+
+    background: #ffffff;
+}
+
+
+.venda-manual-bloco-topo {
+    margin-bottom: 18px;
+}
+
+
+.venda-manual-bloco-topo > span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #9d00de;
+
+    font-size: 8px;
+    font-weight: 900;
+}
+
+
+.venda-manual-bloco-topo h2 {
+    margin: 0;
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   DADOS
+========================================================= */
+
+.venda-manual-dados {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+.venda-manual-dados > div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.venda-manual-dados span {
+    color: #777777;
+
+    font-size: 8px;
+    font-weight: 800;
+}
+
+
+.venda-manual-dados strong {
+    font-size: 10px;
+}
+
+
+.venda-manual-dados small {
+    color: #777777;
+
+    font-size: 8px;
+}
+
+
+.venda-manual-observacao {
+    margin-top: 20px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid #eeeeee;
+}
+
+
+.venda-manual-observacao span {
+    color: #777777;
+
+    font-size: 8px;
+    font-weight: 900;
+}
+
+
+.venda-manual-observacao p {
+    margin:
+        7px 0 0;
+
+    color: #555555;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ITENS
+========================================================= */
+
+.venda-manual-itens {
+    display: grid;
+
+    gap: 10px;
+}
+
+
+.venda-manual-item {
+    display: grid;
+
+    grid-template-columns:
+        75px
+        minmax(180px, 1fr)
+        repeat(
+            4,
+            minmax(70px, 0.5fr)
+        );
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 12px;
+
+    border: 1px solid #eeeeee;
+    border-radius: 8px;
+
+    background: #fafafa;
+}
+
+
+.venda-manual-item-imagem {
+    width: 65px;
+    height: 75px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 7px;
+
+    background: #eeeeee;
+}
+
+
+.venda-manual-item-imagem img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.venda-manual-item-imagem span {
+    padding: 5px;
+
+    color: #888888;
+
+    font-size: 7px;
+
+    text-align: center;
+}
+
+
+.venda-manual-item-info {
+    min-width: 0;
+}
+
+
+.venda-manual-item-tipo {
+    display: inline-block;
+
+    margin-bottom: 5px;
+
+    padding: 4px 7px;
+
+    border-radius: 20px;
+
+    background: #f2ddfb;
+
+    color: #9d00de;
+
+    font-size: 7px;
+    font-weight: 900;
+}
+
+
+.venda-manual-item-info h3 {
+    margin: 0 0 5px;
+
+    font-size: 11px;
+}
+
+
+.venda-manual-item-info p {
+    margin: 0;
+
+    color: #777777;
+
+    font-size: 8px;
+}
+
+
+.venda-manual-item-dado {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.venda-manual-item-dado span {
+    color: #777777;
+
+    font-size: 8px;
+}
+
+
+.venda-manual-item-dado strong {
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   CANCELAMENTO
+========================================================= */
+
+.venda-manual-cancelamento {
+    border-color: #ead0d0;
+}
+
+
+.venda-manual-cancelamento-texto {
+    margin:
+        0 0 15px;
+
+    color: #777777;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+.venda-manual-cancelar {
+    width: 100%;
+
+    min-height: 42px;
+
+    padding:
+        0 15px;
+
+    border: 1px solid #d7aaaa;
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #a52a2a;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+
+.venda-manual-cancelar:hover {
+    border-color: #a52a2a;
+
+    background: #fff4f4;
+}
+
+
+.venda-manual-cancelada {
+    border-color: #ead0d0;
+
+    background: #fffafa;
+}
+
+
+.venda-manual-cancelada strong {
+    color: #9b2929;
+
+    font-size: 11px;
+}
+
+
+.venda-manual-cancelada p {
+    margin:
+        6px 0 0;
+
+    color: #777777;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .venda-manual-resumo,
+    .venda-manual-dados {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+
+    .venda-manual-item {
+        grid-template-columns:
+            70px
+            minmax(0, 1fr)
+            repeat(
+                2,
+                minmax(70px, 0.5fr)
+            );
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .venda-manual-resumo,
+    .venda-manual-dados {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .venda-manual-item {
+        grid-template-columns:
+            65px
+            minmax(0, 1fr);
+    }
+
+
+    .venda-manual-item-dado {
+        grid-column:
+            1 / -1;
+
+        padding-top: 7px;
+
+        border-top:
+            1px solid #eeeeee;
+    }
+}

@@ -1,54 +1,118 @@
-const express = require(
-    'express'
-);
+const express =
+    require('express');
 
 const CarrinhoController =
     require(
         '../controllers/CarrinhoController'
     );
 
+const CheckoutController =
+    require(
+        '../controllers/CheckoutController'
+    );
+
+    const InfinitePayController =
+    require(
+        '../controllers/InfinitePayController'
+    );
+
 const {
     exigirLogin,
     exigirLoginApi
-} = require(
-    '../middlewares/auth'
-);
+} =
+    require(
+        '../middlewares/auth'
+    );
 
 const router =
     express.Router();
 
-// Página completa
+
+// ======================================================
+// CARRINHO
+// ======================================================
+
 router.get(
     '/carrinho',
     exigirLogin,
     CarrinhoController.pagina
 );
 
-// Resumo lateral
+
+// ======================================================
+// RESUMO LATERAL
+// ======================================================
+
 router.get(
     '/carrinho/resumo',
     CarrinhoController.resumo
 );
 
-// Adicionar
+
+// ======================================================
+// ADICIONAR
+// ======================================================
+
 router.post(
     '/carrinho/adicionar',
     exigirLoginApi,
     CarrinhoController.adicionar
 );
 
-// Quantidade
+
+// ======================================================
+// ALTERAR QUANTIDADE
+// ======================================================
+
 router.post(
     '/carrinho/item/:id/quantidade',
     exigirLoginApi,
     CarrinhoController.atualizarQuantidade
 );
 
-// Remover
+
+// ======================================================
+// REMOVER
+// ======================================================
+
 router.post(
     '/carrinho/item/:id/remover',
     exigirLoginApi,
     CarrinhoController.remover
 );
+
+
+// ======================================================
+// CHECKOUT
+// ======================================================
+
+router.get(
+    '/checkout',
+    exigirLogin,
+    CheckoutController.pagina
+);
+
+router.post(
+    '/checkout/finalizar',
+    exigirLogin,
+    CheckoutController.finalizar
+);
+
+// ======================================================
+// INFINITEPAY
+// ======================================================
+
+router.get(
+    '/pagamento/infinitepay/:id',
+    exigirLogin,
+    InfinitePayController.iniciar
+);
+
+router.get(
+    '/pagamento/infinitepay/retorno',
+    exigirLogin,
+    InfinitePayController.retorno
+);
+
 
 module.exports = router;

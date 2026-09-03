@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+
+<main class="pagamento-erro-pagina">
+
+    <section class="pagamento-erro-card">
+
+        <span>
+            PAGAMENTO CONFIRMADO
+        </span>
+
+        <h1>
+            Pedido pago com sucesso
+        </h1>
+
+        <p>
+            Seu pagamento foi confirmado
+            diretamente pela InfinitePay.
+        </p>
+
+        <p>
+            Pedido:
+            <strong>
+                #<%= pagamento.numeroPedido %>
+            </strong>
+        </p>
+
+        <p>
+            Forma de pagamento:
+            <strong>
+                <%= pagamento.formaPagamento %>
+            </strong>
+        </p>
+
+        <a
+            href="/minha-conta/pedidos/<%= pagamento.pedidoId %>"
+            class="pagamento-tentar-novamente"
+        >
+            Ver meu pedido
+        </a>
+
+        <% if (comprovanteUrl) { %>
+
+            <a
+                href="<%= comprovanteUrl %>"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="pagamento-voltar-pedido"
+            >
+                Ver comprovante
+            </a>
+
+        <% } %>
+
+    </section>
+
+</main>
+
+<%- include('../partials/footer') %>

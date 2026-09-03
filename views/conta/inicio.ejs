@@ -1,0 +1,229 @@
+<%- include('../partials/header') %>
+
+<main class="conta-pagina">
+
+    <div class="conta-container">
+
+        <!-- ==========================================
+             CABEÇALHO
+        =========================================== -->
+
+        <section class="conta-cabecalho">
+
+            <div>
+
+                <span class="conta-etiqueta">
+                    MINHA CONTA
+                </span>
+
+                <h1>
+                    Olá,
+                    <%= contaUsuario.nome.split(' ')[0] %>
+                </h1>
+
+                <p>
+                    Acompanhe seus dados e seus pedidos.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             DADOS
+        =========================================== -->
+
+        <section class="conta-resumo">
+
+            <article class="conta-card">
+
+                <span>
+                    Nome
+                </span>
+
+                <strong>
+                    <%= contaUsuario.nome %>
+                </strong>
+
+            </article>
+
+
+            <article class="conta-card">
+
+                <span>
+                    E-mail
+                </span>
+
+                <strong>
+                    <%= contaUsuario.email %>
+                </strong>
+
+            </article>
+
+
+            <article class="conta-card">
+
+                <span>
+                    Pedidos realizados
+                </span>
+
+                <strong class="conta-numero">
+                    <%= totalPedidos %>
+                </strong>
+
+            </article>
+
+        </section>
+
+
+        <!-- ==========================================
+             PEDIDOS
+        =========================================== -->
+
+        <section class="conta-pedidos">
+
+            <div class="conta-secao-topo">
+
+                <div>
+
+                    <span>
+                        HISTÓRICO
+                    </span>
+
+                    <h2>
+                        Meus pedidos
+                    </h2>
+
+                </div>
+
+                <a href="/camisas">
+                    Continuar comprando
+                </a>
+
+            </div>
+
+
+            <% if (pedidos.length > 0) { %>
+
+                <div class="conta-pedidos-lista">
+
+                    <% pedidos.forEach((pedido) => { %>
+
+                        <article class="conta-pedido">
+
+                            <div class="conta-pedido-principal">
+
+                                <span>
+                                    Pedido
+                                </span>
+
+                                <strong>
+                                    #<%= pedido.numero_pedido %>
+                                </strong>
+
+                                <small>
+                                    <%= pedido.data_formatada %>
+                                </small>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Itens
+                                </span>
+
+                                <strong>
+                                    <%= pedido.total_itens %>
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Pagamento
+                                </span>
+
+                                <strong>
+                                    <%= pedido.forma_pagamento || 'Não informado' %>
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Status
+                                </span>
+
+                                <strong
+                                    class="
+                                        conta-status
+                                        conta-status-<%= pedido.status.toLowerCase() %>
+                                    "
+                                >
+                                    <%= pedido.status %>
+                                </strong>
+
+                            </div>
+
+
+                            <div class="conta-pedido-total">
+
+                                <span>
+                                    Total
+                                </span>
+
+                                <strong>
+                                    <%= pedido.total_formatado %>
+                                </strong>
+
+                            </div>
+
+
+                            <a
+                                href="/minha-conta/pedidos/<%= pedido.id %>"
+                                class="conta-ver-pedido"
+                            >
+                                Ver pedido
+                            </a>
+
+                        </article>
+
+                    <% }) %>
+
+                </div>
+
+            <% } else { %>
+
+                <div class="conta-sem-pedidos">
+
+                    <h3>
+                        Você ainda não possui pedidos.
+                    </h3>
+
+                    <p>
+                        Quando realizar uma compra,
+                        ela aparecerá aqui.
+                    </p>
+
+                    <a href="/camisas">
+                        Ver camisas
+                    </a>
+
+                </div>
+
+            <% } %>
+
+        </section>
+
+    </div>
+
+</main>
+
+<%- include('../partials/footer') %>

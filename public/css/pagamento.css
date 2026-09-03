@@ -1,0 +1,98 @@
+/* =========================================================
+   MANTO 10 - PAGAMENTO
+========================================================= */
+
+.pagamento-erro-pagina {
+    min-height: 550px;
+
+    padding: 70px 20px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    background: #f7f7f7;
+}
+
+.pagamento-erro-card {
+    width: 100%;
+    max-width: 520px;
+
+    padding: 35px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    text-align: center;
+}
+
+.pagamento-erro-card > span {
+    color: #9d00de;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 1px;
+}
+
+.pagamento-erro-card h1 {
+    margin: 8px 0 15px;
+
+    color: #111111;
+
+    font-size: 24px;
+}
+
+.pagamento-erro-card p {
+    color: #666666;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+}
+
+.pagamento-tentar-novamente,
+.pagamento-voltar-pedido {
+    min-height: 42px;
+
+    margin-top: 15px;
+
+    padding: 0 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    border-radius: 7px;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    text-decoration: none;
+}
+
+.pagamento-tentar-novamente {
+    background: #9d00de;
+
+    color: #ffffff;
+}
+
+.pagamento-tentar-novamente:hover {
+    background: #7d00b0;
+}
+
+.pagamento-voltar-pedido {
+    margin-top: 8px;
+
+    border: 1px solid #dddddd;
+
+    background: #ffffff;
+
+    color: #222222;
+}

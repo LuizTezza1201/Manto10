@@ -1,0 +1,468 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+
+    <%- include('../partials/admin-sidebar', {
+        secaoAdmin: 'usuarios'
+    }) %>
+
+    <main class="admin-pagina admin-conteudo">
+
+    <div class="admin-container">
+
+        <!-- ==============================================
+             TOPO
+        =============================================== -->
+
+        <div class="admin-topo">
+
+            <div>
+
+                <span class="admin-etiqueta">
+                    ADMINISTRADOR
+                </span>
+
+                <h1>
+                    Usuários
+                </h1>
+
+                <p>
+                    Gerencie clientes e administradores
+                    cadastrados no sistema.
+                </p>
+
+            </div>
+
+            <a
+                href="/admin"
+                class="admin-botao-secundario"
+            >
+                Voltar ao dashboard
+            </a>
+
+        </div>
+
+        <!-- ==============================================
+             MENSAGENS
+        =============================================== -->
+
+        <% if (sucesso) { %>
+
+            <div class="admin-alerta-sucesso">
+                Status do usuário atualizado com sucesso.
+            </div>
+
+        <% } %>
+
+        <% if (erro) { %>
+
+            <div class="admin-alerta-erro">
+                <%= erro %>
+            </div>
+
+        <% } %>
+
+        <!-- ==============================================
+             FILTROS
+        =============================================== -->
+
+        <form
+            action="/admin/usuarios"
+            method="GET"
+            class="admin-filtros admin-filtros-usuarios"
+        >
+
+            <!-- PESQUISA -->
+
+            <div>
+
+                <label for="buscaUsuario">
+                    Pesquisar
+                </label>
+
+                <input
+                    type="search"
+                    id="buscaUsuario"
+                    name="busca"
+                    value="<%= filtros.busca %>"
+                    placeholder="Nome ou e-mail"
+                >
+
+            </div>
+
+            <!-- TIPO -->
+
+            <div>
+
+                <label for="tipoUsuario">
+                    Tipo
+                </label>
+
+                <select
+                    id="tipoUsuario"
+                    name="tipo"
+                >
+
+                    <option value="">
+                        Todos
+                    </option>
+
+                    <option
+                        value="Cliente"
+                        <%= filtros.tipo === 'Cliente'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Clientes
+                    </option>
+
+                    <option
+                        value="Administrador"
+                        <%= filtros.tipo === 'Administrador'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Administradores
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div>
+
+                <label for="statusUsuario">
+                    Status
+                </label>
+
+                <select
+                    id="statusUsuario"
+                    name="status"
+                >
+
+                    <option value="">
+                        Todos
+                    </option>
+
+                    <option
+                        value="Ativo"
+                        <%= filtros.status === 'Ativo'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Ativos
+                    </option>
+
+                    <option
+                        value="Inativo"
+                        <%= filtros.status === 'Inativo'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Inativos
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- ORDENAÇÃO -->
+
+            <div>
+
+                <label for="ordemUsuario">
+                    Ordenar
+                </label>
+
+                <select
+                    id="ordemUsuario"
+                    name="ordem"
+                >
+
+                    <option
+                        value="recentes"
+                        <%= filtros.ordem === 'recentes'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Mais recentes
+                    </option>
+
+                    <option
+                        value="antigos"
+                        <%= filtros.ordem === 'antigos'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Mais antigos
+                    </option>
+
+                    <option
+                        value="az"
+                        <%= filtros.ordem === 'az'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Nome A - Z
+                    </option>
+
+                    <option
+                        value="za"
+                        <%= filtros.ordem === 'za'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        Nome Z - A
+                    </option>
+
+                    <option
+                        value="email"
+                        <%= filtros.ordem === 'email'
+                            ? 'selected'
+                            : ''
+                        %>
+                    >
+                        E-mail A - Z
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- BOTÃO -->
+
+            <button
+                type="submit"
+                class="admin-botao-filtrar"
+            >
+                Filtrar
+            </button>
+
+            <a
+                href="/admin/usuarios"
+                class="admin-limpar-filtros"
+            >
+                Limpar
+            </a>
+
+        </form>
+
+        <!-- ==============================================
+             TOTAL
+        =============================================== -->
+
+        <p class="admin-total-resultados">
+
+            <%= usuarios.length %>
+            usuário(s) encontrado(s)
+
+        </p>
+
+        <!-- ==============================================
+             USUÁRIOS
+        =============================================== -->
+
+        <% if (usuarios.length > 0) { %>
+
+            <section class="admin-lista-usuarios">
+
+                <% usuarios.forEach((usuario) => { %>
+
+                    <article class="admin-usuario-card">
+
+                        <!-- ==================================
+                             IDENTIDADE
+                        =================================== -->
+
+                        <div class="admin-usuario-identidade">
+
+                            <div class="admin-usuario-avatar">
+
+                                <%= usuario.nome
+                                    .split(' ')
+                                    .filter(Boolean)
+                                    .slice(0, 2)
+                                    .map(parte => parte.charAt(0))
+                                    .join('')
+                                    .toUpperCase()
+                                %>
+
+                            </div>
+
+                            <div class="admin-usuario-dados">
+
+                                <div class="admin-usuario-etiquetas">
+
+                                    <span
+                                        class="
+                                            admin-usuario-tipo
+                                            <%= usuario.tipo === 'Administrador'
+                                                ? 'administrador'
+                                                : 'cliente'
+                                            %>
+                                        "
+                                    >
+                                        <%= usuario.tipo %>
+                                    </span>
+
+                                    <span
+                                        class="
+                                            admin-status
+                                            <%= usuario.status === 'Ativo'
+                                                ? 'ativo'
+                                                : 'inativo'
+                                            %>
+                                        "
+                                    >
+                                        <%= usuario.status %>
+                                    </span>
+
+                                    <% if (
+                                        Number(usuario.id) ===
+                                        Number(administradorLogadoId)
+                                    ) { %>
+
+                                        <span class="admin-usuario-voce">
+                                            Sua conta
+                                        </span>
+
+                                    <% } %>
+
+                                </div>
+
+                                <h2>
+                                    <%= usuario.nome %>
+                                </h2>
+
+                                <p>
+                                    <%= usuario.email %>
+                                </p>
+
+                                <small>
+                                    Cadastrado em
+                                    <%= usuario.criado_em_formatado %>
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                        <!-- ==================================
+                             INFORMAÇÕES
+                        =================================== -->
+
+                        <div class="admin-usuario-estatisticas">
+
+                            <div>
+
+                                <span>
+                                    Pedidos
+                                </span>
+
+                                <strong>
+                                    <%= usuario.total_pedidos %>
+                                </strong>
+
+                            </div>
+
+                            <div>
+
+                                <span>
+                                    Total registrado
+                                </span>
+
+                                <strong>
+                                    <%= usuario.total_gasto_formatado %>
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                        <!-- ==================================
+                             AÇÕES
+                        =================================== -->
+
+                        <div class="admin-usuario-acoes">
+
+                            <% if (
+                                Number(usuario.id) ===
+                                Number(administradorLogadoId)
+                            ) { %>
+
+                                <button
+                                    type="button"
+                                    class="admin-usuario-botao bloqueado"
+                                    disabled
+                                >
+                                    Sua conta
+                                </button>
+
+                            <% } else { %>
+
+                                <form
+                                    action="/admin/usuarios/<%= usuario.id %>/status"
+                                    method="POST"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="
+                                            admin-usuario-botao
+                                            <%= usuario.status === 'Ativo'
+                                                ? 'desativar'
+                                                : 'ativar'
+                                            %>
+                                        "
+                                    >
+                                        <%= usuario.status === 'Ativo'
+                                            ? 'Desativar'
+                                            : 'Ativar'
+                                        %>
+                                    </button>
+
+                                </form>
+
+                            <% } %>
+
+                        </div>
+
+                    </article>
+
+                <% }) %>
+
+            </section>
+
+        <% } else { %>
+
+            <section class="admin-sem-resultados">
+
+                <h2>
+                    Nenhum usuário encontrado
+                </h2>
+
+                <p>
+                    Tente alterar os filtros da pesquisa.
+                </p>
+
+            </section>
+
+        <% } %>
+
+    </div>
+
+    </main>
+
+</div>
+
+<%- include('../partials/footer') %>

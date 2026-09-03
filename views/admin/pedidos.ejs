@@ -1,0 +1,337 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+
+    <%- include('../partials/admin-sidebar', {
+        secaoAdmin: 'pedidos'
+    }) %>
+
+    <main class="admin-pagina admin-conteudo">
+
+        <div class="admin-container">
+
+            <!-- ==========================================
+                 TOPO
+            =========================================== -->
+
+            <div class="admin-topo">
+
+    <div>
+
+        <span class="admin-etiqueta">
+            ADMINISTRADOR
+        </span>
+
+        <h1>
+            Pedidos
+        </h1>
+
+        <p>
+            Acompanhe os pedidos realizados
+            na loja.
+        </p>
+
+    </div>
+
+    <a
+        href="/admin/pedidos?status=Pago"
+        class="admin-botao-principal"
+    >
+        Pedidos pagos
+    </a>
+
+</div>
+
+            <!-- ==========================================
+                 MENSAGEM
+            =========================================== -->
+
+            <% if (sucesso) { %>
+
+                <div class="admin-alerta-sucesso">
+
+                    Status do pedido atualizado
+                    com sucesso.
+
+                </div>
+
+            <% } %>
+
+            <!-- ==========================================
+                 FILTROS
+            =========================================== -->
+
+            <form
+                action="/admin/pedidos"
+                method="GET"
+                class="pedidos-filtros"
+            >
+
+                <div class="pedidos-filtro-busca">
+
+                    <label for="buscaPedido">
+                        Pesquisar
+                    </label>
+
+                    <input
+                        type="search"
+                        id="buscaPedido"
+                        name="busca"
+                        value="<%= filtros.busca %>"
+                        placeholder="Pedido, cliente ou e-mail"
+                    >
+
+                </div>
+
+                <div>
+
+                    <label for="statusPedido">
+                        Status
+                    </label>
+
+                    <select
+                        id="statusPedido"
+                        name="status"
+                    >
+
+                        <option value="">
+                            Todos
+                        </option>
+
+                        <% [
+                            'Pendente',
+                            'Pago',
+                            'Preparando',
+                            'Enviado',
+                            'Entregue',
+                            'Cancelado'
+                        ].forEach((status) => { %>
+
+                            <option
+                                value="<%= status %>"
+                                <%= filtros.status === status
+                                    ? 'selected'
+                                    : ''
+                                %>
+                            >
+                                <%= status %>
+                            </option>
+
+                        <% }) %>
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label for="ordemPedido">
+                        Ordenar
+                    </label>
+
+                    <select
+                        id="ordemPedido"
+                        name="ordem"
+                    >
+
+                        <option
+                            value="recentes"
+                            <%= filtros.ordem === 'recentes'
+                                ? 'selected'
+                                : ''
+                            %>
+                        >
+                            Mais recentes
+                        </option>
+
+                        <option
+                            value="antigos"
+                            <%= filtros.ordem === 'antigos'
+                                ? 'selected'
+                                : ''
+                            %>
+                        >
+                            Mais antigos
+                        </option>
+
+                        <option
+                            value="maior_valor"
+                            <%= filtros.ordem === 'maior_valor'
+                                ? 'selected'
+                                : ''
+                            %>
+                        >
+                            Maior valor
+                        </option>
+
+                        <option
+                            value="menor_valor"
+                            <%= filtros.ordem === 'menor_valor'
+                                ? 'selected'
+                                : ''
+                            %>
+                        >
+                            Menor valor
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="admin-botao-filtrar"
+                >
+                    Filtrar
+                </button>
+
+                <a
+                    href="/admin/pedidos"
+                    class="admin-limpar-filtros"
+                >
+                    Limpar
+                </a>
+
+            </form>
+
+            <!-- ==========================================
+                 TOTAL
+            =========================================== -->
+
+            <p class="admin-total-resultados">
+
+                <%= pedidos.length %>
+                pedido(s) encontrado(s)
+
+            </p>
+
+            <!-- ==========================================
+                 LISTA
+            =========================================== -->
+
+            <% if (pedidos.length > 0) { %>
+
+                <section class="pedidos-lista">
+
+                    <% pedidos.forEach((pedido) => { %>
+
+                        <article class="pedido-card">
+
+                            <div class="pedido-principal">
+
+                                <div class="pedido-card-topo">
+
+                                    <span class="pedido-numero">
+                                        #<%= pedido.numero_pedido %>
+                                    </span>
+
+                                    <span
+                                        class="
+                                            pedido-status
+                                            status-<%= pedido.status
+                                                .toLowerCase()
+                                                .normalize('NFD')
+                                                .replace(/[\u0300-\u036f]/g, '')
+                                            %>
+                                        "
+                                    >
+                                        <%= pedido.status %>
+                                    </span>
+
+                                </div>
+
+                                <h2>
+                                    <%= pedido.cliente_nome %>
+                                </h2>
+
+                                <p>
+                                    <%= pedido.cliente_email %>
+                                </p>
+
+                                <small>
+                                    <%= pedido.criado_em_formatado %>
+                                </small>
+
+                            </div>
+
+                            <div class="pedido-resumo">
+
+                                <div>
+
+                                    <span>
+                                        Itens
+                                    </span>
+
+                                    <strong>
+                                        <%= pedido.total_itens %>
+                                    </strong>
+
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        Pagamento
+                                    </span>
+
+                                    <strong>
+                                        <%= pedido.forma_pagamento || 'Não informado' %>
+                                    </strong>
+
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        Total
+                                    </span>
+
+                                    <strong class="pedido-total">
+                                        <%= pedido.total_formatado %>
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                            <div class="pedido-acoes">
+
+                                <a
+                                    href="/admin/pedidos/<%= pedido.id %>"
+                                    class="pedido-botao-detalhes"
+                                >
+                                    Ver detalhes
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                    <% }) %>
+
+                </section>
+
+            <% } else { %>
+
+                <section class="admin-sem-resultados">
+
+                    <h2>
+                        Nenhum pedido encontrado
+                    </h2>
+
+                    <p>
+                        Quando houver pedidos,
+                        eles aparecerão aqui.
+                    </p>
+
+                </section>
+
+            <% } %>
+
+        </div>
+
+    </main>
+
+</div>
+
+<%- include('../partials/footer') %>

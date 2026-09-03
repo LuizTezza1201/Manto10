@@ -1,0 +1,371 @@
+<%- include('../partials/header') %>
+
+<main class="conta-pagina">
+
+    <div class="conta-container">
+
+        <!-- ==========================================
+             TOPO
+        =========================================== -->
+
+        <section class="conta-cabecalho conta-pedido-cabecalho">
+
+            <div>
+
+                <span class="conta-etiqueta">
+                    PEDIDO
+                </span>
+
+                <h1>
+                    #<%= pedido.numero_pedido %>
+                </h1>
+
+                <p>
+                    Realizado em
+                    <%= pedido.criado_em_formatado %>
+                </p>
+
+            </div>
+
+            <div class="conta-pedido-topo-acoes">
+
+    <% if (pedido.status === 'Pendente') { %>
+
+        <a
+            href="/pagamento/infinitepay/<%= pedido.id %>"
+            class="conta-pagar-agora conta-pagar-topo"
+        >
+            Pagar agora
+        </a>
+
+
+        <form
+            action="/minha-conta/pedidos/<%= pedido.id %>/cancelar"
+            method="POST"
+            class="conta-form-cancelar"
+            onsubmit="return confirm('Tem certeza que deseja cancelar este pedido? O estoque dos produtos será devolvido e será necessário fazer um novo pedido caso queira comprá-los novamente.');"
+        >
+
+            <button
+                type="submit"
+                class="conta-cancelar-pedido"
+            >
+                Cancelar pedido
+            </button>
+
+        </form>
+
+    <% } %>
+
+
+    <a
+        href="/minha-conta"
+        class="conta-voltar"
+    >
+        Voltar para minha conta
+    </a>
+
+</div>
+
+        </section>
+
+
+        <!-- ==========================================
+             STATUS
+        =========================================== -->
+
+        <section class="conta-pedido-informacoes">
+
+            <article>
+
+                <span>
+                    Status do pedido
+                </span>
+
+                <strong>
+                    <%= pedido.status %>
+                </strong>
+
+            </article>
+
+
+            <article>
+
+                <span>
+                    Pagamento
+                </span>
+
+                <strong>
+                    <%= pedido.forma_pagamento || 'Não informado' %>
+                </strong>
+
+                <% if (pedido.pagamento_status) { %>
+
+                    <small>
+                        <%= pedido.pagamento_status %>
+                    </small>
+
+                <% } %>
+
+            </article>
+
+
+            <article>
+
+                <span>
+                    Total
+                </span>
+
+                <strong class="conta-destaque">
+                    <%= pedido.total_formatado %>
+                </strong>
+
+            </article>
+
+        </section>
+
+
+        <div class="conta-pedido-layout">
+
+            <div>
+
+                <!-- ======================================
+                     PRODUTOS
+                ======================================= -->
+
+                <section class="conta-bloco">
+
+                    <div class="conta-bloco-titulo">
+
+                        <h2>
+                            Produtos
+                        </h2>
+
+                    </div>
+
+
+                    <% itens.forEach((item) => { %>
+
+                        <article class="conta-item-pedido">
+
+                            <div class="conta-item-imagem">
+
+                                <img
+                                    src="<%= item.imagem || '/images/produtos/placeholder.svg' %>"
+                                    alt="<%= item.nome_produto %>"
+                                    onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                                >
+
+                            </div>
+
+
+                            <div class="conta-item-dados">
+
+                                <small>
+                                    <%= item.codigo_produto %>
+                                </small>
+
+                                <h3>
+                                    <%= item.nome_produto %>
+                                </h3>
+
+                                <p>
+                                    Tamanho:
+                                    <strong>
+                                        <%= item.tamanho %>
+                                    </strong>
+                                </p>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Quantidade
+                                </span>
+
+                                <strong>
+                                    <%= item.quantidade %>
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Unitário
+                                </span>
+
+                                <strong>
+                                    <%= item.preco_unitario_formatado %>
+                                </strong>
+
+                            </div>
+
+
+                            <div class="conta-item-total">
+
+                                <span>
+                                    Subtotal
+                                </span>
+
+                                <strong>
+                                    <%= item.subtotal_formatado %>
+                                </strong>
+
+                            </div>
+
+                        </article>
+
+                    <% }) %>
+
+                </section>
+
+
+                <!-- ======================================
+                     ENDEREÇO
+                ======================================= -->
+
+                <section class="conta-bloco">
+
+                    <div class="conta-bloco-titulo">
+
+                        <h2>
+                            Endereço de entrega
+                        </h2>
+
+                    </div>
+
+
+                    <% if (pedido.logradouro) { %>
+
+                        <div class="conta-endereco">
+
+                            <strong>
+                                <%= pedido.logradouro %>,
+                                <%= pedido.endereco_numero %>
+                            </strong>
+
+                            <% if (pedido.complemento) { %>
+
+                                <p>
+                                    <%= pedido.complemento %>
+                                </p>
+
+                            <% } %>
+
+                            <p>
+                                <%= pedido.bairro %>
+                            </p>
+
+                            <p>
+                                <%= pedido.cidade %>
+                                -
+                                <%= pedido.estado %>
+                            </p>
+
+                            <p>
+                                CEP:
+                                <%= pedido.cep %>
+                            </p>
+
+                        </div>
+
+                    <% } else { %>
+
+                        <p>
+                            Endereço não informado.
+                        </p>
+
+                    <% } %>
+
+                </section>
+
+            </div>
+
+
+            <!-- ==========================================
+                 RESUMO
+            =========================================== -->
+
+            <aside>
+
+                <section class="conta-bloco">
+
+                    <div class="conta-bloco-titulo">
+
+                        <h2>
+                            Resumo
+                        </h2>
+
+                    </div>
+
+
+                    <div class="conta-valores">
+
+                        <div>
+
+                            <span>
+                                Subtotal
+                            </span>
+
+                            <strong>
+                                <%= pedido.subtotal_formatado %>
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Frete
+                            </span>
+
+                            <strong>
+                                <%= pedido.frete_formatado %>
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Desconto
+                            </span>
+
+                            <strong>
+                                - <%= pedido.desconto_formatado %>
+                            </strong>
+
+                        </div>
+
+
+                        <div class="conta-total-final">
+
+                            <span>
+                                Total
+                            </span>
+
+                            <strong>
+                                <%= pedido.total_formatado %>
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</main>
+
+<%- include('../partials/footer') %>

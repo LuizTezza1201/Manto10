@@ -903,10 +903,284 @@ const Produto = {
 
             throw erro;
 
-        } finally {
+                } finally {
 
             connection.release();
         }
+    },
+
+    // ======================================================
+    // ADMIN - BUSCAR PRODUTO POR ID
+    // ======================================================
+
+    async buscarPorIdAdmin(produtoId) {
+
+        const [rows] =
+            await pool.execute(`
+                SELECT
+                    p.id,
+                    p.codigo,
+                    p.nome,
+                    p.slug,
+                    p.time_id,
+                    p.categoria_id,
+                    p.temporada,
+                    p.descricao,
+                    p.tipo_camisa,
+                    p.preco,
+                    p.preco_promocional,
+                    p.desconto_pix,
+                    p.destaque,
+                    p.mais_vendido,
+                    p.status,
+
+                    (
+                        SELECT pi.caminho
+                        FROM produto_imagens pi
+                        WHERE pi.produto_id = p.id
+                        ORDER BY
+                            pi.principal DESC,
+                            pi.ordem ASC,
+                            pi.id ASC
+                        LIMIT 1
+                    ) AS imagem
+
+                FROM produtos p
+
+                WHERE p.id = ?
+
+                LIMIT 1
+            `, [produtoId]);
+
+        return rows[0] || null;
+    },
+
+    // ======================================================
+    // ADMIN - CATEGORIAS
+    // ======================================================
+
+    async listarCategoriasAdmin() {
+
+        const [rows] =
+            await pool.execute(`
+                SELECT
+                    id,
+                    nome,
+                    status
+
+                FROM categorias
+
+                ORDER BY
+                    nome ASC
+            `);
+
+        return rows;
+    },
+
+    // ======================================================
+    // ADMIN - TIMES
+    // ======================================================
+
+    async listarTimesAdmin() {
+
+        const [rows] =
+            await pool.execute(`
+                SELECT
+                    id,
+                    nome,
+                    status
+
+                FROM times
+
+                ORDER BY
+                    nome ASC
+            `);
+
+        return rows;
+    },
+
+    // ======================================================
+    // ADMIN - ATUALIZAR DADOS
+    // ======================================================
+
+    async atualizarDadosAdmin({
+        produtoId,
+        codigo,
+        nome,
+        slug,
+        timeId,
+        categoriaId,
+        temporada,
+        descricao,
+        tipoCamisa,
+        preco,
+        precoPromocional,
+        descontoPix,
+        destaque,
+        maisVendido
+    }) {
+
+        const [produtoAtual] =
+            await pool.execute(`
+                SELECT id
+                FROM produtos
+                WHERE id = ?
+                LIMIT 1
+            `, [produtoId]);
+
+        if (produtoAtual.length === 0) {
+
+            const erro =
+                new Error(
+                    'Produto não encontrado.'
+                );
+
+            erro.status = 404;
+
+            throw erro;
+        }
+
+        // Código duplicado
+
+        const [codigoDuplicado] =
+            await pool.execute(`
+                SELECT id
+                FROM produtos
+                WHERE
+                    codigo = ?
+                    AND id <> ?
+                LIMIT 1
+            `, [
+                codigo,
+                produtoId
+            ]);
+
+        if (codigoDuplicado.length > 0) {
+
+            const erro =
+                new Error(
+                    'Já existe outra camisa com esse código.'
+                );
+
+            erro.status = 400;
+
+            throw erro;
+        }
+
+        // Slug duplicado
+
+        const [slugDuplicado] =
+            await pool.execute(`
+                SELECT id
+                FROM produtos
+                WHERE
+                    slug = ?
+                    AND id <> ?
+                LIMIT 1
+            `, [
+                slug,
+                produtoId
+            ]);
+
+        if (slugDuplicado.length > 0) {
+
+            const erro =
+                new Error(
+                    'Já existe outra camisa com esse identificador.'
+                );
+
+            erro.status = 400;
+
+            throw erro;
+        }
+
+        await pool.execute(`
+            UPDATE produtos
+
+            SET
+                codigo = ?,
+                nome = ?,
+                slug = ?,
+                time_id = ?,
+                categoria_id = ?,
+                temporada = ?,
+                descricao = ?,
+                tipo_camisa = ?,
+                preco = ?,
+                preco_promocional = ?,
+                desconto_pix = ?,
+                destaque = ?,
+                mais_vendido = ?
+
+            WHERE id = ?
+        `, [
+            codigo,
+            nome,
+            slug,
+            timeId,
+            categoriaId,
+            temporada,
+            descricao,
+            tipoCamisa,
+            preco,
+            precoPromocional,
+            descontoPix,
+            destaque,
+            maisVendido,
+            produtoId
+        ]);
+
+        return true;
+    },
+
+    // ======================================================
+    // ADMIN - ATIVAR / DESATIVAR PRODUTO
+    // ======================================================
+
+    async alternarStatusAdmin(produtoId) {
+
+        const [produto] =
+            await pool.execute(`
+                SELECT
+                    id,
+                    status
+
+                FROM produtos
+
+                WHERE id = ?
+
+                LIMIT 1
+            `, [produtoId]);
+
+        if (produto.length === 0) {
+
+            const erro =
+                new Error(
+                    'Produto não encontrado.'
+                );
+
+            erro.status = 404;
+
+            throw erro;
+        }
+
+        const novoStatus =
+            produto[0].status === 'Ativo'
+                ? 'Inativo'
+                : 'Ativo';
+
+        await pool.execute(`
+            UPDATE produtos
+
+            SET status = ?
+
+            WHERE id = ?
+        `, [
+            novoStatus,
+            produtoId
+        ]);
+
+        return novoStatus;
     }
 
 };

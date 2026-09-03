@@ -1,0 +1,91 @@
+<aside class="admin-sidebar">
+
+    <div class="admin-sidebar-cabecalho">
+
+        <span>
+            PAINEL
+        </span>
+
+        <strong>
+            MANTO 10
+        </strong>
+
+        <small>
+            Administração
+        </small>
+
+    </div>
+
+    <nav class="admin-sidebar-menu">
+
+        <a
+            href="/admin"
+            class="<%= secaoAdmin === 'dashboard'
+                ? 'ativo'
+                : ''
+            %>"
+        >
+            <span>
+                Dashboard
+            </span>
+        </a>
+
+        <a
+            href="/admin/produtos"
+            class="<%= secaoAdmin === 'produtos'
+                ? 'ativo'
+                : ''
+            %>"
+        >
+            <span>
+                Camisas
+            </span>
+        </a>
+
+        <a
+            href="/admin/usuarios"
+            class="<%= secaoAdmin === 'usuarios'
+                ? 'ativo'
+                : ''
+            %>"
+        >
+            <span>
+                Usuários
+            </span>
+        </a>
+
+        <a
+            href="/admin/pedidos"
+            class="<%= secaoAdmin === 'pedidos'
+                ? 'ativo'
+                : ''
+            %>"
+        >
+            <span>
+                Pedidos
+            </span>
+        </a>
+
+        <a
+    href="/admin/vendas"
+    class="<%= secaoAdmin === 'vendas'
+        ? 'ativo'
+        : ''
+    %>"
+>
+    <span>
+        Vendas
+    </span>
+</a>
+
+    </nav>
+
+    <div class="admin-sidebar-rodape">
+
+        <a href="/">
+            Ver loja
+        </a>
+
+    </div>
+
+</aside>

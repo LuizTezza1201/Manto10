@@ -1,0 +1,342 @@
+<%- include('../partials/header') %>
+
+<main class="checkout-pagina">
+
+    <div class="checkout-container">
+
+        <div class="checkout-topo">
+
+            <div>
+
+                <span>
+                    FINALIZAÇÃO
+                </span>
+
+                <h1>
+                    Endereço de entrega
+                </h1>
+
+                <p>
+                    Confira seus dados antes
+                    de criar o pedido.
+                </p>
+
+            </div>
+
+            <a href="/carrinho">
+                Voltar ao carrinho
+            </a>
+
+        </div>
+
+
+        <% if (erro) { %>
+
+            <div class="checkout-erro">
+                <%= erro %>
+            </div>
+
+        <% } %>
+
+
+        <form
+            action="/checkout/finalizar"
+            method="POST"
+            class="checkout-layout"
+        >
+
+            <!-- ======================================
+                 ENDEREÇO
+            ======================================= -->
+
+            <section class="checkout-bloco">
+
+                <div class="checkout-bloco-titulo">
+
+                    <h2>
+                        Dados para entrega
+                    </h2>
+
+                    <p>
+                        Campos com * são obrigatórios.
+                    </p>
+
+                </div>
+
+
+                <div class="checkout-form-grid">
+
+                    <div class="checkout-campo checkout-campo-cep">
+
+                        <label for="cep">
+                            CEP *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="cep"
+                            name="cep"
+                            maxlength="9"
+                            inputmode="numeric"
+                            value="<%= endereco.cep || '' %>"
+                            placeholder="00000-000"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="checkout-campo checkout-campo-logradouro">
+
+                        <label for="logradouro">
+                            Rua / Logradouro *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="logradouro"
+                            name="logradouro"
+                            maxlength="180"
+                            value="<%= endereco.logradouro || '' %>"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="checkout-campo">
+
+                        <label for="numero">
+                            Número *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="numero"
+                            name="numero"
+                            maxlength="20"
+                            value="<%= endereco.numero || '' %>"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="checkout-campo">
+
+                        <label for="complemento">
+                            Complemento
+                        </label>
+
+                        <input
+                            type="text"
+                            id="complemento"
+                            name="complemento"
+                            maxlength="120"
+                            value="<%= endereco.complemento || '' %>"
+                            placeholder="Apartamento, bloco..."
+                        >
+
+                    </div>
+
+
+                    <div class="checkout-campo">
+
+                        <label for="bairro">
+                            Bairro *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="bairro"
+                            name="bairro"
+                            maxlength="120"
+                            value="<%= endereco.bairro || '' %>"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="checkout-campo checkout-campo-cidade">
+
+                        <label for="cidade">
+                            Cidade *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="cidade"
+                            name="cidade"
+                            maxlength="120"
+                            value="<%= endereco.cidade || '' %>"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="checkout-campo checkout-campo-estado">
+
+                        <label for="estado">
+                            UF *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="estado"
+                            name="estado"
+                            maxlength="2"
+                            value="<%= endereco.estado || '' %>"
+                            placeholder="PR"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ======================================
+                 RESUMO
+            ======================================= -->
+
+            <aside class="checkout-resumo">
+
+                <section class="checkout-bloco">
+
+                    <div class="checkout-bloco-titulo">
+
+                        <h2>
+                            Seu pedido
+                        </h2>
+
+                    </div>
+
+
+                    <div class="checkout-itens">
+
+                        <% checkout.itens.forEach((item) => { %>
+
+                            <article class="checkout-item">
+
+                                <div class="checkout-item-imagem">
+
+                                    <img
+                                        src="<%= item.imagem %>"
+                                        alt="<%= item.nome %>"
+                                        onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                                    >
+
+                                </div>
+
+
+                                <div class="checkout-item-info">
+
+                                    <strong>
+                                        <%= item.nome %>
+                                    </strong>
+
+                                    <span>
+                                        Tamanho:
+                                        <%= item.tamanho %>
+                                    </span>
+
+                                    <span>
+                                        Quantidade:
+                                        <%= item.quantidade %>
+                                    </span>
+
+                                </div>
+
+
+                                <strong class="checkout-item-valor">
+                                    <%= item.subtotalFormatado %>
+                                </strong>
+
+                            </article>
+
+                        <% }) %>
+
+                    </div>
+
+
+                    <div class="checkout-valores">
+
+                        <div>
+
+                            <span>
+                                Produtos
+                            </span>
+
+                            <strong>
+                                <%= checkout.subtotalFormatado %>
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Frete
+                            </span>
+
+                            <strong>
+                                <%= checkout.freteFormatado %>
+                            </strong>
+
+                        </div>
+
+
+                        <div class="checkout-total">
+
+                            <span>
+                                Total
+                            </span>
+
+                            <strong>
+                                <%= checkout.totalFormatado %>
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="checkout-pagamento-aviso">
+
+                        <strong>
+                            Pagamento
+                        </strong>
+
+                        <p>
+                            Nesta etapa o pedido será
+                            criado como Pendente.
+                            A integração com a InfinitePay
+                            será conectada na próxima etapa.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="checkout-finalizar"
+                    >
+                        Confirmar pedido
+                    </button>
+
+                </section>
+
+            </aside>
+
+        </form>
+
+    </div>
+
+</main>
+
+<%- include('../partials/footer') %>

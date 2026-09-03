@@ -32,8 +32,16 @@ const adminRoutes = require(
 
 const app = express();
 
+const {
+    iniciarExpiracaoPedidos
+} =
+    require(
+        './services/PedidoExpiracaoService'
+    );
+
 const PORT =
     process.env.PORT || 8000;
+    
 
 // ======================================================
 // CONFIGURAÇÕES
@@ -265,6 +273,8 @@ async function iniciarServidor() {
                 );
 
                 console.log('');
+
+                iniciarExpiracaoPedidos();
             }
         );
 

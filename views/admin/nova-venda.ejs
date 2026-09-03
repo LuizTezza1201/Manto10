@@ -1,0 +1,1282 @@
+<%- include('../partials/header') %>
+
+<%
+    const mapaProdutos = new Map();
+
+    produtos.forEach((produto) => {
+
+        const produtoId =
+            Number(produto.produto_id);
+
+        if (!mapaProdutos.has(produtoId)) {
+
+            mapaProdutos.set(
+                produtoId,
+                {
+                    id:
+                        produtoId,
+
+                    codigo:
+                        produto.codigo,
+
+                    nome:
+                        produto.nome,
+
+                    tipo:
+                        produto.tipo_camisa,
+
+                    preco:
+                        Number(
+                            produto.preco_venda
+                        ),
+
+                    imagem:
+                        produto.imagem,
+
+                    tamanhos:
+                        [],
+
+                    estoqueTotal:
+                        0
+                }
+            );
+        }
+
+        const produtoAgrupado =
+            mapaProdutos.get(
+                produtoId
+            );
+
+        produtoAgrupado.tamanhos.push({
+            id:
+                Number(
+                    produto.produto_tamanho_id
+                ),
+
+            tamanho:
+                produto.tamanho,
+
+            estoque:
+                Number(
+                    produto.estoque
+                )
+        });
+
+        produtoAgrupado.estoqueTotal +=
+            Number(
+                produto.estoque
+            );
+    });
+
+    const produtosAgrupados =
+        Array.from(
+            mapaProdutos.values()
+        );
+%>
+
+
+<div class="admin-layout">
+
+    <%- include('../partials/admin-sidebar', {
+        secaoAdmin: 'vendas'
+    }) %>
+
+    <main class="admin-pagina admin-conteudo">
+
+        <div class="admin-container">
+
+            <!-- ==========================================
+                 TOPO
+            =========================================== -->
+
+            <div class="admin-topo">
+
+                <div>
+
+                    <span class="admin-etiqueta">
+                        ADMINISTRADOR
+                    </span>
+
+                    <h1>
+                        Criar venda
+                    </h1>
+
+                    <p>
+                        Registre vendas realizadas
+                        na loja física ou fora do site.
+                    </p>
+
+                </div>
+
+                <a
+                    href="/admin/vendas"
+                    class="admin-botao-secundario"
+                >
+                    Voltar para vendas
+                </a>
+
+            </div>
+
+
+            <% if (erro) { %>
+
+                <div class="admin-alerta-erro">
+                    <%= erro %>
+                </div>
+
+            <% } %>
+
+
+            <form
+                action="/admin/vendas/nova"
+                method="POST"
+                class="nova-venda-form"
+                id="novaVendaForm"
+            >
+
+                <!-- ======================================
+                     DADOS DA VENDA
+                ======================================= -->
+
+                <section class="nova-venda-bloco">
+
+                    <div class="nova-venda-bloco-topo">
+
+                        <div>
+
+                            <span>
+                                DADOS
+                            </span>
+
+                            <h2>
+                                Informações da venda
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="nova-venda-dados">
+
+                        <div class="nova-venda-campo">
+
+                            <label for="origemVenda">
+                                Origem
+                            </label>
+
+                            <select
+                                id="origemVenda"
+                                name="origem"
+                                required
+                            >
+
+                                <option
+                                    value="Loja física"
+                                    <%= valores.origem === 'Loja física'
+                                        ? 'selected'
+                                        : ''
+                                    %>
+                                >
+                                    Loja física
+                                </option>
+
+                                <option
+                                    value="Venda externa"
+                                    <%= valores.origem === 'Venda externa'
+                                        ? 'selected'
+                                        : ''
+                                    %>
+                                >
+                                    Venda externa
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="nova-venda-campo">
+
+                            <label for="formaPagamentoVenda">
+                                Forma de pagamento
+                            </label>
+
+                            <select
+                                id="formaPagamentoVenda"
+                                name="forma_pagamento"
+                                required
+                            >
+
+                                <% [
+                                    'Pix',
+                                    'Cartão',
+                                    'Dinheiro'
+                                ].forEach((forma) => { %>
+
+                                    <option
+                                        value="<%= forma %>"
+
+                                        <%= valores.forma_pagamento === forma
+                                            ? 'selected'
+                                            : ''
+                                        %>
+                                    >
+                                        <%= forma %>
+                                    </option>
+
+                                <% }) %>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="nova-venda-campo">
+
+                            <label for="clienteNomeVenda">
+                                Cliente
+                            </label>
+
+                            <input
+                                type="text"
+                                id="clienteNomeVenda"
+                                name="cliente_nome"
+                                maxlength="150"
+                                value="<%= valores.cliente_nome %>"
+                                placeholder="Opcional"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="nova-venda-campo">
+
+                        <label for="observacaoVenda">
+                            Observação
+                        </label>
+
+                        <textarea
+                            id="observacaoVenda"
+                            name="observacao"
+                            maxlength="500"
+                            rows="3"
+                            placeholder="Opcional"
+                        ><%= valores.observacao %></textarea>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ======================================
+                     ESCOLHER CAMISAS
+                ======================================= -->
+
+                <section class="nova-venda-bloco">
+
+                    <div class="nova-venda-bloco-topo">
+
+                        <div>
+
+                            <span>
+                                PRODUTOS
+                            </span>
+
+                            <h2>
+                                Escolher camisas
+                            </h2>
+
+                            <p>
+                                Pesquise e adicione os produtos
+                                desta venda.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <% if (produtosAgrupados.length > 0) { %>
+
+                        <!-- PESQUISA -->
+
+                        <div class="venda-pesquisa-produto">
+
+                            <label for="pesquisarProdutoVenda">
+                                Pesquisar camisa
+                            </label>
+
+                            <input
+                                type="search"
+                                id="pesquisarProdutoVenda"
+                                placeholder="Nome, código ou tipo da camisa"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <!-- TOTAL ENCONTRADO -->
+
+                        <p
+                            class="venda-total-produtos"
+                            id="totalProdutosEncontrados"
+                        >
+                            <%= produtosAgrupados.length %>
+                            camisa(s) encontrada(s)
+                        </p>
+
+
+                        <!-- CARDS -->
+
+                        <div
+                            class="venda-produtos-lista"
+                            id="produtosVendaLista"
+                        >
+
+                            <% produtosAgrupados.forEach((produto) => { %>
+
+                                <article
+                                    class="venda-produto-card"
+                                    data-pesquisa="<%=
+                                        (
+                                            produto.nome +
+                                            ' ' +
+                                            produto.codigo +
+                                            ' ' +
+                                            produto.tipo
+                                        ).toLowerCase()
+                                    %>"
+                                >
+
+                                    <!-- IMAGEM -->
+
+                                    <div class="venda-produto-imagem">
+
+                                        <% if (produto.imagem) { %>
+
+                                            <img
+                                                src="/<%= String(produto.imagem).replace(/^\/+/, '') %>"
+                                                alt="<%= produto.nome %>"
+                                            >
+
+                                        <% } else { %>
+
+                                            <span>
+                                                Sem imagem
+                                            </span>
+
+                                        <% } %>
+
+                                    </div>
+
+
+                                    <!-- INFORMAÇÕES -->
+
+                                    <div class="venda-produto-info">
+
+                                        <div class="venda-produto-etiquetas">
+
+                                            <span class="venda-produto-tipo">
+                                                <%= produto.tipo %>
+                                            </span>
+
+                                            <span class="venda-produto-estoque">
+
+                                                Estoque:
+                                                <%= produto.estoqueTotal %>
+
+                                            </span>
+
+                                        </div>
+
+
+                                        <h3>
+                                            <%= produto.nome %>
+                                        </h3>
+
+
+                                        <p>
+                                            Código:
+                                            <strong>
+                                                <%= produto.codigo %>
+                                            </strong>
+                                        </p>
+
+
+                                        <div class="venda-produto-preco">
+
+                                            <strong>
+                                                <%= produto.preco.toLocaleString(
+                                                    'pt-BR',
+                                                    {
+                                                        style: 'currency',
+                                                        currency: 'BRL'
+                                                    }
+                                                ) %>
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- TAMANHOS -->
+
+                                    <div class="venda-produto-selecao">
+
+                                        <div class="venda-produto-tamanhos">
+
+                                            <span class="venda-produto-label">
+                                                Tamanho
+                                            </span>
+
+
+                                            <div class="venda-tamanhos">
+
+                                                <% produto.tamanhos.forEach((tamanho) => { %>
+
+                                                    <button
+                                                        type="button"
+                                                        class="venda-tamanho-botao"
+
+                                                        data-produto="<%= produto.id %>"
+
+                                                        data-produto-tamanho-id="<%= tamanho.id %>"
+
+                                                        data-tamanho="<%= tamanho.tamanho %>"
+
+                                                        data-estoque="<%= tamanho.estoque %>"
+
+                                                        data-nome="<%= produto.nome %>"
+
+                                                        data-codigo="<%= produto.codigo %>"
+
+                                                        data-tipo="<%= produto.tipo %>"
+
+                                                        data-preco="<%= produto.preco.toFixed(2) %>"
+                                                    >
+                                                        <strong>
+                                                            <%= tamanho.tamanho %>
+                                                        </strong>
+
+                                                        <small>
+                                                            <%= tamanho.estoque %>
+                                                        </small>
+                                                    </button>
+
+                                                <% }) %>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="venda-produto-acoes">
+
+                                            <div class="venda-produto-quantidade">
+
+                                                <label
+                                                    for="quantidade-produto-<%= produto.id %>"
+                                                >
+                                                    Quantidade
+                                                </label>
+
+                                                <input
+                                                    type="number"
+                                                    id="quantidade-produto-<%= produto.id %>"
+                                                    class="venda-quantidade-input"
+                                                    value="1"
+                                                    min="1"
+                                                    step="1"
+                                                >
+
+                                            </div>
+
+
+                                            <button
+                                                type="button"
+                                                class="venda-adicionar-produto"
+                                                data-produto="<%= produto.id %>"
+                                            >
+                                                Adicionar camisa
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                </article>
+
+                            <% }) %>
+
+                        </div>
+
+
+                        <div
+                            class="venda-sem-pesquisa"
+                            id="vendaSemPesquisa"
+                            hidden
+                        >
+
+                            Nenhuma camisa encontrada.
+
+                        </div>
+
+
+                        <!-- ==================================
+                             ITENS ADICIONADOS
+                        =================================== -->
+
+                        <div class="venda-itens-selecionados">
+
+                            <div class="nova-venda-bloco-topo">
+
+                                <div>
+
+                                    <span>
+                                        VENDA
+                                    </span>
+
+                                    <h2>
+                                        Camisas adicionadas
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="nova-venda-itens-vazio"
+                                id="vendaItensVazio"
+                            >
+                                Nenhuma camisa adicionada.
+                            </div>
+
+
+                            <div
+                                class="nova-venda-itens"
+                                id="vendaItens"
+                            ></div>
+
+
+                            <div class="nova-venda-total">
+
+                                <span>
+                                    Total da venda
+                                </span>
+
+                                <strong id="totalVenda">
+                                    R$ 0,00
+                                </strong>
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="admin-botao-principal nova-venda-finalizar"
+                            >
+                                Registrar venda
+                            </button>
+
+                        </div>
+
+                    <% } else { %>
+
+                        <div class="admin-sem-resultados">
+
+                            <h2>
+                                Nenhum produto disponível
+                            </h2>
+
+                            <p>
+                                Não existem camisas com
+                                estoque disponível para venda.
+                            </p>
+
+                        </div>
+
+                    <% } %>
+
+                </section>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+(() => {
+
+    const form =
+        document.getElementById(
+            'novaVendaForm'
+        );
+
+    const pesquisa =
+        document.getElementById(
+            'pesquisarProdutoVenda'
+        );
+
+    const cards =
+        Array.from(
+            document.querySelectorAll(
+                '.venda-produto-card'
+            )
+        );
+
+    const listaItens =
+        document.getElementById(
+            'vendaItens'
+        );
+
+    const itensVazio =
+        document.getElementById(
+            'vendaItensVazio'
+        );
+
+    const totalVenda =
+        document.getElementById(
+            'totalVenda'
+        );
+
+    const totalEncontrados =
+        document.getElementById(
+            'totalProdutosEncontrados'
+        );
+
+    const semPesquisa =
+        document.getElementById(
+            'vendaSemPesquisa'
+        );
+
+
+    if (!form) {
+        return;
+    }
+
+
+    const selecionados =
+        new Map();
+
+    let itens = [];
+
+
+    // ================================================
+    // MOEDA
+    // ================================================
+
+    function formatarMoeda(valor) {
+
+        return Number(valor || 0)
+            .toLocaleString(
+                'pt-BR',
+                {
+                    style: 'currency',
+                    currency: 'BRL'
+                }
+            );
+    }
+
+
+    // ================================================
+    // PESQUISA
+    // ================================================
+
+    if (pesquisa) {
+
+        pesquisa.addEventListener(
+            'input',
+            () => {
+
+                const termo =
+                    pesquisa
+                        .value
+                        .trim()
+                        .toLowerCase()
+                        .normalize('NFD')
+                        .replace(
+                            /[\u0300-\u036f]/g,
+                            ''
+                        );
+
+
+                let encontrados = 0;
+
+
+                cards.forEach(
+                    card => {
+
+                        const conteudo =
+                            String(
+                                card.dataset
+                                    .pesquisa ||
+                                ''
+                            )
+                                .toLowerCase()
+                                .normalize('NFD')
+                                .replace(
+                                    /[\u0300-\u036f]/g,
+                                    ''
+                                );
+
+
+                        const mostrar =
+                            conteudo.includes(
+                                termo
+                            );
+
+
+                        card.hidden =
+                            !mostrar;
+
+
+                        if (mostrar) {
+                            encontrados++;
+                        }
+                    }
+                );
+
+
+                if (totalEncontrados) {
+
+                    totalEncontrados.textContent =
+                        `${encontrados} camisa(s) encontrada(s)`;
+                }
+
+
+                if (semPesquisa) {
+
+                    semPesquisa.hidden =
+                        encontrados !== 0;
+                }
+            }
+        );
+    }
+
+
+    // ================================================
+    // ESCOLHER TAMANHO
+    // ================================================
+
+    document
+        .querySelectorAll(
+            '.venda-tamanho-botao'
+        )
+        .forEach(
+            botao => {
+
+                botao.addEventListener(
+                    'click',
+                    () => {
+
+                        const produtoId =
+                            Number(
+                                botao.dataset
+                                    .produto
+                            );
+
+
+                        const card =
+                            botao.closest(
+                                '.venda-produto-card'
+                            );
+
+
+                        card
+                            .querySelectorAll(
+                                '.venda-tamanho-botao'
+                            )
+                            .forEach(
+                                outro => {
+
+                                    outro.classList
+                                        .remove(
+                                            'selecionado'
+                                        );
+                                }
+                            );
+
+
+                        botao.classList.add(
+                            'selecionado'
+                        );
+
+
+                        selecionados.set(
+                            produtoId,
+                            {
+
+                                id:
+                                    Number(
+                                        botao.dataset
+                                            .produtoTamanhoId
+                                    ),
+
+                                produtoId,
+
+                                nome:
+                                    botao.dataset.nome,
+
+                                codigo:
+                                    botao.dataset.codigo,
+
+                                tipo:
+                                    botao.dataset.tipo,
+
+                                tamanho:
+                                    botao.dataset.tamanho,
+
+                                estoque:
+                                    Number(
+                                        botao.dataset
+                                            .estoque
+                                    ),
+
+                                preco:
+                                    Number(
+                                        botao.dataset
+                                            .preco
+                                    )
+                            }
+                        );
+
+
+                        const quantidadeInput =
+                            card.querySelector(
+                                '.venda-quantidade-input'
+                            );
+
+
+                        if (quantidadeInput) {
+
+                            quantidadeInput.max =
+                                botao.dataset
+                                    .estoque;
+
+                            if (
+                                Number(
+                                    quantidadeInput.value
+                                ) >
+                                Number(
+                                    botao.dataset
+                                        .estoque
+                                )
+                            ) {
+
+                                quantidadeInput.value =
+                                    '1';
+                            }
+                        }
+                    }
+                );
+            }
+        );
+
+
+    // ================================================
+    // ADICIONAR CAMISA
+    // ================================================
+
+    document
+        .querySelectorAll(
+            '.venda-adicionar-produto'
+        )
+        .forEach(
+            botao => {
+
+                botao.addEventListener(
+                    'click',
+                    () => {
+
+                        const produtoId =
+                            Number(
+                                botao.dataset
+                                    .produto
+                            );
+
+
+                        const selecionado =
+                            selecionados.get(
+                                produtoId
+                            );
+
+
+                        if (!selecionado) {
+
+                            alert(
+                                'Escolha o tamanho da camisa.'
+                            );
+
+                            return;
+                        }
+
+
+                        const card =
+                            botao.closest(
+                                '.venda-produto-card'
+                            );
+
+
+                        const quantidadeInput =
+                            card.querySelector(
+                                '.venda-quantidade-input'
+                            );
+
+
+                        const quantidade =
+                            Number(
+                                quantidadeInput.value
+                            );
+
+
+                        if (
+                            !Number.isInteger(
+                                quantidade
+                            ) ||
+                            quantidade <= 0
+                        ) {
+
+                            alert(
+                                'Informe uma quantidade válida.'
+                            );
+
+                            return;
+                        }
+
+
+                        const existente =
+                            itens.find(
+                                item =>
+                                    item.id ===
+                                    selecionado.id
+                            );
+
+
+                        const quantidadeAtual =
+                            existente
+                                ? existente.quantidade
+                                : 0;
+
+
+                        if (
+                            quantidadeAtual +
+                            quantidade >
+                            selecionado.estoque
+                        ) {
+
+                            alert(
+                                `Existem apenas ${selecionado.estoque} unidade(s) disponíveis desse tamanho.`
+                            );
+
+                            return;
+                        }
+
+
+                        if (existente) {
+
+                            existente.quantidade +=
+                                quantidade;
+
+                        } else {
+
+                            itens.push({
+
+                                ...selecionado,
+
+                                quantidade
+                            });
+                        }
+
+
+                        quantidadeInput.value =
+                            '1';
+
+
+                        renderizarItens();
+                    }
+                );
+            }
+        );
+
+
+    // ================================================
+    // RENDERIZAR ITENS
+    // ================================================
+
+    function renderizarItens() {
+
+        if (!listaItens) {
+            return;
+        }
+
+
+        listaItens.innerHTML =
+            '';
+
+
+        if (itensVazio) {
+
+            itensVazio.style.display =
+                itens.length === 0
+                    ? 'block'
+                    : 'none';
+        }
+
+
+        let total = 0;
+
+
+        itens.forEach(
+            (item, indice) => {
+
+                const subtotal =
+                    item.preco *
+                    item.quantidade;
+
+
+                total +=
+                    subtotal;
+
+
+                const artigo =
+                    document.createElement(
+                        'article'
+                    );
+
+
+                artigo.className =
+                    'nova-venda-item';
+
+
+                // INFORMAÇÕES
+
+                const info =
+                    document.createElement(
+                        'div'
+                    );
+
+
+                info.className =
+                    'nova-venda-item-info';
+
+
+                const nome =
+                    document.createElement(
+                        'strong'
+                    );
+
+
+                nome.textContent =
+                    item.nome;
+
+
+                const descricao =
+                    document.createElement(
+                        'span'
+                    );
+
+
+                descricao.textContent =
+                    `${item.tipo} | Tamanho ${item.tamanho} | ${item.codigo}`;
+
+
+                info.appendChild(
+                    nome
+                );
+
+
+                info.appendChild(
+                    descricao
+                );
+
+
+                // QUANTIDADE
+
+                const quantidade =
+                    document.createElement(
+                        'div'
+                    );
+
+
+                quantidade.className =
+                    'nova-venda-item-quantidade';
+
+
+                quantidade.textContent =
+                    `${item.quantidade} un.`;
+
+
+                // VALOR
+
+                const valor =
+                    document.createElement(
+                        'strong'
+                    );
+
+
+                valor.className =
+                    'nova-venda-item-valor';
+
+
+                valor.textContent =
+                    formatarMoeda(
+                        subtotal
+                    );
+
+
+                // REMOVER
+
+                const remover =
+                    document.createElement(
+                        'button'
+                    );
+
+
+                remover.type =
+                    'button';
+
+
+                remover.className =
+                    'nova-venda-remover';
+
+
+                remover.textContent =
+                    'Remover';
+
+
+                remover.addEventListener(
+                    'click',
+                    () => {
+
+                        itens.splice(
+                            indice,
+                            1
+                        );
+
+
+                        renderizarItens();
+                    }
+                );
+
+
+                // INPUT PRODUTO
+
+                const inputProduto =
+                    document.createElement(
+                        'input'
+                    );
+
+
+                inputProduto.type =
+                    'hidden';
+
+
+                inputProduto.name =
+                    'produto_tamanho_id';
+
+
+                inputProduto.value =
+                    item.id;
+
+
+                // INPUT QUANTIDADE
+
+                const inputQuantidade =
+                    document.createElement(
+                        'input'
+                    );
+
+
+                inputQuantidade.type =
+                    'hidden';
+
+
+                inputQuantidade.name =
+                    'quantidade';
+
+
+                inputQuantidade.value =
+                    item.quantidade;
+
+
+                artigo.appendChild(
+                    info
+                );
+
+                artigo.appendChild(
+                    quantidade
+                );
+
+                artigo.appendChild(
+                    valor
+                );
+
+                artigo.appendChild(
+                    remover
+                );
+
+                artigo.appendChild(
+                    inputProduto
+                );
+
+                artigo.appendChild(
+                    inputQuantidade
+                );
+
+
+                listaItens.appendChild(
+                    artigo
+                );
+            }
+        );
+
+
+        if (totalVenda) {
+
+            totalVenda.textContent =
+                formatarMoeda(
+                    total
+                );
+        }
+    }
+
+
+    // ================================================
+    // VALIDAR FORMULÁRIO
+    // ================================================
+
+    form.addEventListener(
+        'submit',
+        evento => {
+
+            if (
+                itens.length === 0
+            ) {
+
+                evento.preventDefault();
+
+
+                alert(
+                    'Adicione pelo menos uma camisa à venda.'
+                );
+            }
+        }
+    );
+
+
+    renderizarItens();
+
+})();
+</script>
+
+<%- include('../partials/footer') %>

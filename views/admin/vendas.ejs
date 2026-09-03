@@ -1,0 +1,323 @@
+<%- include('../partials/header') %>
+
+<div class="admin-layout">
+
+    <%- include('../partials/admin-sidebar', {
+        secaoAdmin: 'vendas'
+    }) %>
+
+    <main class="admin-pagina admin-conteudo">
+
+        <div class="admin-container">
+
+            <div class="admin-topo">
+
+                <div>
+
+                    <span class="admin-etiqueta">
+                        ADMINISTRADOR
+                    </span>
+
+                    <h1>
+                        Vendas
+                    </h1>
+
+                    <p>
+                        Acompanhe o desempenho das
+                        vendas da Manto 10.
+                    </p>
+
+                </div>
+
+                <a
+                    href="/admin/vendas/nova"
+                    class="admin-botao-principal"
+                >
+                    Criar venda
+                </a>
+
+            </div>
+
+
+            <% if (sucesso) { %>
+
+                <div class="admin-alerta-sucesso">
+                    Venda registrada com sucesso.
+                </div>
+
+            <% } %>
+
+
+            <!-- RESUMO -->
+
+            <section class="vendas-resumo">
+
+                <article class="venda-resumo-card">
+
+                    <span>
+                        Hoje
+                    </span>
+
+                    <strong>
+                        <%= resumo.hoje %>
+                    </strong>
+
+                    <small>
+                        Vendas realizadas hoje
+                    </small>
+
+                </article>
+
+
+                <article class="venda-resumo-card">
+
+                    <span>
+                        Esta semana
+                    </span>
+
+                    <strong>
+                        <%= resumo.semana %>
+                    </strong>
+
+                    <small>
+                        Vendas da semana atual
+                    </small>
+
+                </article>
+
+
+                <article class="venda-resumo-card">
+
+                    <span>
+                        Este mês
+                    </span>
+
+                    <strong>
+                        <%= resumo.mes %>
+                    </strong>
+
+                    <small>
+                        Vendas do mês atual
+                    </small>
+
+                </article>
+
+
+                <article class="venda-resumo-card">
+
+                    <span>
+                        Este ano
+                    </span>
+
+                    <strong>
+                        <%= resumo.ano %>
+                    </strong>
+
+                    <small>
+                        Vendas do ano atual
+                    </small>
+
+                </article>
+
+            </section>
+
+
+            <section class="vendas-total-pedidos">
+
+                <div>
+
+                    <span>
+                        Vendas contabilizadas
+                    </span>
+
+                    <strong>
+                        <%= resumo.total_vendas %>
+                    </strong>
+
+                </div>
+
+                <p>
+                    Inclui pedidos confirmados do site
+                    e vendas registradas manualmente.
+                </p>
+
+            </section>
+
+
+            <section class="vendas-bloco">
+
+                <div class="vendas-bloco-topo">
+
+                    <div>
+
+                        <span>
+                            HISTÓRICO
+                        </span>
+
+                        <h2>
+                            Últimas vendas
+                        </h2>
+
+                    </div>
+
+                    <a href="/admin/pedidos?status=Pago">
+                        Ver pedidos pagos
+                    </a>
+
+                </div>
+
+
+                <% if (vendas.length > 0) { %>
+
+                    <div class="vendas-lista">
+
+                        <% vendas.forEach((venda) => { %>
+
+                            <article class="venda-item">
+
+                                <div class="venda-numero">
+
+                                    <span>
+                                        <%= venda.tipo_registro === 'pedido'
+                                            ? 'Pedido'
+                                            : 'Venda'
+                                        %>
+                                    </span>
+
+                                    <strong>
+                                        #<%= venda.numero_pedido %>
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="venda-cliente">
+
+                                    <span>
+                                        Cliente
+                                    </span>
+
+                                    <strong>
+                                        <%= venda.cliente_nome %>
+                                    </strong>
+
+                                    <% if (venda.cliente_email) { %>
+
+                                        <small>
+                                            <%= venda.cliente_email %>
+                                        </small>
+
+                                    <% } %>
+
+                                    <small>
+                                        Origem:
+                                        <%= venda.origem %>
+                                    </small>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Itens
+                                    </span>
+
+                                    <strong>
+                                        <%= venda.total_itens %>
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Data
+                                    </span>
+
+                                    <strong>
+                                        <%= venda.data_formatada %>
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Status
+                                    </span>
+
+                                    <strong class="venda-status">
+                                        <%= venda.status %>
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="venda-valor">
+
+                                    <span>
+                                        Total
+                                    </span>
+
+                                    <strong>
+                                        <%= venda.total_formatado %>
+                                    </strong>
+
+                                </div>
+
+
+                                <% if (venda.tipo_registro === 'pedido') { %>
+
+    <a
+        href="/admin/pedidos/<%= venda.id %>"
+        class="venda-detalhes"
+    >
+        Ver detalhes
+    </a>
+
+<% } else { %>
+
+    <a
+        href="/admin/vendas/manuais/<%= venda.id %>"
+        class="venda-detalhes"
+    >
+        Ver detalhes
+    </a>
+
+<% } %>
+
+                            </article>
+
+                        <% }) %>
+
+                    </div>
+
+                <% } else { %>
+
+                    <div class="admin-sem-resultados">
+
+                        <h2>
+                            Nenhuma venda registrada
+                        </h2>
+
+                        <p>
+                            Pedidos pagos e vendas
+                            manuais aparecerão aqui.
+                        </p>
+
+                    </div>
+
+                <% } %>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+<%- include('../partials/footer') %>

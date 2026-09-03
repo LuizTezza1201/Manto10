@@ -1,0 +1,43 @@
+<%- include('../partials/header') %>
+
+<main class="pagamento-erro-pagina">
+
+    <section class="pagamento-erro-card">
+
+        <span>
+            PAGAMENTO
+        </span>
+
+        <h1>
+            Não conseguimos abrir o pagamento
+        </h1>
+
+        <p>
+            <%= mensagem %>
+        </p>
+
+        <p>
+            Seu pedido já foi criado e continua
+            salvo como Pendente. Você pode tentar
+            abrir o pagamento novamente.
+        </p>
+
+        <a
+            href="/pagamento/infinitepay/<%= pedidoId %>"
+            class="pagamento-tentar-novamente"
+        >
+            Tentar novamente
+        </a>
+
+        <a
+            href="/minha-conta/pedidos/<%= pedidoId %>"
+            class="pagamento-voltar-pedido"
+        >
+            Ver meu pedido
+        </a>
+
+    </section>
+
+</main>
+
+<%- include('../partials/footer') %>
