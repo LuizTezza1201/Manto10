@@ -832,3 +832,199 @@
 
     background: #fff3f3;
 }
+
+/* =========================================================
+   FLUXO RÁPIDO DO PEDIDO
+========================================================= */
+
+.pedido-fluxo-info {
+    margin-bottom: 14px;
+}
+
+.pedido-fluxo-info strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 10px;
+}
+
+.pedido-fluxo-info p {
+    margin: 0;
+
+    color: #777777;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+
+.pedido-acao-principal {
+    width: 100%;
+
+    min-height: 42px;
+
+    padding: 0 14px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: #000000;
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.pedido-acao-principal:hover {
+    background: #9d00de;
+}
+
+
+/* =========================================================
+   RASTREAMENTO
+========================================================= */
+
+.pedido-rastreio-atual {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+
+    margin-bottom: 15px;
+
+    padding: 13px;
+
+    border: 1px solid #e8e8e8;
+    border-radius: 7px;
+
+    background: #fafafa;
+}
+
+.pedido-rastreio-atual span {
+    color: #777777;
+
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.pedido-rastreio-atual strong {
+    word-break: break-word;
+
+    color: #111111;
+
+    font-size: 11px;
+}
+
+.pedido-rastreio-atual small {
+    color: #888888;
+
+    font-size: 8px;
+}
+
+
+.pedido-rastreio-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.pedido-rastreio-form label {
+    color: #444444;
+
+    font-size: 8px;
+    font-weight: 900;
+}
+
+.pedido-rastreio-form input {
+    width: 100%;
+
+    min-height: 40px;
+
+    padding: 0 11px;
+
+    border: 1px solid #dddddd;
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    font-family: inherit;
+}
+
+.pedido-rastreio-form input:focus {
+    outline: none;
+
+    border-color: #9d00de;
+}
+
+.pedido-rastreio-form button {
+    width: 100%;
+
+    min-height: 40px;
+
+    border: 0;
+    border-radius: 7px;
+
+    background: #000000;
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.pedido-rastreio-form button:hover {
+    background: #9d00de;
+}
+
+.pedido-rastreio-aviso {
+    margin: 10px 0 0;
+
+    color: #888888;
+
+    font-size: 8px;
+
+    line-height: 1.5;
+}
+
+/* =========================================================
+   AVISO DE ORGANIZAÇÃO DOS PEDIDOS
+========================================================= */
+
+.pedidos-aviso-fluxo {
+    margin: 18px 0;
+
+    padding: 14px 16px;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+
+    background: #fafafa;
+}
+
+.pedidos-aviso-fluxo strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 10px;
+}
+
+.pedidos-aviso-fluxo p {
+    margin: 0;
+
+    color: #777777;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}

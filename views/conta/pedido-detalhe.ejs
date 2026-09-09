@@ -4,6 +4,7 @@
 
     <div class="conta-container">
 
+
         <!-- ==========================================
              TOPO
         =========================================== -->
@@ -27,47 +28,64 @@
 
             </div>
 
+
             <div class="conta-pedido-topo-acoes">
 
-    <% if (pedido.status === 'Pendente') { %>
+                <% if (pedido.status === 'Pendente') { %>
 
-        <a
-            href="/pagamento/infinitepay/<%= pedido.id %>"
-            class="conta-pagar-agora conta-pagar-topo"
-        >
-            Pagar agora
-        </a>
-
-
-        <form
-            action="/minha-conta/pedidos/<%= pedido.id %>/cancelar"
-            method="POST"
-            class="conta-form-cancelar"
-            onsubmit="return confirm('Tem certeza que deseja cancelar este pedido? O estoque dos produtos será devolvido e será necessário fazer um novo pedido caso queira comprá-los novamente.');"
-        >
-
-            <button
-                type="submit"
-                class="conta-cancelar-pedido"
-            >
-                Cancelar pedido
-            </button>
-
-        </form>
-
-    <% } %>
+                    <a
+                        href="/pagamento/infinitepay/<%= pedido.id %>"
+                        class="conta-pagar-agora conta-pagar-topo"
+                    >
+                        Pagar agora
+                    </a>
 
 
-    <a
-        href="/minha-conta"
-        class="conta-voltar"
-    >
-        Voltar para minha conta
-    </a>
+                    <form
+                        action="/minha-conta/pedidos/<%= pedido.id %>/cancelar"
+                        method="POST"
+                        class="conta-form-cancelar"
+                        onsubmit="return confirm('Tem certeza que deseja cancelar este pedido? O estoque dos produtos será devolvido e será necessário fazer um novo pedido caso queira comprá-los novamente.');"
+                    >
 
-</div>
+                        <button
+                            type="submit"
+                            class="conta-cancelar-pedido"
+                        >
+                            Cancelar pedido
+                        </button>
+
+                    </form>
+
+                <% } %>
+
+
+                <a
+                    href="/minha-conta"
+                    class="conta-voltar"
+                >
+                    Voltar para minha conta
+                </a>
+
+            </div>
 
         </section>
+
+
+        <!-- ==========================================
+             MENSAGEM DE CANCELAMENTO
+        =========================================== -->
+
+        <% if (cancelado) { %>
+
+            <div class="conta-alerta-sucesso">
+
+                Pedido cancelado com sucesso.
+                As unidades foram devolvidas ao estoque.
+
+            </div>
+
+        <% } %>
 
 
         <!-- ==========================================
@@ -125,9 +143,179 @@
         </section>
 
 
+        <!-- ==========================================
+             ACOMPANHAMENTO
+        =========================================== -->
+
+        <section class="conta-bloco conta-acompanhamento">
+
+            <div class="conta-bloco-titulo">
+
+                <h2>
+                    Acompanhamento do pedido
+                </h2>
+
+            </div>
+
+
+            <% if (pedido.status === 'Pendente') { %>
+
+                <div class="conta-status-mensagem">
+
+                    <strong>
+                        Aguardando pagamento
+                    </strong>
+
+                    <p>
+                        Seu pedido foi criado, mas o pagamento
+                        ainda não foi confirmado.
+                    </p>
+
+                </div>
+
+            <% } %>
+
+
+            <% if (pedido.status === 'Pago') { %>
+
+                <div class="conta-status-mensagem">
+
+                    <strong>
+                        Pagamento confirmado
+                    </strong>
+
+                    <p>
+                        Recebemos seu pagamento.
+                        Em breve seu pedido começará
+                        a ser preparado.
+                    </p>
+
+                </div>
+
+            <% } %>
+
+
+            <% if (pedido.status === 'Preparando') { %>
+
+                <div class="conta-status-mensagem">
+
+                    <strong>
+                        Estamos preparando seu pedido
+                    </strong>
+
+                    <p>
+                        Suas camisas estão sendo separadas
+                        e preparadas para o envio.
+                    </p>
+
+                </div>
+
+            <% } %>
+
+
+            <% if (pedido.status === 'Enviado') { %>
+
+                <div class="conta-status-mensagem">
+
+                    <strong>
+                        Seu pedido foi enviado
+                    </strong>
+
+                    <p>
+                        Sua compra já saiu para entrega.
+                        Consulte abaixo o código de rastreio.
+                    </p>
+
+                </div>
+
+            <% } %>
+
+
+            <% if (pedido.status === 'Entregue') { %>
+
+                <div class="conta-status-mensagem">
+
+                    <strong>
+                        Pedido entregue
+                    </strong>
+
+                    <p>
+                        Seu pedido foi finalizado
+                        e marcado como entregue.
+                    </p>
+
+                </div>
+
+            <% } %>
+
+
+            <% if (pedido.status === 'Cancelado') { %>
+
+                <div class="conta-status-mensagem conta-status-cancelado">
+
+                    <strong>
+                        Pedido cancelado
+                    </strong>
+
+                    <p>
+                        Este pedido foi cancelado
+                        e não está mais em andamento.
+                    </p>
+
+                </div>
+
+            <% } %>
+
+
+            <!-- ======================================
+                 RASTREIO
+            ======================================= -->
+
+            <% if (
+    pedido.codigo_rastreio &&
+    pedido.status !== 'Cancelado'
+) { %>
+
+                <div class="conta-rastreio">
+
+                    <span>
+                        Código de rastreio
+                    </span>
+
+                    <strong>
+                        <%= pedido.codigo_rastreio %>
+                    </strong>
+
+
+                    <% if (
+                        pedido.rastreio_atualizado_em_formatado
+                    ) { %>
+
+                        <small>
+
+                            Atualizado em
+                            <%= pedido.rastreio_atualizado_em_formatado %>
+
+                        </small>
+
+                    <% } %>
+
+                </div>
+
+            <% } %>
+
+        </section>
+
+
+        <!-- ==========================================
+             CONTEÚDO
+        =========================================== -->
+
         <div class="conta-pedido-layout">
 
+
             <div>
+
 
                 <!-- ======================================
                      PRODUTOS
@@ -170,10 +358,13 @@
                                 </h3>
 
                                 <p>
+
                                     Tamanho:
+
                                     <strong>
                                         <%= item.tamanho %>
                                     </strong>
+
                                 </p>
 
                             </div>
@@ -248,6 +439,7 @@
                                 <%= pedido.endereco_numero %>
                             </strong>
 
+
                             <% if (pedido.complemento) { %>
 
                                 <p>
@@ -256,15 +448,18 @@
 
                             <% } %>
 
+
                             <p>
                                 <%= pedido.bairro %>
                             </p>
+
 
                             <p>
                                 <%= pedido.cidade %>
                                 -
                                 <%= pedido.estado %>
                             </p>
+
 
                             <p>
                                 CEP:
@@ -282,6 +477,31 @@
                     <% } %>
 
                 </section>
+
+
+                <!-- ======================================
+                     OBSERVAÇÃO
+                ======================================= -->
+
+                <% if (pedido.observacao) { %>
+
+                    <section class="conta-bloco">
+
+                        <div class="conta-bloco-titulo">
+
+                            <h2>
+                                Observação
+                            </h2>
+
+                        </div>
+
+                        <p class="conta-observacao">
+                            <%= pedido.observacao %>
+                        </p>
+
+                    </section>
+
+                <% } %>
 
             </div>
 

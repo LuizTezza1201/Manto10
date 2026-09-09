@@ -97,6 +97,11 @@ router.post(
 );
 
 router.post(
+    '/pedidos/:id/rastreio',
+    AdminPedidoController.salvarRastreio
+);
+
+router.post(
     '/pedidos/:id/cancelar',
     AdminPedidoController.cancelarPedido
 );
@@ -111,28 +116,20 @@ router.get(
     AdminVendaController.listar
 );
 
-
 router.get(
     '/vendas/nova',
     AdminVendaController.nova
 );
-
 
 router.post(
     '/vendas/nova',
     AdminVendaController.criar
 );
 
-
-// ======================================================
-// DETALHES DA VENDA MANUAL
-// ======================================================
-
 router.get(
     '/vendas/manuais/:id',
     AdminVendaController.detalhesManual
 );
-
 
 router.post(
     '/vendas/manuais/:id/cancelar',

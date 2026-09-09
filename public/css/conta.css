@@ -759,3 +759,108 @@
     }
 
 }
+
+/* =========================================================
+   ACOMPANHAMENTO DO PEDIDO
+========================================================= */
+
+.conta-acompanhamento {
+    margin-bottom: 20px;
+}
+
+.conta-status-mensagem {
+    padding: 16px;
+
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+
+    background: #fafafa;
+}
+
+.conta-status-mensagem strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #111111;
+
+    font-size: 11px;
+}
+
+.conta-status-mensagem p {
+    margin: 0;
+
+    color: #777777;
+
+    font-size: 9px;
+
+    line-height: 1.6;
+}
+
+.conta-status-cancelado {
+    opacity: 0.8;
+}
+
+
+/* =========================================================
+   CÓDIGO DE RASTREIO
+========================================================= */
+
+.conta-rastreio {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    margin-top: 14px;
+
+    padding: 16px;
+
+    border: 1px solid #9d00de;
+    border-radius: 8px;
+
+    background: #ffffff;
+}
+
+.conta-rastreio span {
+    color: #777777;
+
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.conta-rastreio strong {
+    word-break: break-word;
+
+    color: #111111;
+
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.conta-rastreio small {
+    color: #888888;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   ALERTA
+========================================================= */
+
+.conta-alerta-sucesso {
+    margin-bottom: 18px;
+
+    padding: 13px 15px;
+
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+
+    background: #fafafa;
+
+    color: #222222;
+
+    font-size: 9px;
+    font-weight: 700;
+}

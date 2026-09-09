@@ -1,14 +1,58 @@
 <%- include('../partials/header') %>
 
+<%
+    const transicoesStatus = {
+
+        Pendente: [
+            'Pendente',
+            'Pago'
+        ],
+
+        Pago: [
+            'Pago',
+            'Preparando'
+        ],
+
+        Preparando: [
+            'Preparando',
+            'Enviado'
+        ],
+
+        Enviado: [
+            'Enviado',
+            'Entregue'
+        ],
+
+        Entregue: [
+            'Entregue'
+        ],
+
+        Cancelado: []
+    };
+
+    const statusDisponiveis =
+        transicoesStatus[pedido.status] || [];
+
+    const podeRastrear = [
+        'Pago',
+        'Preparando',
+        'Enviado',
+        'Entregue'
+    ].includes(pedido.status);
+%>
+
+
 <div class="admin-layout">
 
     <%- include('../partials/admin-sidebar', {
         secaoAdmin: 'pedidos'
     }) %>
 
+
     <main class="admin-pagina admin-conteudo">
 
         <div class="admin-container">
+
 
             <!-- ==========================================
                  TOPO
@@ -33,6 +77,7 @@
 
                 </div>
 
+
                 <a
                     href="/admin/pedidos"
                     class="admin-botao-secundario"
@@ -42,34 +87,62 @@
 
             </div>
 
+
+            <!-- ==========================================
+                 MENSAGENS
+            =========================================== -->
+
             <% if (sucesso === 'status') { %>
 
-    <div class="admin-alerta-sucesso">
+                <div class="admin-alerta-sucesso">
 
-        Status do pedido atualizado
-        com sucesso.
+                    Status do pedido atualizado
+                    com sucesso.
 
-    </div>
+                </div>
 
-<% } %>
+            <% } %>
 
 
-<% if (sucesso === 'cancelamento') { %>
+            <% if (sucesso === 'cancelamento') { %>
 
-    <div class="admin-alerta-sucesso">
+                <div class="admin-alerta-sucesso">
 
-        Pedido cancelado e estoque
-        restituído com sucesso.
+                    Pedido cancelado e estoque
+                    restituído com sucesso.
 
-    </div>
+                </div>
 
-<% } %>
+            <% } %>
+
+
+            <% if (sucesso === 'rastreio') { %>
+
+                <div class="admin-alerta-sucesso">
+
+                    Código de rastreio salvo
+                    com sucesso.
+
+                </div>
+
+            <% } %>
+
+
+            <% if (erro) { %>
+
+                <div class="admin-alerta-erro">
+                    <%= erro %>
+                </div>
+
+            <% } %>
+
 
             <!-- ==========================================
                  RESUMO
             =========================================== -->
 
             <section class="pedido-detalhe-grid">
+
 
                 <!-- CLIENTE -->
 
@@ -88,6 +161,7 @@
                     </p>
 
                 </article>
+
 
                 <!-- STATUS -->
 
@@ -108,66 +182,6 @@
 
                 </article>
 
-                <% if (
-    !pedido.estoque_restituido &&
-    (
-        pedido.status === 'Pendente' ||
-        pedido.status === 'Cancelado'
-    )
-) { %>
-
-    <section class="pedido-bloco pedido-bloco-cancelamento">
-
-        <div class="pedido-bloco-cabecalho">
-
-            <h2>
-                Cancelamento
-            </h2>
-
-        </div>
-
-
-        <% if (pedido.status === 'Pendente') { %>
-
-            <p class="pedido-cancelamento-texto">
-                Cancela o pedido e devolve
-                todas as unidades ao estoque.
-            </p>
-
-        <% } else { %>
-
-            <p class="pedido-cancelamento-texto">
-                Este pedido já está cancelado,
-                mas o estoque ainda não foi
-                restituído.
-            </p>
-
-        <% } %>
-
-
-        <form
-            action="/admin/pedidos/<%= pedido.id %>/cancelar"
-            method="POST"
-            onsubmit="return confirm('Confirma o cancelamento e a restituição do estoque?');"
-        >
-
-            <button
-                type="submit"
-                class="pedido-cancelar-botao"
-            >
-
-                <%= pedido.status === 'Pendente'
-                    ? 'Cancelar e restituir estoque'
-                    : 'Restituir estoque'
-                %>
-
-            </button>
-
-        </form>
-
-    </section>
-
-<% } %>
 
                 <!-- PAGAMENTO -->
 
@@ -176,6 +190,7 @@
                     <span class="pedido-detalhe-titulo">
                         Pagamento
                     </span>
+
 
                     <% if (pedido.forma_pagamento) { %>
 
@@ -201,38 +216,44 @@
 
                 </article>
 
+
+                <!-- ESTOQUE -->
+
                 <article class="pedido-detalhe-card">
 
-    <span class="pedido-detalhe-titulo">
-        Estoque
-    </span>
+                    <span class="pedido-detalhe-titulo">
+                        Estoque
+                    </span>
 
-    <% if (pedido.estoque_restituido) { %>
 
-        <strong>
-            Restituído
-        </strong>
+                    <% if (pedido.estoque_restituido) { %>
 
-        <p>
-            As unidades voltaram ao estoque.
-        </p>
+                        <strong>
+                            Restituído
+                        </strong>
 
-    <% } else { %>
+                        <p>
+                            As unidades voltaram
+                            ao estoque.
+                        </p>
 
-        <strong>
-            Reservado
-        </strong>
+                    <% } else { %>
 
-        <p>
-            As unidades permanecem vinculadas
-            ao pedido.
-        </p>
+                        <strong>
+                            Reservado
+                        </strong>
 
-    <% } %>
+                        <p>
+                            As unidades permanecem
+                            vinculadas ao pedido.
+                        </p>
 
-</article>
+                    <% } %>
+
+                </article>
 
             </section>
+
 
             <!-- ==========================================
                  CONTEÚDO
@@ -240,7 +261,13 @@
 
             <div class="pedido-detalhe-layout">
 
+
+                <!-- ======================================
+                     COLUNA PRINCIPAL
+                ======================================= -->
+
                 <div>
+
 
                     <!-- ITENS -->
 
@@ -258,6 +285,7 @@
                             </span>
 
                         </div>
+
 
                         <% if (itens.length > 0) { %>
 
@@ -277,6 +305,7 @@
 
                                         </div>
 
+
                                         <div class="pedido-item-dados">
 
                                             <span>
@@ -289,12 +318,14 @@
 
                                             <p>
                                                 Tamanho:
+
                                                 <strong>
                                                     <%= item.tamanho %>
                                                 </strong>
                                             </p>
 
                                         </div>
+
 
                                         <div class="pedido-item-quantidade">
 
@@ -308,6 +339,7 @@
 
                                         </div>
 
+
                                         <div class="pedido-item-preco">
 
                                             <span>
@@ -319,6 +351,7 @@
                                             </strong>
 
                                         </div>
+
 
                                         <div class="pedido-item-subtotal">
 
@@ -348,6 +381,7 @@
 
                     </section>
 
+
                     <!-- ENDEREÇO -->
 
                     <section class="pedido-bloco">
@@ -360,14 +394,18 @@
 
                         </div>
 
+
                         <div class="pedido-endereco">
 
                             <p>
+
                                 <strong>
                                     <%= pedido.logradouro %>,
                                     <%= pedido.endereco_numero %>
                                 </strong>
+
                             </p>
+
 
                             <% if (pedido.complemento) { %>
 
@@ -377,15 +415,18 @@
 
                             <% } %>
 
+
                             <p>
                                 <%= pedido.bairro %>
                             </p>
+
 
                             <p>
                                 <%= pedido.cidade %>
                                 -
                                 <%= pedido.estado %>
                             </p>
+
 
                             <p>
                                 CEP:
@@ -395,6 +436,9 @@
                         </div>
 
                     </section>
+
+
+                    <!-- OBSERVAÇÃO -->
 
                     <% if (pedido.observacao) { %>
 
@@ -416,13 +460,91 @@
 
                     <% } %>
 
+
+                    <!-- CANCELAMENTO -->
+
+                    <% if (
+                        !pedido.estoque_restituido &&
+                        (
+                            pedido.status === 'Pendente' ||
+                            pedido.status === 'Cancelado'
+                        )
+                    ) { %>
+
+                        <section
+                            class="
+                                pedido-bloco
+                                pedido-bloco-cancelamento
+                            "
+                        >
+
+                            <div class="pedido-bloco-cabecalho">
+
+                                <h2>
+                                    Cancelamento
+                                </h2>
+
+                            </div>
+
+
+                            <% if (pedido.status === 'Pendente') { %>
+
+                                <p class="pedido-cancelamento-texto">
+
+                                    Cancela o pedido e devolve
+                                    todas as unidades ao estoque.
+
+                                </p>
+
+                            <% } else { %>
+
+                                <p class="pedido-cancelamento-texto">
+
+                                    Este pedido já está cancelado,
+                                    mas o estoque ainda não foi
+                                    restituído.
+
+                                </p>
+
+                            <% } %>
+
+
+                            <form
+                                action="/admin/pedidos/<%= pedido.id %>/cancelar"
+                                method="POST"
+
+                                onsubmit="return confirm('Confirma o cancelamento e a restituição do estoque?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="pedido-cancelar-botao"
+                                >
+
+                                    <%= pedido.status === 'Pendente'
+                                        ? 'Cancelar e restituir estoque'
+                                        : 'Restituir estoque'
+                                    %>
+
+                                </button>
+
+                            </form>
+
+                        </section>
+
+                    <% } %>
+
                 </div>
+
 
                 <!-- ======================================
                      LATERAL
                 ======================================= -->
 
                 <aside class="pedido-lateral">
+
+
+                    <!-- RESUMO -->
 
                     <section class="pedido-bloco">
 
@@ -433,6 +555,7 @@
                             </h2>
 
                         </div>
+
 
                         <div class="pedido-valores">
 
@@ -448,6 +571,7 @@
 
                             </div>
 
+
                             <div>
 
                                 <span>
@@ -460,6 +584,7 @@
 
                             </div>
 
+
                             <div>
 
                                 <span>
@@ -471,6 +596,7 @@
                                 </strong>
 
                             </div>
+
 
                             <% if (pedido.cupom_codigo) { %>
 
@@ -488,6 +614,7 @@
 
                             <% } %>
 
+
                             <div class="pedido-valor-total">
 
                                 <span>
@@ -504,58 +631,362 @@
 
                     </section>
 
-                    <!-- STATUS -->
+
+                    <!-- ==================================
+                         PRÓXIMA ETAPA
+                    =================================== -->
 
                     <section class="pedido-bloco">
 
                         <div class="pedido-bloco-cabecalho">
 
                             <h2>
-                                Atualizar status
+                                Próxima etapa
                             </h2>
 
                         </div>
 
-                        <form
-                            action="/admin/pedidos/<%= pedido.id %>/status"
-                            method="POST"
-                            class="pedido-status-form"
-                        >
 
-                            <select
-                                name="status"
-                                required
+                        <% if (pedido.status === 'Pendente') { %>
+
+                            <div class="pedido-fluxo-info">
+
+                                <strong>
+                                    Aguardando pagamento
+                                </strong>
+
+                                <p>
+                                    O pedido seguirá para
+                                    separação após a confirmação
+                                    do pagamento.
+                                </p>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (pedido.status === 'Pago') { %>
+
+                            <div class="pedido-fluxo-info">
+
+                                <strong>
+                                    Pagamento confirmado
+                                </strong>
+
+                                <p>
+                                    O pedido já pode começar
+                                    a ser separado.
+                                </p>
+
+                            </div>
+
+
+                            <form
+                                action="/admin/pedidos/<%= pedido.id %>/status"
+                                method="POST"
                             >
 
-                                <% [
-    'Pendente',
-    'Pago',
-    'Preparando',
-    'Enviado',
-    'Entregue'
-].forEach((status) => { %>
+                                <input
+                                    type="hidden"
+                                    name="status"
+                                    value="Preparando"
+                                >
 
-                                    <option
-                                        value="<%= status %>"
-                                        <%= pedido.status === status
-                                            ? 'selected'
-                                            : ''
-                                        %>
+                                <button
+                                    type="submit"
+                                    class="pedido-acao-principal"
+                                >
+                                    Iniciar preparação
+                                </button>
+
+                            </form>
+
+                        <% } %>
+
+
+                        <% if (pedido.status === 'Preparando') { %>
+
+                            <div class="pedido-fluxo-info">
+
+                                <strong>
+                                    Pedido em preparação
+                                </strong>
+
+                                <% if (pedido.codigo_rastreio) { %>
+
+                                    <p>
+                                        O rastreio já foi informado.
+                                        O pedido pode ser marcado
+                                        como enviado.
+                                    </p>
+
+                                <% } else { %>
+
+                                    <p>
+                                        Informe o código de rastreio
+                                        antes de marcar o pedido
+                                        como enviado.
+                                    </p>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <% if (pedido.codigo_rastreio) { %>
+
+                                <form
+                                    action="/admin/pedidos/<%= pedido.id %>/status"
+                                    method="POST"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="status"
+                                        value="Enviado"
                                     >
-                                        <%= status %>
-                                    </option>
 
-                                <% }) %>
+                                    <button
+                                        type="submit"
+                                        class="pedido-acao-principal"
+                                    >
+                                        Marcar como enviado
+                                    </button>
 
-                            </select>
+                                </form>
 
-                            <button type="submit">
-                                Atualizar status
-                            </button>
+                            <% } %>
 
-                        </form>
+                        <% } %>
+
+
+                        <% if (pedido.status === 'Enviado') { %>
+
+                            <div class="pedido-fluxo-info">
+
+                                <strong>
+                                    Pedido enviado
+                                </strong>
+
+                                <p>
+                                    Quando o cliente receber
+                                    a compra, finalize o pedido.
+                                </p>
+
+                            </div>
+
+
+                            <form
+                                action="/admin/pedidos/<%= pedido.id %>/status"
+                                method="POST"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="status"
+                                    value="Entregue"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="pedido-acao-principal"
+                                >
+                                    Marcar como entregue
+                                </button>
+
+                            </form>
+
+                        <% } %>
+
+
+                        <% if (pedido.status === 'Entregue') { %>
+
+                            <div class="pedido-fluxo-info">
+
+                                <strong>
+                                    Pedido concluído
+                                </strong>
+
+                                <p>
+                                    Este pedido já foi marcado
+                                    como entregue.
+                                </p>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (pedido.status === 'Cancelado') { %>
+
+                            <div class="pedido-fluxo-info">
+
+                                <strong>
+                                    Pedido cancelado
+                                </strong>
+
+                                <p>
+                                    Este pedido não pode
+                                    ser reativado.
+                                </p>
+
+                            </div>
+
+                        <% } %>
 
                     </section>
+
+
+                    <!-- ==================================
+                         RASTREAMENTO
+                    =================================== -->
+
+                    <% if (podeRastrear) { %>
+
+                        <section class="pedido-bloco">
+
+                            <div class="pedido-bloco-cabecalho">
+
+                                <h2>
+                                    Rastreamento
+                                </h2>
+
+                            </div>
+
+
+                            <% if (pedido.codigo_rastreio) { %>
+
+                                <div class="pedido-rastreio-atual">
+
+                                    <span>
+                                        Código atual
+                                    </span>
+
+                                    <strong>
+                                        <%= pedido.codigo_rastreio %>
+                                    </strong>
+
+
+                                    <% if (
+                                        pedido.rastreio_atualizado_em_formatado
+                                    ) { %>
+
+                                        <small>
+
+                                            Atualizado em
+                                            <%= pedido.rastreio_atualizado_em_formatado %>
+
+                                        </small>
+
+                                    <% } %>
+
+                                </div>
+
+                            <% } %>
+
+
+                            <form
+                                action="/admin/pedidos/<%= pedido.id %>/rastreio"
+                                method="POST"
+                                class="pedido-rastreio-form"
+                            >
+
+                                <label for="codigoRastreio">
+                                    Código de rastreio
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="codigoRastreio"
+                                    name="codigo_rastreio"
+                                    maxlength="100"
+                                    value="<%= pedido.codigo_rastreio || '' %>"
+                                    placeholder="Ex.: BR123456789BR"
+                                    required
+                                >
+
+                                <button
+                                    type="submit"
+                                >
+                                    <%= pedido.codigo_rastreio
+                                        ? 'Atualizar rastreio'
+                                        : 'Salvar rastreio'
+                                    %>
+                                </button>
+
+                            </form>
+
+
+                            <p class="pedido-rastreio-aviso">
+
+                                Futuramente este código
+                                também será enviado
+                                automaticamente ao WhatsApp
+                                do cliente.
+
+                            </p>
+
+                        </section>
+
+                    <% } %>
+
+
+                    <!-- ==================================
+                         ATUALIZAÇÃO MANUAL
+                    =================================== -->
+
+                    <% if (statusDisponiveis.length > 0) { %>
+
+                        <section class="pedido-bloco">
+
+                            <div class="pedido-bloco-cabecalho">
+
+                                <h2>
+                                    Atualizar status
+                                </h2>
+
+                            </div>
+
+
+                            <form
+                                action="/admin/pedidos/<%= pedido.id %>/status"
+                                method="POST"
+                                class="pedido-status-form"
+                            >
+
+                                <select
+                                    name="status"
+                                    required
+                                >
+
+                                    <% statusDisponiveis.forEach((status) => { %>
+
+                                        <option
+                                            value="<%= status %>"
+
+                                            <%= pedido.status === status
+                                                ? 'selected'
+                                                : ''
+                                            %>
+                                        >
+                                            <%= status %>
+                                        </option>
+
+                                    <% }) %>
+
+                                </select>
+
+
+                                <button type="submit">
+                                    Atualizar status
+                                </button>
+
+                            </form>
+
+                        </section>
+
+                    <% } %>
 
                 </aside>
 

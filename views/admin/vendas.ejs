@@ -1,14 +1,73 @@
 <%- include('../partials/header') %>
 
+<%
+    /*
+     * Separação visual das vendas do site.
+     *
+     * Pago       = aguardando separação
+     * Preparando = sendo preparado
+     * Enviado    = já despachado
+     * Entregue   = finalizado
+     *
+     * Vendas físicas/externas continuam
+     * aparecendo no histórico normalmente.
+     */
+
+    const vendasASeparar =
+        vendas.filter(
+            venda =>
+                venda.tipo_registro === 'pedido' &&
+                venda.status === 'Pago'
+        );
+
+
+    const vendasPreparando =
+        vendas.filter(
+            venda =>
+                venda.tipo_registro === 'pedido' &&
+                venda.status === 'Preparando'
+        );
+
+
+    const vendasEnviadas =
+        vendas.filter(
+            venda =>
+                venda.tipo_registro === 'pedido' &&
+                venda.status === 'Enviado'
+        );
+
+
+    const vendasConcluidas =
+        vendas.filter(
+            venda =>
+                venda.tipo_registro === 'pedido' &&
+                venda.status === 'Entregue'
+        );
+
+
+    const vendasManuais =
+        vendas.filter(
+            venda =>
+                venda.tipo_registro === 'manual'
+        );
+%>
+
+
 <div class="admin-layout">
 
     <%- include('../partials/admin-sidebar', {
         secaoAdmin: 'vendas'
     }) %>
 
+
     <main class="admin-pagina admin-conteudo">
 
         <div class="admin-container">
+
+
+            <!-- ==========================================
+                 TOPO
+            =========================================== -->
 
             <div class="admin-topo">
 
@@ -23,11 +82,13 @@
                     </h1>
 
                     <p>
-                        Acompanhe o desempenho das
-                        vendas da Manto 10.
+                        Acompanhe vendas do site,
+                        preparação, envio e vendas
+                        registradas manualmente.
                     </p>
 
                 </div>
+
 
                 <a
                     href="/admin/vendas/nova"
@@ -42,13 +103,17 @@
             <% if (sucesso) { %>
 
                 <div class="admin-alerta-sucesso">
+
                     Venda registrada com sucesso.
+
                 </div>
 
             <% } %>
 
 
-            <!-- RESUMO -->
+            <!-- ==========================================
+                 RESUMO FINANCEIRO
+            =========================================== -->
 
             <section class="vendas-resumo">
 
@@ -122,27 +187,399 @@
             </section>
 
 
-            <section class="vendas-total-pedidos">
+            <!-- ==========================================
+                 OPERAÇÃO
+            =========================================== -->
 
-                <div>
+            <section class="vendas-operacao">
 
-                    <span>
-                        Vendas contabilizadas
-                    </span>
+                <div class="vendas-operacao-topo">
 
-                    <strong>
-                        <%= resumo.total_vendas %>
+                    <div>
+
+                        <span>
+                            OPERAÇÃO
+                        </span>
+
+                        <h2>
+                            Pedidos vendidos pelo site
+                        </h2>
+
+                        <p>
+                            Controle a separação e o envio
+                            dos pedidos já pagos.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="vendas-operacao-resumo">
+
+
+                    <a
+                        href="#vendas-a-separar"
+                        class="vendas-operacao-card"
+                    >
+
+                        <span>
+                            A separar
+                        </span>
+
+                        <strong>
+                            <%= vendasASeparar.length %>
+                        </strong>
+
+                        <small>
+                            Pagamento confirmado
+                        </small>
+
+                    </a>
+
+
+                    <a
+                        href="#vendas-preparando"
+                        class="vendas-operacao-card"
+                    >
+
+                        <span>
+                            Preparando
+                        </span>
+
+                        <strong>
+                            <%= vendasPreparando.length %>
+                        </strong>
+
+                        <small>
+                            Em separação
+                        </small>
+
+                    </a>
+
+
+                    <a
+                        href="#vendas-enviadas"
+                        class="vendas-operacao-card"
+                    >
+
+                        <span>
+                            Enviadas
+                        </span>
+
+                        <strong>
+                            <%= vendasEnviadas.length %>
+                        </strong>
+
+                        <small>
+                            Aguardando entrega
+                        </small>
+
+                    </a>
+
+
+                    <a
+                        href="#vendas-concluidas"
+                        class="vendas-operacao-card"
+                    >
+
+                        <span>
+                            Entregues
+                        </span>
+
+                        <strong>
+                            <%= vendasConcluidas.length %>
+                        </strong>
+
+                        <small>
+                            Pedidos finalizados
+                        </small>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <!-- ==========================================
+                 FUNÇÃO PARA CARD
+            =========================================== -->
+
+            <%
+                function renderVendaSite(venda) {
+            %>
+
+                <article class="venda-item">
+
+                    <div class="venda-numero">
+
+                        <span>
+                            Pedido
+                        </span>
+
+                        <strong>
+                            #<%= venda.numero_pedido %>
+                        </strong>
+
+                    </div>
+
+
+                    <div class="venda-cliente">
+
+                        <span>
+                            Cliente
+                        </span>
+
+                        <strong>
+                            <%= venda.cliente_nome %>
+                        </strong>
+
+                        <% if (venda.cliente_email) { %>
+
+                            <small>
+                                <%= venda.cliente_email %>
+                            </small>
+
+                        <% } %>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Itens
+                        </span>
+
+                        <strong>
+                            <%= venda.total_itens %>
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Data
+                        </span>
+
+                        <strong>
+                            <%= venda.data_formatada %>
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Status
+                        </span>
+
+                        <strong class="venda-status">
+                            <%= venda.status %>
+                        </strong>
+
+                    </div>
+
+
+                    <div class="venda-valor">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong>
+                            <%= venda.total_formatado %>
+                        </strong>
+
+                    </div>
+
+
+                    <a
+                        href="/admin/pedidos/<%= venda.id %>"
+                        class="venda-detalhes"
+                    >
+                        Ver detalhes
+                    </a>
+
+                </article>
+
+            <%
+                }
+            %>
+
+
+            <!-- ==========================================
+                 A SEPARAR
+            =========================================== -->
+
+            <section
+                class="vendas-bloco"
+                id="vendas-a-separar"
+            >
+
+                <div class="vendas-bloco-topo">
+
+                    <div>
+
+                        <span>
+                            AÇÃO NECESSÁRIA
+                        </span>
+
+                        <h2>
+                            Aguardando separação
+                        </h2>
+
+                    </div>
+
+                    <strong class="vendas-contador-status">
+                        <%= vendasASeparar.length %>
                     </strong>
 
                 </div>
 
-                <p>
-                    Inclui pedidos confirmados do site
-                    e vendas registradas manualmente.
-                </p>
+
+                <% if (vendasASeparar.length > 0) { %>
+
+                    <div class="vendas-lista">
+
+                        <% vendasASeparar.forEach((venda) => { %>
+
+                            <% renderVendaSite(venda); %>
+
+                        <% }) %>
+
+                    </div>
+
+                <% } else { %>
+
+                    <div class="vendas-status-vazio">
+
+                        Nenhum pedido aguardando separação.
+
+                    </div>
+
+                <% } %>
 
             </section>
 
+
+            <!-- ==========================================
+                 PREPARANDO
+            =========================================== -->
+
+            <section
+                class="vendas-bloco"
+                id="vendas-preparando"
+            >
+
+                <div class="vendas-bloco-topo">
+
+                    <div>
+
+                        <span>
+                            EM ANDAMENTO
+                        </span>
+
+                        <h2>
+                            Preparando
+                        </h2>
+
+                    </div>
+
+                    <strong class="vendas-contador-status">
+                        <%= vendasPreparando.length %>
+                    </strong>
+
+                </div>
+
+
+                <% if (vendasPreparando.length > 0) { %>
+
+                    <div class="vendas-lista">
+
+                        <% vendasPreparando.forEach((venda) => { %>
+
+                            <% renderVendaSite(venda); %>
+
+                        <% }) %>
+
+                    </div>
+
+                <% } else { %>
+
+                    <div class="vendas-status-vazio">
+
+                        Nenhum pedido em preparação.
+
+                    </div>
+
+                <% } %>
+
+            </section>
+
+
+            <!-- ==========================================
+                 ENVIADAS
+            =========================================== -->
+
+            <section
+                class="vendas-bloco"
+                id="vendas-enviadas"
+            >
+
+                <div class="vendas-bloco-topo">
+
+                    <div>
+
+                        <span>
+                            ENVIO
+                        </span>
+
+                        <h2>
+                            Enviadas
+                        </h2>
+
+                    </div>
+
+                    <strong class="vendas-contador-status">
+                        <%= vendasEnviadas.length %>
+                    </strong>
+
+                </div>
+
+
+                <% if (vendasEnviadas.length > 0) { %>
+
+                    <div class="vendas-lista">
+
+                        <% vendasEnviadas.forEach((venda) => { %>
+
+                            <% renderVendaSite(venda); %>
+
+                        <% }) %>
+
+                    </div>
+
+                <% } else { %>
+
+                    <div class="vendas-status-vazio">
+
+                        Nenhum pedido enviado.
+
+                    </div>
+
+                <% } %>
+
+            </section>
+
+
+            <!-- ==========================================
+                 VENDAS MANUAIS
+            =========================================== -->
 
             <section class="vendas-bloco">
 
@@ -151,37 +588,34 @@
                     <div>
 
                         <span>
-                            HISTÓRICO
+                            LOJA / EXTERNO
                         </span>
 
                         <h2>
-                            Últimas vendas
+                            Vendas manuais
                         </h2>
 
                     </div>
 
-                    <a href="/admin/pedidos?status=Pago">
-                        Ver pedidos pagos
-                    </a>
+                    <strong class="vendas-contador-status">
+                        <%= vendasManuais.length %>
+                    </strong>
 
                 </div>
 
 
-                <% if (vendas.length > 0) { %>
+                <% if (vendasManuais.length > 0) { %>
 
                     <div class="vendas-lista">
 
-                        <% vendas.forEach((venda) => { %>
+                        <% vendasManuais.forEach((venda) => { %>
 
                             <article class="venda-item">
 
                                 <div class="venda-numero">
 
                                     <span>
-                                        <%= venda.tipo_registro === 'pedido'
-                                            ? 'Pedido'
-                                            : 'Venda'
-                                        %>
+                                        Venda
                                     </span>
 
                                     <strong>
@@ -201,16 +635,7 @@
                                         <%= venda.cliente_nome %>
                                     </strong>
 
-                                    <% if (venda.cliente_email) { %>
-
-                                        <small>
-                                            <%= venda.cliente_email %>
-                                        </small>
-
-                                    <% } %>
-
                                     <small>
-                                        Origem:
                                         <%= venda.origem %>
                                     </small>
 
@@ -269,25 +694,12 @@
                                 </div>
 
 
-                                <% if (venda.tipo_registro === 'pedido') { %>
-
-    <a
-        href="/admin/pedidos/<%= venda.id %>"
-        class="venda-detalhes"
-    >
-        Ver detalhes
-    </a>
-
-<% } else { %>
-
-    <a
-        href="/admin/vendas/manuais/<%= venda.id %>"
-        class="venda-detalhes"
-    >
-        Ver detalhes
-    </a>
-
-<% } %>
+                                <a
+                                    href="/admin/vendas/manuais/<%= venda.id %>"
+                                    class="venda-detalhes"
+                                >
+                                    Ver detalhes
+                                </a>
 
                             </article>
 
@@ -297,16 +709,64 @@
 
                 <% } else { %>
 
-                    <div class="admin-sem-resultados">
+                    <div class="vendas-status-vazio">
+
+                        Nenhuma venda manual registrada.
+
+                    </div>
+
+                <% } %>
+
+            </section>
+
+
+            <!-- ==========================================
+                 ENTREGUES
+            =========================================== -->
+
+            <section
+                class="vendas-bloco"
+                id="vendas-concluidas"
+            >
+
+                <div class="vendas-bloco-topo">
+
+                    <div>
+
+                        <span>
+                            HISTÓRICO
+                        </span>
 
                         <h2>
-                            Nenhuma venda registrada
+                            Pedidos entregues
                         </h2>
 
-                        <p>
-                            Pedidos pagos e vendas
-                            manuais aparecerão aqui.
-                        </p>
+                    </div>
+
+                    <strong class="vendas-contador-status">
+                        <%= vendasConcluidas.length %>
+                    </strong>
+
+                </div>
+
+
+                <% if (vendasConcluidas.length > 0) { %>
+
+                    <div class="vendas-lista">
+
+                        <% vendasConcluidas.forEach((venda) => { %>
+
+                            <% renderVendaSite(venda); %>
+
+                        <% }) %>
+
+                    </div>
+
+                <% } else { %>
+
+                    <div class="vendas-status-vazio">
+
+                        Nenhum pedido entregue.
 
                     </div>
 

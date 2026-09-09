@@ -56,7 +56,7 @@ const AdminVendaController = {
                         .obterResumo(),
 
                     AdminVenda
-                        .listarUltimas(20)
+                        .listarUltimas(50)
 
                 ]);
 

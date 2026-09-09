@@ -1,5 +1,6 @@
 const pool = require('../config/database');
 
+
 const Usuario = {
 
     // ======================================================
@@ -122,6 +123,7 @@ const Usuario = {
                     p.numero_pedido,
                     p.total,
                     p.status,
+                    p.codigo_rastreio,
                     p.criado_em,
 
                     (
@@ -169,12 +171,19 @@ const Usuario = {
                 SELECT
                     p.id,
                     p.numero_pedido,
+
                     p.subtotal,
                     p.frete,
                     p.desconto,
                     p.total,
+
                     p.status,
+
+                    p.codigo_rastreio,
+                    p.rastreio_atualizado_em,
+
                     p.observacao,
+
                     p.criado_em,
                     p.atualizado_em,
 
@@ -245,7 +254,8 @@ const Usuario = {
                         SELECT pi.caminho
                         FROM produto_imagens pi
 
-                        WHERE pi.produto_id = ip.produto_id
+                        WHERE
+                            pi.produto_id = ip.produto_id
 
                         ORDER BY
                             pi.principal DESC,
@@ -268,5 +278,6 @@ const Usuario = {
     }
 
 };
+
 
 module.exports = Usuario;

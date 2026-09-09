@@ -3,45 +3,61 @@ const AdminPedido =
         '../models/AdminPedido'
     );
 
-    const Pedido =
-    require('../models/Pedido');
+const Pedido =
+    require(
+        '../models/Pedido'
+    );
+
 
 // ======================================================
 // FORMATAR MOEDA
 // ======================================================
 
-function formatarMoeda(valor) {
+function formatarMoeda(
+    valor
+) {
 
     return Number(
         valor || 0
     ).toLocaleString(
         'pt-BR',
         {
-            style: 'currency',
-            currency: 'BRL'
+            style:
+                'currency',
+
+            currency:
+                'BRL'
         }
     );
 }
+
 
 // ======================================================
 // FORMATAR DATA
 // ======================================================
 
-function formatarDataHora(data) {
+function formatarDataHora(
+    data
+) {
 
     if (!data) {
         return '';
     }
 
+
     return new Date(data)
         .toLocaleString(
             'pt-BR',
             {
-                dateStyle: 'short',
-                timeStyle: 'short'
+                dateStyle:
+                    'short',
+
+                timeStyle:
+                    'short'
             }
         );
 }
+
 
 // ======================================================
 // CONTROLLER
@@ -63,15 +79,22 @@ const AdminPedidoController = {
 
             const busca =
                 String(
-                    req.query.busca || ''
+                    req.query.busca ||
+                    ''
                 )
                     .trim()
-                    .slice(0, 100);
+                    .slice(
+                        0,
+                        100
+                    );
+
 
             const status =
                 String(
-                    req.query.status || ''
+                    req.query.status ||
+                    ''
                 );
+
 
             const ordem =
                 String(
@@ -79,12 +102,15 @@ const AdminPedidoController = {
                     'recentes'
                 );
 
+
             const pedidosBanco =
-                await AdminPedido.listar({
-                    busca,
-                    status,
-                    ordem
-                });
+                await AdminPedido
+                    .listar({
+                        busca,
+                        status,
+                        ordem
+                    });
+
 
             const pedidos =
                 pedidosBanco.map(
@@ -107,9 +133,9 @@ const AdminPedidoController = {
                             formatarDataHora(
                                 pedido.criado_em
                             )
-
                     })
                 );
+
 
             return res.render(
                 'admin/pedidos',
@@ -132,9 +158,9 @@ const AdminPedidoController = {
                     sucesso:
                         req.query.sucesso ===
                         'status'
-
                 }
             );
+
 
         } catch (erro) {
 
@@ -142,74 +168,72 @@ const AdminPedidoController = {
         }
     },
 
+
     // ==================================================
-// CANCELAR / RESTITUIR ESTOQUE
-// ==================================================
+    // CANCELAR / RESTITUIR ESTOQUE
+    // ==================================================
 
-async cancelarPedido(
-    req,
-    res,
-    next
-) {
+    async cancelarPedido(
+        req,
+        res,
+        next
+    ) {
 
-    try {
+        try {
 
-        const pedidoId =
-            Number(
-                req.params.id
+            const pedidoId =
+                Number(
+                    req.params.id
+                );
+
+
+            if (
+                !Number.isInteger(
+                    pedidoId
+                ) ||
+                pedidoId <= 0
+            ) {
+
+                return res
+                    .status(400)
+                    .send(
+                        'Pedido inválido.'
+                    );
+            }
+
+
+            await Pedido
+                .cancelarERestituirEstoque({
+
+                    pedidoId,
+
+                    somentePendente:
+                        false
+                });
+
+
+            return res.redirect(
+                `/admin/pedidos/${pedidoId}?sucesso=cancelamento`
             );
 
 
-        if (
-            !Number.isInteger(
-                pedidoId
-            ) ||
-            pedidoId <= 0
-        ) {
+        } catch (erro) {
 
-            return res
-                .status(400)
-                .send(
-                    'Pedido inválido.'
+            if (
+                erro.status === 400 ||
+                erro.status === 404
+            ) {
+
+                return res.redirect(
+                    `/admin/pedidos/${req.params.id}?erro=${encodeURIComponent(erro.message)}`
                 );
+            }
+
+
+            return next(erro);
         }
+    },
 
-
-        await Pedido
-            .cancelarERestituirEstoque({
-
-                pedidoId,
-
-                somentePendente:
-                    false
-            });
-
-
-        return res.redirect(
-            `/admin/pedidos/${pedidoId}?sucesso=cancelamento`
-        );
-
-
-    } catch (erro) {
-
-        if (
-            erro.status === 400 ||
-            erro.status === 404
-        ) {
-
-            return res
-                .status(
-                    erro.status
-                )
-                .send(
-                    erro.message
-                );
-        }
-
-
-        return next(erro);
-    }
-},
 
     // ==================================================
     // DETALHES
@@ -228,6 +252,7 @@ async cancelarPedido(
                     req.params.id
                 );
 
+
             if (
                 !Number.isInteger(
                     pedidoId
@@ -241,6 +266,7 @@ async cancelarPedido(
                         'Pedido inválido.'
                     );
             }
+
 
             const [
                 pedidoBanco,
@@ -257,8 +283,8 @@ async cancelarPedido(
                         .listarItens(
                             pedidoId
                         )
-
                 ]);
+
 
             if (!pedidoBanco) {
 
@@ -268,6 +294,7 @@ async cancelarPedido(
                         'Pedido não encontrado.'
                     );
             }
+
 
             const pedido = {
 
@@ -313,9 +340,18 @@ async cancelarPedido(
                         ? formatarDataHora(
                             pedidoBanco.pago_em
                         )
-                        : ''
+                        : '',
 
+                rastreio_atualizado_em_formatado:
+                    pedidoBanco
+                        .rastreio_atualizado_em
+                        ? formatarDataHora(
+                            pedidoBanco
+                                .rastreio_atualizado_em
+                        )
+                        : ''
             };
+
 
             const itens =
                 itensBanco.map(
@@ -332,9 +368,9 @@ async cancelarPedido(
                             formatarMoeda(
                                 item.subtotal
                             )
-
                     })
                 );
+
 
             return res.render(
                 'admin/pedido-detalhe',
@@ -351,16 +387,22 @@ async cancelarPedido(
                     itens,
 
                     sucesso:
-    req.query.sucesso || ''
+                        req.query.sucesso ||
+                        '',
 
+                    erro:
+                        req.query.erro ||
+                        ''
                 }
             );
+
 
         } catch (erro) {
 
             return next(erro);
         }
     },
+
 
     // ==================================================
     // ATUALIZAR STATUS
@@ -379,10 +421,13 @@ async cancelarPedido(
                     req.params.id
                 );
 
+
             const novoStatus =
                 String(
-                    req.body.status || ''
+                    req.body.status ||
+                    ''
                 );
+
 
             if (
                 !Number.isInteger(
@@ -398,45 +443,108 @@ async cancelarPedido(
                     );
             }
 
+
             await AdminPedido
                 .atualizarStatus(
                     pedidoId,
                     novoStatus
                 );
 
+
             return res.redirect(
                 `/admin/pedidos/${pedidoId}?sucesso=status`
             );
 
+
         } catch (erro) {
 
             if (
-                erro.status === 400
+                erro.status === 400 ||
+                erro.status === 404
+            ) {
+
+                return res.redirect(
+                    `/admin/pedidos/${req.params.id}?erro=${encodeURIComponent(erro.message)}`
+                );
+            }
+
+
+            return next(erro);
+        }
+    },
+
+
+    // ==================================================
+    // SALVAR RASTREIO
+    // ==================================================
+
+    async salvarRastreio(
+        req,
+        res,
+        next
+    ) {
+
+        try {
+
+            const pedidoId =
+                Number(
+                    req.params.id
+                );
+
+
+            const codigoRastreio =
+                String(
+                    req.body.codigo_rastreio ||
+                    ''
+                );
+
+
+            if (
+                !Number.isInteger(
+                    pedidoId
+                ) ||
+                pedidoId <= 0
             ) {
 
                 return res
                     .status(400)
                     .send(
-                        erro.message
+                        'Pedido inválido.'
                     );
             }
 
+
+            await AdminPedido
+                .salvarRastreio(
+                    pedidoId,
+                    codigoRastreio
+                );
+
+
+            return res.redirect(
+                `/admin/pedidos/${pedidoId}?sucesso=rastreio`
+            );
+
+
+        } catch (erro) {
+
             if (
+                erro.status === 400 ||
                 erro.status === 404
             ) {
 
-                return res
-                    .status(404)
-                    .send(
-                        erro.message
-                    );
+                return res.redirect(
+                    `/admin/pedidos/${req.params.id}?erro=${encodeURIComponent(erro.message)}`
+                );
             }
+
 
             return next(erro);
         }
     }
 
 };
+
 
 module.exports =
     AdminPedidoController;

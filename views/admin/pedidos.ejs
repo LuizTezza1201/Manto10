@@ -16,31 +16,25 @@
 
             <div class="admin-topo">
 
-    <div>
+                <div>
 
-        <span class="admin-etiqueta">
-            ADMINISTRADOR
-        </span>
+                    <span class="admin-etiqueta">
+                        ADMINISTRADOR
+                    </span>
 
-        <h1>
-            Pedidos
-        </h1>
+                    <h1>
+                        Pedidos
+                    </h1>
 
-        <p>
-            Acompanhe os pedidos realizados
-            na loja.
-        </p>
+                    <p>
+                        Acompanhe pedidos aguardando
+                        pagamento e pedidos cancelados.
+                    </p>
 
-    </div>
+                </div>
 
-    <a
-        href="/admin/pedidos?status=Pago"
-        class="admin-botao-principal"
-    >
-        Pedidos pagos
-    </a>
+            </div>
 
-</div>
 
             <!-- ==========================================
                  MENSAGEM
@@ -56,6 +50,7 @@
                 </div>
 
             <% } %>
+
 
             <!-- ==========================================
                  FILTROS
@@ -83,6 +78,7 @@
 
                 </div>
 
+
                 <div>
 
                     <label for="statusPedido">
@@ -98,17 +94,15 @@
                             Todos
                         </option>
 
+
                         <% [
                             'Pendente',
-                            'Pago',
-                            'Preparando',
-                            'Enviado',
-                            'Entregue',
                             'Cancelado'
                         ].forEach((status) => { %>
 
                             <option
                                 value="<%= status %>"
+
                                 <%= filtros.status === status
                                     ? 'selected'
                                     : ''
@@ -123,6 +117,7 @@
 
                 </div>
 
+
                 <div>
 
                     <label for="ordemPedido">
@@ -136,6 +131,7 @@
 
                         <option
                             value="recentes"
+
                             <%= filtros.ordem === 'recentes'
                                 ? 'selected'
                                 : ''
@@ -144,8 +140,10 @@
                             Mais recentes
                         </option>
 
+
                         <option
                             value="antigos"
+
                             <%= filtros.ordem === 'antigos'
                                 ? 'selected'
                                 : ''
@@ -154,8 +152,10 @@
                             Mais antigos
                         </option>
 
+
                         <option
                             value="maior_valor"
+
                             <%= filtros.ordem === 'maior_valor'
                                 ? 'selected'
                                 : ''
@@ -164,8 +164,10 @@
                             Maior valor
                         </option>
 
+
                         <option
                             value="menor_valor"
+
                             <%= filtros.ordem === 'menor_valor'
                                 ? 'selected'
                                 : ''
@@ -178,12 +180,14 @@
 
                 </div>
 
+
                 <button
                     type="submit"
                     class="admin-botao-filtrar"
                 >
                     Filtrar
                 </button>
+
 
                 <a
                     href="/admin/pedidos"
@@ -193,6 +197,27 @@
                 </a>
 
             </form>
+
+
+            <!-- ==========================================
+                 EXPLICAÇÃO
+            =========================================== -->
+
+            <div class="pedidos-aviso-fluxo">
+
+                <strong>
+                    Organização dos pedidos
+                </strong>
+
+                <p>
+                    Quando o pagamento é confirmado,
+                    o pedido deixa esta página e passa
+                    automaticamente para a seção
+                    de Vendas.
+                </p>
+
+            </div>
+
 
             <!-- ==========================================
                  TOTAL
@@ -204,6 +229,7 @@
                 pedido(s) encontrado(s)
 
             </p>
+
 
             <!-- ==========================================
                  LISTA
@@ -217,13 +243,17 @@
 
                         <article class="pedido-card">
 
+
                             <div class="pedido-principal">
 
                                 <div class="pedido-card-topo">
 
                                     <span class="pedido-numero">
+
                                         #<%= pedido.numero_pedido %>
+
                                     </span>
+
 
                                     <span
                                         class="
@@ -240,19 +270,23 @@
 
                                 </div>
 
+
                                 <h2>
                                     <%= pedido.cliente_nome %>
                                 </h2>
 
+
                                 <p>
                                     <%= pedido.cliente_email %>
                                 </p>
+
 
                                 <small>
                                     <%= pedido.criado_em_formatado %>
                                 </small>
 
                             </div>
+
 
                             <div class="pedido-resumo">
 
@@ -268,6 +302,7 @@
 
                                 </div>
 
+
                                 <div>
 
                                     <span>
@@ -279,6 +314,7 @@
                                     </strong>
 
                                 </div>
+
 
                                 <div>
 
@@ -293,6 +329,7 @@
                                 </div>
 
                             </div>
+
 
                             <div class="pedido-acoes">
 
@@ -320,8 +357,11 @@
                     </h2>
 
                     <p>
-                        Quando houver pedidos,
-                        eles aparecerão aqui.
+
+                        Não existem pedidos pendentes
+                        ou cancelados para os filtros
+                        selecionados.
+
                     </p>
 
                 </section>

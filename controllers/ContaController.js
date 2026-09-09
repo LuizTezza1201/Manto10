@@ -1,7 +1,9 @@
-const Usuario = require('../models/Usuario');
+const Usuario =
+    require('../models/Usuario');
 
 const Pedido =
     require('../models/Pedido');
+
 
 // ======================================================
 // FORMATAR MOEDA
@@ -9,14 +11,15 @@ const Pedido =
 
 function formatarMoeda(valor) {
 
-    return Number(valor || 0)
-        .toLocaleString(
-            'pt-BR',
-            {
-                style: 'currency',
-                currency: 'BRL'
-            }
-        );
+    return Number(
+        valor || 0
+    ).toLocaleString(
+        'pt-BR',
+        {
+            style: 'currency',
+            currency: 'BRL'
+        }
+    );
 }
 
 
@@ -31,7 +34,9 @@ function formatarData(data) {
     }
 
     return new Date(data)
-        .toLocaleDateString('pt-BR');
+        .toLocaleDateString(
+            'pt-BR'
+        );
 }
 
 
@@ -66,27 +71,34 @@ const ContaController = {
     // MINHA CONTA
     // ==================================================
 
-    async inicio(req, res, next) {
+    async inicio(
+        req,
+        res,
+        next
+    ) {
 
         try {
 
             const usuarioId =
                 req.session.usuario.id;
 
+
             const [
                 usuario,
                 pedidosBanco
-            ] = await Promise.all([
+            ] =
+                await Promise.all([
 
-                Usuario.buscarPorId(
-                    usuarioId
-                ),
+                    Usuario.buscarPorId(
+                        usuarioId
+                    ),
 
-                Usuario.listarPedidos(
-                    usuarioId
-                )
+                    Usuario.listarPedidos(
+                        usuarioId
+                    )
 
-            ]);
+                ]);
+
 
             if (!usuario) {
 
@@ -97,6 +109,7 @@ const ContaController = {
                     );
             }
 
+
             const pedidos =
                 pedidosBanco.map(
                     pedido => ({
@@ -105,7 +118,8 @@ const ContaController = {
 
                         total_itens:
                             Number(
-                                pedido.total_itens || 0
+                                pedido.total_itens ||
+                                0
                             ),
 
                         total_formatado:
@@ -120,6 +134,7 @@ const ContaController = {
 
                     })
                 );
+
 
             return res.render(
                 'conta/inicio',
@@ -141,6 +156,7 @@ const ContaController = {
 
                 }
             );
+
 
         } catch (erro) {
 
@@ -166,8 +182,10 @@ const ContaController = {
                     req.params.id
                 );
 
+
             const usuarioId =
                 req.session.usuario.id;
+
 
             if (
                 !Number.isInteger(
@@ -183,6 +201,7 @@ const ContaController = {
                     );
             }
 
+
             const pedidoBanco =
                 await Usuario
                     .buscarPedidoDoUsuario(
@@ -190,15 +209,14 @@ const ContaController = {
                         usuarioId
                     );
 
+
             /*
-             * IMPORTANTE:
-             *
-             * A consulta verifica simultaneamente
+             * A consulta utiliza simultaneamente
              * pedido_id + usuario_id.
              *
-             * Portanto, um cliente não consegue
+             * Dessa forma, um cliente não consegue
              * acessar o pedido de outro usuário
-             * mudando apenas o número da URL.
+             * alterando apenas o número na URL.
              */
 
             if (!pedidoBanco) {
@@ -210,11 +228,13 @@ const ContaController = {
                     );
             }
 
+
             const itensBanco =
                 await Usuario
                     .listarItensPedido(
                         pedidoId
                     );
+
 
             const pedido = {
 
@@ -243,9 +263,19 @@ const ContaController = {
                 criado_em_formatado:
                     formatarDataHora(
                         pedidoBanco.criado_em
-                    )
+                    ),
+
+                rastreio_atualizado_em_formatado:
+                    pedidoBanco
+                        .rastreio_atualizado_em
+                        ? formatarDataHora(
+                            pedidoBanco
+                                .rastreio_atualizado_em
+                        )
+                        : ''
 
             };
+
 
             const itens =
                 itensBanco.map(
@@ -266,6 +296,7 @@ const ContaController = {
                     })
                 );
 
+
             return res.render(
                 'conta/pedido-detalhe',
                 {
@@ -278,10 +309,15 @@ const ContaController = {
 
                     pedido,
 
-                    itens
+                    itens,
+
+                    cancelado:
+                        req.query.cancelado ===
+                        '1'
 
                 }
             );
+
 
         } catch (erro) {
 
@@ -289,89 +325,94 @@ const ContaController = {
         }
     },
 
+
     // ==================================================
-// CANCELAR PEDIDO
-// ==================================================
+    // CANCELAR PEDIDO
+    // ==================================================
 
-async cancelarPedido(
-    req,
-    res,
-    next
-) {
+    async cancelarPedido(
+        req,
+        res,
+        next
+    ) {
 
-    try {
+        try {
 
-        const pedidoId =
-            Number(
-                req.params.id
+            const pedidoId =
+                Number(
+                    req.params.id
+                );
+
+
+            const usuarioId =
+                req.session.usuario.id;
+
+
+            if (
+                !Number.isInteger(
+                    pedidoId
+                ) ||
+                pedidoId <= 0
+            ) {
+
+                return res
+                    .status(400)
+                    .send(
+                        'Pedido inválido.'
+                    );
+            }
+
+
+            await Pedido
+                .cancelarERestituirEstoque({
+
+                    pedidoId,
+
+                    usuarioId,
+
+                    somentePendente:
+                        true
+
+                });
+
+
+            return res.redirect(
+                `/minha-conta/pedidos/${pedidoId}?cancelado=1`
             );
 
-        const usuarioId =
-            req.session.usuario.id;
+
+        } catch (erro) {
+
+            if (
+                erro.status === 400
+            ) {
+
+                return res
+                    .status(400)
+                    .send(
+                        erro.message
+                    );
+            }
 
 
-        if (
-            !Number.isInteger(
-                pedidoId
-            ) ||
-            pedidoId <= 0
-        ) {
+            if (
+                erro.status === 404
+            ) {
 
-            return res
-                .status(400)
-                .send(
-                    'Pedido inválido.'
-                );
+                return res
+                    .status(404)
+                    .send(
+                        erro.message
+                    );
+            }
+
+
+            return next(erro);
         }
-
-
-        await Pedido
-            .cancelarERestituirEstoque({
-
-                pedidoId,
-
-                usuarioId,
-
-                somentePendente:
-                    true
-            });
-
-
-        return res.redirect(
-            `/minha-conta/pedidos/${pedidoId}?cancelado=1`
-        );
-
-
-    } catch (erro) {
-
-        if (
-            erro.status === 400
-        ) {
-
-            return res
-                .status(400)
-                .send(
-                    erro.message
-                );
-        }
-
-
-        if (
-            erro.status === 404
-        ) {
-
-            return res
-                .status(404)
-                .send(
-                    erro.message
-                );
-        }
-
-
-        return next(erro);
     }
-}
 
 };
 
-module.exports = ContaController;
+
+module.exports =
+    ContaController;
