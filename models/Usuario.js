@@ -15,6 +15,7 @@ const Usuario = {
                     id,
                     nome,
                     email,
+                    telefone,
                     senha,
                     tipo,
                     status,
@@ -43,6 +44,7 @@ const Usuario = {
                     id,
                     nome,
                     email,
+                    telefone,
                     tipo,
                     status,
                     criado_em,
@@ -85,6 +87,7 @@ const Usuario = {
     async criar({
         nome,
         email,
+        telefone,
         senha
     }) {
 
@@ -93,15 +96,17 @@ const Usuario = {
                 INSERT INTO usuarios (
                     nome,
                     email,
+                    telefone,
                     senha,
                     tipo,
                     status
                 )
-                VALUES (?, ?, ?, 'Cliente', 'Ativo')
+                VALUES (?, ?, ?, ?, 'Cliente', 'Ativo')
             `,
             [
                 nome,
                 email,
+                telefone,
                 senha
             ]
         );
@@ -171,19 +176,14 @@ const Usuario = {
                 SELECT
                     p.id,
                     p.numero_pedido,
-
                     p.subtotal,
                     p.frete,
                     p.desconto,
                     p.total,
-
                     p.status,
-
                     p.codigo_rastreio,
                     p.rastreio_atualizado_em,
-
                     p.observacao,
-
                     p.criado_em,
                     p.atualizado_em,
 

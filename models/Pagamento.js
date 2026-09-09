@@ -24,7 +24,7 @@ const Pagamento = {
     // ==================================================
 
     async confirmarInfinitePay({
-        usuarioId,
+        usuarioId = null,
         numeroPedido,
         transactionNsu,
         invoiceSlug,
@@ -44,30 +44,51 @@ const Pagamento = {
 
 
             // ==========================================
-            // LOCALIZAR PEDIDO DO CLIENTE
+            // LOCALIZAR PEDIDO
             // ==========================================
 
-            const [pedidos] =
-                await connection.execute(`
-                    SELECT
-                        id,
-                        numero_pedido,
-                        total,
-                        status
+            let sqlPedido = `
+                SELECT
+                    id,
+                    usuario_id,
+                    numero_pedido,
+                    total,
+                    status,
+                    estoque_restituido
 
-                    FROM pedidos
+                FROM pedidos
 
-                    WHERE
-                        numero_pedido = ?
-                        AND usuario_id = ?
+                WHERE numero_pedido = ?
+            `;
 
-                    LIMIT 1
+            const parametros = [
+                numeroPedido
+            ];
 
-                    FOR UPDATE
-                `, [
-                    numeroPedido,
+
+            if (usuarioId !== null) {
+
+                sqlPedido += `
+                    AND usuario_id = ?
+                `;
+
+                parametros.push(
                     usuarioId
-                ]);
+                );
+            }
+
+
+            sqlPedido += `
+                LIMIT 1
+                FOR UPDATE
+            `;
+
+
+            const [pedidos] =
+                await connection.execute(
+                    sqlPedido,
+                    parametros
+                );
 
 
             if (
@@ -84,16 +105,18 @@ const Pagamento = {
             const pedido =
                 pedidos[0];
 
-            if (
-    pedido.status ===
-    'Cancelado'
-) {
 
-    throw criarErro(
-        'Este pedido já foi cancelado e o estoque foi restituído.',
-        409
-    );
-}
+            if (
+                pedido.status ===
+                'Cancelado'
+            ) {
+
+                throw criarErro(
+                    'Este pedido já foi cancelado e o estoque foi restituído.',
+                    409
+                );
+            }
+
 
             // ==========================================
             // CONFERIR VALOR
@@ -137,8 +160,13 @@ const Pagamento = {
                 'credit_card'
             ) {
 
+                /*
+                 * A tabela pagamentos utiliza
+                 * o valor "Cartao" no ENUM.
+                 */
+
                 formaPagamento =
-                    'Cartão';
+                    'Cartao';
 
             } else {
 
@@ -186,7 +214,8 @@ const Pagamento = {
                 ) {
 
                     throw criarErro(
-                        'Este pedido já possui outra transação registrada.'
+                        'Este pedido já possui outra transação registrada.',
+                        409
                     );
                 }
 
@@ -202,7 +231,10 @@ const Pagamento = {
                         transaction_nsu = ?,
                         invoice_slug = ?,
                         comprovante_url = ?,
-                        pago_em = NOW()
+                        pago_em = COALESCE(
+                            pago_em,
+                            NOW()
+                        )
 
                     WHERE id = ?
                 `, [
@@ -269,11 +301,11 @@ const Pagamento = {
                 await connection.execute(`
                     UPDATE pedidos
 
-SET
-    status = 'Pago',
-    expira_em = NULL
+                    SET
+                        status = 'Pago',
+                        expira_em = NULL
 
-WHERE id = ?
+                    WHERE id = ?
                 `, [
                     pedido.id
                 ]);
@@ -287,6 +319,9 @@ WHERE id = ?
             return {
                 pedidoId:
                     pedido.id,
+
+                usuarioId:
+                    pedido.usuario_id,
 
                 numeroPedido:
                     pedido.numero_pedido,

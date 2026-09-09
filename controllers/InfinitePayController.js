@@ -10,6 +10,53 @@ const InfinitePayService =
     );
 
 
+// ======================================================
+// LER CAMPOS DA INFINITEPAY
+// ======================================================
+
+function lerDadosPagamento(
+    origem,
+    origemWebhook = false
+) {
+
+    const orderNsu =
+        String(
+            origem.order_nsu || ''
+        ).trim();
+
+    const transactionNsu =
+        String(
+            origem.transaction_nsu || ''
+        ).trim();
+
+    const invoiceSlug =
+        String(
+            origemWebhook
+                ? origem.invoice_slug || ''
+                : origem.slug || ''
+        ).trim();
+
+    const captureMethod =
+        String(
+            origem.capture_method || ''
+        ).trim();
+
+    const receiptUrl =
+        String(
+            origem.receipt_url || ''
+        ).trim();
+
+
+    return {
+        orderNsu,
+        transactionNsu,
+        invoiceSlug,
+        captureMethod,
+        receiptUrl
+    };
+}
+
+
 const InfinitePayController = {
 
     // ==================================================
@@ -113,7 +160,11 @@ const InfinitePayController = {
 
                             email:
                                 req.session
-                                    .usuario.email
+                                    .usuario.email,
+
+                            telefone:
+                                req.session
+                                    .usuario.telefone
                         },
 
                         endereco: {
@@ -196,49 +247,22 @@ const InfinitePayController = {
 
         try {
 
-            const usuarioId =
-                req.session.usuario.id;
-
-
-            const orderNsu =
-                String(
-                    req.query.order_nsu ||
-                    ''
-                ).trim();
-
-
-            const transactionNsu =
-                String(
-                    req.query.transaction_nsu ||
-                    ''
-                ).trim();
-
-
-            const slug =
-                String(
-                    req.query.slug ||
-                    ''
-                ).trim();
-
-
-            const captureMethodUrl =
-                String(
-                    req.query.capture_method ||
-                    ''
-                ).trim();
-
-
-            const receiptUrl =
-                String(
-                    req.query.receipt_url ||
-                    ''
-                ).trim();
+            const {
+                orderNsu,
+                transactionNsu,
+                invoiceSlug,
+                captureMethod,
+                receiptUrl
+            } =
+                lerDadosPagamento(
+                    req.query
+                );
 
 
             if (
                 !orderNsu ||
                 !transactionNsu ||
-                !slug
+                !invoiceSlug
             ) {
 
                 return res
@@ -261,7 +285,8 @@ const InfinitePayController = {
 
                         transactionNsu,
 
-                        slug
+                        slug:
+                            invoiceSlug
                     });
 
 
@@ -294,15 +319,12 @@ const InfinitePayController = {
                 await Pagamento
                     .confirmarInfinitePay({
 
-                        usuarioId,
-
                         numeroPedido:
                             orderNsu,
 
                         transactionNsu,
 
-                        invoiceSlug:
-                            slug,
+                        invoiceSlug,
 
                         comprovanteUrl:
                             receiptUrl,
@@ -310,7 +332,7 @@ const InfinitePayController = {
                         captureMethod:
                             verificacao
                                 .captureMethod ||
-                            captureMethodUrl,
+                            captureMethod,
 
                         amountCentavos:
                             verificacao.amount
@@ -339,7 +361,8 @@ const InfinitePayController = {
 
             if (
                 erro.status === 400 ||
-                erro.status === 404
+                erro.status === 404 ||
+                erro.status === 409
             ) {
 
                 return res
@@ -353,6 +376,144 @@ const InfinitePayController = {
 
 
             return next(erro);
+        }
+    },
+
+
+    // ==================================================
+    // WEBHOOK DA INFINITEPAY
+    // ==================================================
+
+    async webhook(
+        req,
+        res
+    ) {
+
+        try {
+
+            const {
+                orderNsu,
+                transactionNsu,
+                invoiceSlug,
+                captureMethod,
+                receiptUrl
+            } =
+                lerDadosPagamento(
+                    req.body,
+                    true
+                );
+
+
+            if (
+                !orderNsu ||
+                !transactionNsu ||
+                !invoiceSlug
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+                        message:
+                            'Dados do webhook inválidos.'
+                    });
+            }
+
+
+            // ==========================================
+            // CONFIRMAR DIRETAMENTE COM A INFINITEPAY
+            // ==========================================
+
+            const verificacao =
+                await InfinitePayService
+                    .verificarPagamento({
+
+                        orderNsu,
+
+                        transactionNsu,
+
+                        slug:
+                            invoiceSlug
+                    });
+
+
+            if (
+                !verificacao.success ||
+                !verificacao.paid
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+                        message:
+                            'Pagamento ainda não confirmado.'
+                    });
+            }
+
+
+            // ==========================================
+            // REGISTRAR DE FORMA IDEMPOTENTE
+            // ==========================================
+
+            const pagamento =
+                await Pagamento
+                    .confirmarInfinitePay({
+
+                        numeroPedido:
+                            orderNsu,
+
+                        transactionNsu,
+
+                        invoiceSlug,
+
+                        comprovanteUrl:
+                            receiptUrl,
+
+                        captureMethod:
+                            verificacao
+                                .captureMethod ||
+                            captureMethod,
+
+                        amountCentavos:
+                            verificacao.amount
+                    });
+
+
+            console.log(
+                `Pagamento confirmado por webhook: ${pagamento.numeroPedido}`
+            );
+
+
+            return res
+                .status(200)
+                .json({
+                    success: true,
+                    message: null
+                });
+
+
+        } catch (erro) {
+
+            console.error(
+                'Erro no webhook InfinitePay:',
+                erro
+            );
+
+
+            /*
+             * A InfinitePay informa que, ao receber
+             * resposta de erro, fará uma nova tentativa.
+             */
+
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    message:
+                        erro.message ||
+                        'Não foi possível processar o pagamento.'
+                });
         }
     }
 

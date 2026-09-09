@@ -56,6 +56,53 @@ function obterUrlProjeto() {
 }
 
 
+function obterWebhookUrl() {
+
+    const webhookConfigurado =
+        String(
+            process.env.INFINITEPAY_WEBHOOK_URL || ''
+        )
+            .trim()
+            .replace(/\/+$/, '');
+
+
+    if (webhookConfigurado) {
+        return webhookConfigurado;
+    }
+
+
+    const urlProjeto =
+        obterUrlProjeto();
+
+
+    try {
+
+        const url =
+            new URL(urlProjeto);
+
+        const host =
+            url.hostname.toLowerCase();
+
+        const ambienteLocal =
+            host === 'localhost' ||
+            host === '127.0.0.1' ||
+            host === '::1';
+
+
+        if (ambienteLocal) {
+            return '';
+        }
+
+
+        return `${urlProjeto}/pagamento/infinitepay/webhook`;
+
+    } catch {
+
+        return '';
+    }
+}
+
+
 // ======================================================
 // CRIAR CHECKOUT
 // ======================================================
@@ -72,6 +119,9 @@ async function criarLinkPagamento({
 
     const urlProjeto =
         obterUrlProjeto();
+
+    const webhookUrl =
+        obterWebhookUrl();
 
 
     if (
@@ -160,6 +210,13 @@ async function criarLinkPagamento({
     };
 
 
+    if (webhookUrl) {
+
+        payload.webhook_url =
+            webhookUrl;
+    }
+
+
     // ==================================================
     // CLIENTE
     // ==================================================
@@ -187,6 +244,23 @@ async function criarLinkPagamento({
                     .toLowerCase()
                     .slice(0, 190)
         };
+
+
+        const telefone =
+            String(
+                cliente.telefone || ''
+            )
+                .replace(/\D/g, '');
+
+
+        if (
+            telefone.length === 13 &&
+            telefone.startsWith('55')
+        ) {
+
+            payload.customer.phone_number =
+                `+${telefone}`;
+        }
     }
 
 

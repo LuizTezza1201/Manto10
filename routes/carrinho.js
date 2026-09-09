@@ -11,7 +11,7 @@ const CheckoutController =
         '../controllers/CheckoutController'
     );
 
-    const InfinitePayController =
+const InfinitePayController =
     require(
         '../controllers/InfinitePayController'
     );
@@ -98,20 +98,45 @@ router.post(
     CheckoutController.finalizar
 );
 
+
 // ======================================================
 // INFINITEPAY
 // ======================================================
+
+/*
+ * O webhook não usa sessão.
+ * Ele é chamado diretamente pelos servidores
+ * da InfinitePay.
+ */
+
+router.post(
+    '/pagamento/infinitepay/webhook',
+    InfinitePayController.webhook
+);
+
+
+/*
+ * O retorno também não depende da sessão.
+ * Assim, mesmo se a sessão expirar ou o servidor
+ * reiniciar, a confirmação ainda pode ser processada.
+ */
+
+router.get(
+    '/pagamento/infinitepay/retorno',
+    InfinitePayController.retorno
+);
+
+
+/*
+ * A rota dinâmica precisa ficar por último.
+ * Caso contrário, "retorno" ou "webhook"
+ * poderiam ser interpretados como :id.
+ */
 
 router.get(
     '/pagamento/infinitepay/:id',
     exigirLogin,
     InfinitePayController.iniciar
-);
-
-router.get(
-    '/pagamento/infinitepay/retorno',
-    exigirLogin,
-    InfinitePayController.retorno
 );
 
 

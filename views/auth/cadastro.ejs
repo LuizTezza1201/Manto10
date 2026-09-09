@@ -20,6 +20,7 @@
 
         </div>
 
+
         <% if (erro) { %>
 
             <div class="mensagem-auth erro">
@@ -28,11 +29,14 @@
 
         <% } %>
 
+
         <form
             action="/cadastro"
             method="POST"
             class="formulario-auth"
         >
+
+            <!-- NOME -->
 
             <div class="campo-auth">
 
@@ -53,6 +57,9 @@
 
             </div>
 
+
+            <!-- E-MAIL -->
+
             <div class="campo-auth">
 
                 <label for="email">
@@ -71,6 +78,36 @@
                 >
 
             </div>
+
+
+            <!-- TELEFONE -->
+
+            <div class="campo-auth">
+
+                <label for="telefone">
+                    Celular / WhatsApp
+                </label>
+
+                <input
+                    type="tel"
+                    id="telefone"
+                    name="telefone"
+                    value="<%= dados.telefone || '' %>"
+                    placeholder="(45) 99999-9999"
+                    maxlength="15"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    required
+                >
+
+                <small>
+                    Informe um celular com DDD.
+                </small>
+
+            </div>
+
+
+            <!-- SENHA -->
 
             <div class="campo-auth">
 
@@ -94,6 +131,7 @@
 
             </div>
 
+
             <button
                 type="submit"
                 class="botao-auth"
@@ -102,6 +140,7 @@
             </button>
 
         </form>
+
 
         <div class="rodape-auth">
 
@@ -118,5 +157,80 @@
     </section>
 
 </main>
+
+
+<script>
+    const campoTelefone =
+        document.getElementById(
+            'telefone'
+        );
+
+
+    if (campoTelefone) {
+
+        campoTelefone.addEventListener(
+            'input',
+            function () {
+
+                let numeros =
+                    this.value
+                        .replace(
+                            /\D/g,
+                            ''
+                        );
+
+
+                /*
+                 * Se o usuário colar
+                 * +55 45 99999-9999,
+                 * removemos o 55.
+                 */
+
+                if (
+                    numeros.startsWith('55') &&
+                    numeros.length > 11
+                ) {
+
+                    numeros =
+                        numeros.slice(2);
+                }
+
+
+                numeros =
+                    numeros.slice(
+                        0,
+                        11
+                    );
+
+
+                if (
+                    numeros.length <= 2
+                ) {
+
+                    this.value =
+                        numeros;
+
+                    return;
+                }
+
+
+                if (
+                    numeros.length <= 7
+                ) {
+
+                    this.value =
+                        `(${numeros.slice(0, 2)}) ${numeros.slice(2)}`;
+
+                    return;
+                }
+
+
+                this.value =
+                    `(${numeros.slice(0, 2)}) ${numeros.slice(2, 7)}-${numeros.slice(7)}`;
+            }
+        );
+    }
+</script>
+
 
 <%- include('../partials/footer') %>
