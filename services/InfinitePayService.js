@@ -1,3 +1,9 @@
+// ============================================================
+// SERVIÇO DE INTEGRAÇÃO COM A INFINITEPAY
+// ============================================================
+
+// Endpoints utilizados para criar o checkout e consultar
+// o estado de uma transação.
 const API_CHECKOUT =
     'https://api.checkout.infinitepay.io/links';
 
@@ -5,36 +11,37 @@ const API_PAYMENT_CHECK =
     'https://api.checkout.infinitepay.io/payment_check';
 
 
-function criarErro(
-    mensagem,
-    status = 502
-) {
+// ============================================================
+// TRATAMENTO DE ERROS
+// ============================================================
 
-    const erro =
-        new Error(mensagem);
+// Cria erros contendo também um código HTTP.
+// Isso permite que o controller escolha a resposta adequada.
+function criarErro(mensagem, status = 502) {
+    const erro = new Error(mensagem);
 
-    erro.status =
-        status;
+    erro.status = status;
 
     return erro;
 }
 
 
-// ======================================================
-// CONFIGURAÇÃO
-// ======================================================
+// ============================================================
+// CONFIGURAÇÕES DA INFINITEPAY
+// ============================================================
 
+// Obtém o identificador da conta InfinitePay.
+//
+// O valor fica no .env para não deixar configurações
+// específicas da conta diretamente no código.
 function obterHandle() {
-
-    const handle =
-        String(
-            process.env.INFINITEPAY_HANDLE || ''
-        )
-            .trim()
-            .replace(/^\$/, '');
+    const handle = String(
+        process.env.INFINITEPAY_HANDLE || ''
+    )
+        .trim()
+        .replace(/^\$/, '');
 
     if (!handle) {
-
         throw criarErro(
             'InfinitePay não configurada no servidor.',
             500
@@ -45,8 +52,11 @@ function obterHandle() {
 }
 
 
+// Retorna a URL principal utilizada pelo sistema.
+//
+// Durante o desenvolvimento utiliza localhost.
+// Em produção, APP_URL deve possuir o domínio público.
 function obterUrlProjeto() {
-
     return String(
         process.env.APP_URL ||
         'http://localhost:8000'
@@ -56,29 +66,25 @@ function obterUrlProjeto() {
 }
 
 
+// Define qual URL será utilizada pelo webhook.
+//
+// Em localhost o webhook automático fica desativado,
+// pois a InfinitePay precisa acessar um endereço público.
 function obterWebhookUrl() {
-
-    const webhookConfigurado =
-        String(
-            process.env.INFINITEPAY_WEBHOOK_URL || ''
-        )
-            .trim()
-            .replace(/\/+$/, '');
-
+    const webhookConfigurado = String(
+        process.env.INFINITEPAY_WEBHOOK_URL || ''
+    )
+        .trim()
+        .replace(/\/+$/, '');
 
     if (webhookConfigurado) {
         return webhookConfigurado;
     }
 
-
-    const urlProjeto =
-        obterUrlProjeto();
-
+    const urlProjeto = obterUrlProjeto();
 
     try {
-
-        const url =
-            new URL(urlProjeto);
+        const url = new URL(urlProjeto);
 
         const host =
             url.hostname.toLowerCase();
@@ -88,32 +94,241 @@ function obterWebhookUrl() {
             host === '127.0.0.1' ||
             host === '::1';
 
-
         if (ambienteLocal) {
             return '';
         }
 
-
-        return `${urlProjeto}/pagamento/infinitepay/webhook`;
+        return (
+            `${urlProjeto}` +
+            '/pagamento/infinitepay/webhook'
+        );
 
     } catch {
-
         return '';
     }
 }
 
 
-// ======================================================
-// CRIAR CHECKOUT
-// ======================================================
+// ============================================================
+// REQUISIÇÕES HTTP
+// ============================================================
 
+// Executa uma requisição POST enviando JSON.
+//
+// A função centraliza uma lógica utilizada tanto na criação
+// do checkout quanto na verificação do pagamento.
+async function enviarPostJson(
+    url,
+    payload,
+    mensagemErroConexao
+) {
+    let resposta;
+
+    try {
+        resposta = await fetch(
+            url,
+            {
+                method: 'POST',
+
+                headers: {
+                    'Content-Type':
+                        'application/json',
+
+                    Accept:
+                        'application/json'
+                },
+
+                body:
+                    JSON.stringify(payload)
+            }
+        );
+
+    } catch {
+        throw criarErro(
+            mensagemErroConexao
+        );
+    }
+
+    let dados = {};
+
+    try {
+        dados =
+            await resposta.json();
+
+    } catch {
+        // Algumas respostas de erro podem não possuir JSON.
+        // Nesse caso, mantemos um objeto vazio.
+        dados = {};
+    }
+
+    return {
+        resposta,
+        dados
+    };
+}
+
+
+// ============================================================
+// ITENS DO PEDIDO
+// ============================================================
+
+// Converte os itens armazenados no banco para o formato
+// exigido pelo checkout da InfinitePay.
+//
+// Os preços são convertidos de Real para centavos.
+function montarItensCheckout(itens) {
+    if (
+        !Array.isArray(itens) ||
+        itens.length === 0
+    ) {
+        throw criarErro(
+            'O pedido não possui itens.'
+        );
+    }
+
+    return itens.map(item => {
+        const quantidade =
+            Number(item.quantidade);
+
+        const precoCentavos =
+            Math.round(
+                Number(
+                    item.preco_unitario
+                ) * 100
+            );
+
+        if (
+            !Number.isInteger(quantidade) ||
+            quantidade <= 0
+        ) {
+            throw criarErro(
+                'Quantidade inválida no pedido.'
+            );
+        }
+
+        if (
+            !Number.isInteger(precoCentavos) ||
+            precoCentavos <= 0
+        ) {
+            throw criarErro(
+                'Preço inválido no pedido.'
+            );
+        }
+
+        return {
+            quantity:
+                quantidade,
+
+            price:
+                precoCentavos,
+
+            description:
+                (
+                    `${item.nome_produto}` +
+                    ` - Tam. ${item.tamanho}`
+                )
+                    .slice(0, 200)
+        };
+    });
+}
+
+
+// ============================================================
+// DADOS DO CLIENTE
+// ============================================================
+
+// Monta os dados do comprador no formato aceito
+// pela InfinitePay.
+function montarCliente(cliente) {
+    if (
+        !cliente ||
+        !cliente.nome ||
+        !cliente.email
+    ) {
+        return null;
+    }
+
+    const dadosCliente = {
+        name:
+            String(cliente.nome)
+                .trim()
+                .slice(0, 150),
+
+        email:
+            String(cliente.email)
+                .trim()
+                .toLowerCase()
+                .slice(0, 190)
+    };
+
+    // O telefone é armazenado internamente somente com números.
+    // Para a InfinitePay ele é enviado no padrão internacional.
+    const telefone =
+        String(cliente.telefone || '')
+            .replace(/\D/g, '');
+
+    if (
+        telefone.length === 13 &&
+        telefone.startsWith('55')
+    ) {
+        dadosCliente.phone_number =
+            `+${telefone}`;
+    }
+
+    return dadosCliente;
+}
+
+
+// ============================================================
+// ENDEREÇO
+// ============================================================
+
+// Converte o endereço do pedido para o formato
+// utilizado no checkout.
+function montarEndereco(endereco) {
+    if (!endereco) {
+        return null;
+    }
+
+    return {
+        cep:
+            String(endereco.cep || '')
+                .replace(/\D/g, ''),
+
+        street:
+            String(
+                endereco.logradouro || ''
+            ).trim(),
+
+        neighborhood:
+            String(
+                endereco.bairro || ''
+            ).trim(),
+
+        number:
+            String(
+                endereco.numero || ''
+            ).trim(),
+
+        complement:
+            String(
+                endereco.complemento || ''
+            ).trim()
+    };
+}
+
+
+// ============================================================
+// CRIAÇÃO DO CHECKOUT
+// ============================================================
+
+// Cria um link de pagamento para um pedido da Manto 10.
 async function criarLinkPagamento({
     numeroPedido,
     itens,
     cliente,
     endereco
 }) {
-
     const handle =
         obterHandle();
 
@@ -123,238 +338,62 @@ async function criarLinkPagamento({
     const webhookUrl =
         obterWebhookUrl();
 
-
-    if (
-        !Array.isArray(itens) ||
-        itens.length === 0
-    ) {
-
-        throw criarErro(
-            'O pedido não possui itens.'
-        );
-    }
-
-
     const items =
-        itens.map(
-            item => {
-
-                const quantidade =
-                    Number(
-                        item.quantidade
-                    );
-
-                const precoCentavos =
-                    Math.round(
-                        Number(
-                            item.preco_unitario
-                        ) * 100
-                    );
-
-
-                if (
-                    !Number.isInteger(
-                        quantidade
-                    ) ||
-                    quantidade <= 0
-                ) {
-
-                    throw criarErro(
-                        'Quantidade inválida no pedido.'
-                    );
-                }
-
-
-                if (
-                    !Number.isInteger(
-                        precoCentavos
-                    ) ||
-                    precoCentavos <= 0
-                ) {
-
-                    throw criarErro(
-                        'Preço inválido no pedido.'
-                    );
-                }
-
-
-                return {
-
-                    quantity:
-                        quantidade,
-
-                    price:
-                        precoCentavos,
-
-                    description:
-                        `${item.nome_produto} - Tam. ${item.tamanho}`
-                            .slice(0, 200)
-                };
-            }
-        );
-
+        montarItensCheckout(itens);
 
     const payload = {
-
         handle,
 
         order_nsu:
-            String(
-                numeroPedido
-            ),
+            String(numeroPedido),
 
         redirect_url:
-            `${urlProjeto}/pagamento/infinitepay/retorno`,
+            (
+                `${urlProjeto}` +
+                '/pagamento/infinitepay/retorno'
+            ),
 
         items
     };
 
 
+    // O webhook só é enviado quando existe uma URL pública.
     if (webhookUrl) {
-
         payload.webhook_url =
             webhookUrl;
     }
 
 
-    // ==================================================
-    // CLIENTE
-    // ==================================================
+    const dadosCliente =
+        montarCliente(cliente);
 
-    if (
-        cliente &&
-        cliente.nome &&
-        cliente.email
-    ) {
-
-        payload.customer = {
-
-            name:
-                String(
-                    cliente.nome
-                )
-                    .trim()
-                    .slice(0, 150),
-
-            email:
-                String(
-                    cliente.email
-                )
-                    .trim()
-                    .toLowerCase()
-                    .slice(0, 190)
-        };
-
-
-        const telefone =
-            String(
-                cliente.telefone || ''
-            )
-                .replace(/\D/g, '');
-
-
-        if (
-            telefone.length === 13 &&
-            telefone.startsWith('55')
-        ) {
-
-            payload.customer.phone_number =
-                `+${telefone}`;
-        }
+    if (dadosCliente) {
+        payload.customer =
+            dadosCliente;
     }
 
 
-    // ==================================================
-    // ENDEREÇO
-    // ==================================================
+    const dadosEndereco =
+        montarEndereco(endereco);
 
-    if (endereco) {
-
-        payload.address = {
-
-            cep:
-                String(
-                    endereco.cep || ''
-                )
-                    .replace(/\D/g, ''),
-
-            street:
-                String(
-                    endereco.logradouro || ''
-                )
-                    .trim(),
-
-            neighborhood:
-                String(
-                    endereco.bairro || ''
-                )
-                    .trim(),
-
-            number:
-                String(
-                    endereco.numero || ''
-                )
-                    .trim(),
-
-            complement:
-                String(
-                    endereco.complemento || ''
-                )
-                    .trim()
-        };
+    if (dadosEndereco) {
+        payload.address =
+            dadosEndereco;
     }
 
 
-    let resposta;
-
-
-    try {
-
-        resposta =
-            await fetch(
-                API_CHECKOUT,
-                {
-                    method: 'POST',
-
-                    headers: {
-                        'Content-Type':
-                            'application/json',
-
-                        Accept:
-                            'application/json'
-                    },
-
-                    body:
-                        JSON.stringify(
-                            payload
-                        )
-                }
-            );
-
-    } catch {
-
-        throw criarErro(
-            'Não foi possível conectar com a InfinitePay.'
-        );
-    }
-
-
-    let dados = {};
-
-
-    try {
-
-        dados =
-            await resposta.json();
-
-    } catch {
-
-        dados = {};
-    }
+    // Envia o pedido para a API da InfinitePay.
+    const {
+        resposta,
+        dados
+    } = await enviarPostJson(
+        API_CHECKOUT,
+        payload,
+        'Não foi possível conectar com a InfinitePay.'
+    );
 
 
     if (!resposta.ok) {
-
         console.error(
             'Erro InfinitePay:',
             resposta.status,
@@ -371,7 +410,6 @@ async function criarLinkPagamento({
         !dados.url ||
         typeof dados.url !== 'string'
     ) {
-
         throw criarErro(
             'A InfinitePay não retornou o link de pagamento.'
         );
@@ -382,26 +420,25 @@ async function criarLinkPagamento({
 }
 
 
-// ======================================================
-// VERIFICAR PAGAMENTO
-// ======================================================
+// ============================================================
+// VERIFICAÇÃO DO PAGAMENTO
+// ============================================================
 
+// Consulta diretamente a InfinitePay para confirmar
+// se determinada transação realmente foi paga.
 async function verificarPagamento({
     orderNsu,
     transactionNsu,
     slug
 }) {
-
     const handle =
         obterHandle();
-
 
     if (
         !orderNsu ||
         !transactionNsu ||
         !slug
     ) {
-
         throw criarErro(
             'Dados insuficientes para verificar o pagamento.',
             400
@@ -409,73 +446,31 @@ async function verificarPagamento({
     }
 
 
-    let resposta;
+    const payload = {
+        handle,
+
+        order_nsu:
+            String(orderNsu),
+
+        transaction_nsu:
+            String(transactionNsu),
+
+        slug:
+            String(slug)
+    };
 
 
-    try {
-
-        resposta =
-            await fetch(
-                API_PAYMENT_CHECK,
-                {
-                    method:
-                        'POST',
-
-                    headers: {
-                        'Content-Type':
-                            'application/json',
-
-                        Accept:
-                            'application/json'
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            handle,
-
-                            order_nsu:
-                                String(
-                                    orderNsu
-                                ),
-
-                            transaction_nsu:
-                                String(
-                                    transactionNsu
-                                ),
-
-                            slug:
-                                String(
-                                    slug
-                                )
-                        })
-                }
-            );
-
-    } catch {
-
-        throw criarErro(
-            'Não foi possível verificar o pagamento na InfinitePay.'
-        );
-    }
-
-
-    let dados = {};
-
-
-    try {
-
-        dados =
-            await resposta.json();
-
-    } catch {
-
-        dados = {};
-    }
+    const {
+        resposta,
+        dados
+    } = await enviarPostJson(
+        API_PAYMENT_CHECK,
+        payload,
+        'Não foi possível verificar o pagamento na InfinitePay.'
+    );
 
 
     if (!resposta.ok) {
-
         console.error(
             'Erro payment_check:',
             resposta.status,
@@ -488,8 +483,9 @@ async function verificarPagamento({
     }
 
 
+    // Retorna somente as informações que o restante
+    // da aplicação precisa utilizar.
     return {
-
         success:
             dados.success === true,
 
@@ -518,6 +514,10 @@ async function verificarPagamento({
     };
 }
 
+
+// ============================================================
+// EXPORTAÇÃO
+// ============================================================
 
 module.exports = {
     criarLinkPagamento,

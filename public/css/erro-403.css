@@ -1,0 +1,143 @@
+/* ============================================================
+   PÁGINA DE ACESSO NEGADO - ERRO 403
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: #000000;
+
+    color: #ffffff;
+}
+
+
+/* ============================================================
+   CONTEÚDO PRINCIPAL
+   ============================================================ */
+
+.erro-403 {
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 40px 20px;
+}
+
+.erro-403-conteudo {
+    width: 100%;
+    max-width: 650px;
+
+    text-align: center;
+}
+
+.erro-403-codigo {
+    margin-bottom: 8px;
+
+    color: #9d00de;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    letter-spacing: 3px;
+}
+
+.erro-403 h1 {
+    margin: 0 0 25px;
+
+    font-size: 48px;
+}
+
+.erro-403-imagem {
+    display: block;
+
+    width: 100%;
+    max-width: 380px;
+
+    max-height: 350px;
+
+    object-fit: contain;
+
+    margin: 0 auto 25px;
+}
+
+.erro-403 h2 {
+    margin-bottom: 10px;
+
+    font-size: 27px;
+}
+
+.erro-403 p {
+    line-height: 1.6;
+
+    color: #d4d4d4;
+
+    font-size: 16px;
+}
+
+.erro-403-mensagem {
+    margin-top: 5px;
+
+    font-weight: 700;
+
+    color: #ffffff !important;
+}
+
+
+/* ============================================================
+   BOTÃO
+   ============================================================ */
+
+.erro-403-botao {
+    display: inline-block;
+
+    margin-top: 20px;
+
+    padding: 14px 30px;
+
+    border-radius: 8px;
+
+    background: #9d00de;
+
+    color: #ffffff;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition: 0.2s;
+}
+
+.erro-403-botao:hover {
+    transform: translateY(-2px);
+
+    filter: brightness(1.1);
+}
+
+
+/* ============================================================
+   RESPONSIVIDADE
+   ============================================================ */
+
+@media (max-width: 600px) {
+
+    .erro-403 h1 {
+        font-size: 35px;
+    }
+
+    .erro-403 h2 {
+        font-size: 23px;
+    }
+
+    .erro-403-imagem {
+        max-width: 300px;
+    }
+}

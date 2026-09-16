@@ -274,10 +274,10 @@
 }
 
 /* =========================================================
-   WOOCOMMERCE
+   CHECKOUT E PAGAMENTO
 ========================================================= */
 
-.carrinho-woocommerce-info {
+.carrinho-pagamento-info {
     padding: 25px;
 
     align-self: start;
@@ -290,11 +290,11 @@
     background-color: #fafafa;
 }
 
-.carrinho-woocommerce-info h2 {
+.carrinho-pagamento-info h2 {
     font-size: 18px;
 }
 
-.carrinho-woocommerce-info p {
+.carrinho-pagamento-info p {
     max-width: 500px;
 
     margin-top: 8px;
@@ -306,7 +306,7 @@
     line-height: 1.6;
 }
 
-.carrinho-woocommerce-info span {
+.carrinho-pagamento-info span {
     display: inline-block;
 
     margin-top: 15px;
@@ -386,7 +386,7 @@
     font-size: 18px;
 }
 
-.botao-finalizar-woocommerce {
+.botao-finalizar-pagamento {
     width: 100%;
 
     min-height: 50px;
@@ -403,7 +403,7 @@
     font-weight: 900;
 }
 
-.botao-finalizar-woocommerce:hover {
+.botao-finalizar-pagamento:hover {
     background-color: #7800aa;
 }
 
@@ -430,7 +430,7 @@
     font-weight: 800;
 }
 
-.woocommerce-aviso {
+.pagamento-aviso {
     margin-top: 13px;
 
     color: #999999;

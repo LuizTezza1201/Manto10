@@ -1,15 +1,21 @@
 {
   "name": "manto10",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Sistema web de e-commerce para comercialização e gerenciamento de camisas de futebol da Manto 10.",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "ecommerce",
+    "camisas-de-futebol",
+    "nodejs",
+    "express",
+    "mysql",
+    "tcc"
+  ],
+  "author": "Alexandre Luis Lourenci Filho, Felipe Fribel da Rosa, Fellipe de Oliveira Ferreira e Luiz Henrique Tezza",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
