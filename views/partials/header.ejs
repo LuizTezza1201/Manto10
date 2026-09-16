@@ -94,7 +94,12 @@
 
     <%- include('navbar') %>
 
-    <% if (typeof caminhoAtual !== 'undefined' && caminhoAtual !== '/') { %>
+    <% if (
+        typeof caminhoAtual !== 'undefined' &&
+        caminhoAtual !== '/' &&
+        caminhoAtual !== '/login' &&
+        caminhoAtual !== '/cadastro'
+    ) { %>
 
         <div class="pagina-voltar-container">
             <button
