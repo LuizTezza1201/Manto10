@@ -10,14 +10,107 @@ function criarErro(mensagem, status = 400) {
 
 // Retorna o tempo máximo que um pedido pode permanecer pendente.
 function obterExpiracaoSegundos() {
-    const segundos = Number(process.env.PEDIDO_EXPIRACAO_SEGUNDOS || 1800);
-    return Number.isInteger(segundos) && segundos > 0 ? segundos : 1800;
+    const segundos = Number(
+        process.env.PEDIDO_EXPIRACAO_SEGUNDOS || 1800
+    );
+
+    return Number.isInteger(segundos) && segundos > 0
+        ? segundos
+        : 1800;
 }
 
 // Gera um número único e fácil de identificar para cada pedido.
 function gerarNumeroPedido() {
-    const codigo = crypto.randomBytes(2).toString('hex').toUpperCase();
+    const codigo = crypto
+        .randomBytes(2)
+        .toString('hex')
+        .toUpperCase();
+
     return `M10-${Date.now()}-${codigo}`;
+}
+
+// Reserva estoque real para uma Box Misteriosa.
+//
+// A box é um produto virtual e não possui unidades próprias. Cada unidade
+// comprada consome uma camisa real do mesmo tipo e tamanho. As reservas
+// ficam registradas para que um cancelamento devolva exatamente as mesmas
+// unidades ao estoque.
+async function reservarEstoqueBox({
+    connection,
+    itemPedidoId,
+    tipoCamisa,
+    tamanho,
+    quantidade
+}) {
+    const [fontes] = await connection.execute(`
+        SELECT
+            pt.id AS produto_tamanho_id,
+            pt.estoque
+        FROM produto_tamanhos pt
+        INNER JOIN produtos p ON p.id = pt.produto_id
+        INNER JOIN categorias c ON c.id = p.categoria_id
+        INNER JOIN tamanhos t ON t.id = pt.tamanho_id
+        WHERE p.tipo_camisa = ?
+          AND p.status = 'Ativo'
+          AND c.status = 'Ativo'
+          AND c.slug <> 'box-misteriosas'
+          AND t.nome = ?
+          AND pt.estoque > 0
+        ORDER BY pt.estoque DESC, pt.id ASC
+        FOR UPDATE
+    `, [tipoCamisa, tamanho]);
+
+    let restante = Number(quantidade);
+
+    for (const fonte of fontes) {
+        if (restante <= 0) {
+            break;
+        }
+
+        const estoqueAtual = Number(fonte.estoque);
+        const reservar = Math.min(restante, estoqueAtual);
+
+        if (reservar <= 0) {
+            continue;
+        }
+
+        const [resultado] = await connection.execute(`
+            UPDATE produto_tamanhos
+            SET estoque = estoque - ?
+            WHERE id = ? AND estoque >= ?
+        `, [
+            reservar,
+            fonte.produto_tamanho_id,
+            reservar
+        ]);
+
+        if (resultado.affectedRows === 0) {
+            throw criarErro(
+                'O estoque disponível para a Box Misteriosa mudou. Tente novamente.'
+            );
+        }
+
+        await connection.execute(`
+            INSERT INTO itens_pedido_reservas (
+                item_pedido_id,
+                produto_tamanho_id,
+                quantidade
+            )
+            VALUES (?, ?, ?)
+        `, [
+            itemPedidoId,
+            fonte.produto_tamanho_id,
+            reservar
+        ]);
+
+        restante -= reservar;
+    }
+
+    if (restante > 0) {
+        throw criarErro(
+            `Não há estoque suficiente para a Box Misteriosa no tamanho ${tamanho}.`
+        );
+    }
 }
 
 const Pedido = {
@@ -28,7 +121,17 @@ const Pedido = {
     // Busca o endereço principal ou o endereço mais recente do cliente.
     async buscarEnderecoPrincipal(usuarioId) {
         const [rows] = await pool.execute(`
-            SELECT id, apelido, cep, logradouro, numero, complemento, bairro, cidade, estado, principal
+            SELECT
+                id,
+                apelido,
+                cep,
+                logradouro,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                estado,
+                principal
             FROM enderecos
             WHERE usuario_id = ?
             ORDER BY principal DESC, id DESC
@@ -64,11 +167,14 @@ const Pedido = {
 
             const carrinhoId = carrinhos[0].id;
 
-            // Busca os itens e bloqueia as variações de estoque usadas no pedido.
+            // Busca os itens do carrinho. Para produtos comuns, o estoque vem
+            // da própria variação. Para Box Misteriosa, a reserva é feita no
+            // estoque compartilhado durante a criação dos itens do pedido.
             const [itens] = await connection.execute(`
                 SELECT
                     ic.id AS item_id,
                     ic.quantidade,
+                    ic.preferencia_box,
                     pt.id AS produto_tamanho_id,
                     pt.estoque,
                     tam.nome AS tamanho,
@@ -76,11 +182,13 @@ const Pedido = {
                     p.codigo,
                     p.nome,
                     p.status,
+                    p.tipo_camisa,
                     p.preco,
                     p.preco_promocional,
+                    cat.slug AS categoria_slug,
                     CASE
                         WHEN p.preco_promocional IS NOT NULL
-                        AND p.preco_promocional < p.preco
+                             AND p.preco_promocional < p.preco
                         THEN p.preco_promocional
                         ELSE p.preco
                     END AS preco_unitario
@@ -88,6 +196,7 @@ const Pedido = {
                 INNER JOIN produto_tamanhos pt ON pt.id = ic.produto_tamanho_id
                 INNER JOIN tamanhos tam ON tam.id = pt.tamanho_id
                 INNER JOIN produtos p ON p.id = pt.produto_id
+                INNER JOIN categorias cat ON cat.id = p.categoria_id
                 WHERE ic.carrinho_id = ?
                 ORDER BY ic.id ASC
                 FOR UPDATE
@@ -97,31 +206,36 @@ const Pedido = {
                 throw criarErro('Seu carrinho está vazio.');
             }
 
-            // Confere novamente o estoque antes de criar o pedido.
             let subtotalCentavos = 0;
 
             for (const item of itens) {
                 const quantidade = Number(item.quantidade);
-                const estoque = Number(item.estoque);
 
                 if (item.status !== 'Ativo') {
-                    throw criarErro(`${item.nome} não está mais disponível.`);
-                }
-
-                if (estoque < quantidade) {
                     throw criarErro(
-                        `O estoque de ${item.nome} - tamanho ${item.tamanho} mudou. Disponível: ${estoque}.`
+                        `${item.nome} não está mais disponível.`
                     );
                 }
 
-                // O cálculo em centavos reduz problemas de arredondamento com valores monetários.
-                const precoCentavos = Math.round(Number(item.preco_unitario) * 100);
+                // Produtos comuns são conferidos imediatamente.
+                // O estoque da box é conferido e bloqueado ao fazer a reserva.
+                if (
+                    item.categoria_slug !== 'box-misteriosas' &&
+                    Number(item.estoque) < quantidade
+                ) {
+                    throw criarErro(
+                        `O estoque de ${item.nome} - tamanho ${item.tamanho} mudou. Disponível: ${item.estoque}.`
+                    );
+                }
+
+                const precoCentavos = Math.round(
+                    Number(item.preco_unitario) * 100
+                );
+
                 subtotalCentavos += precoCentavos * quantidade;
             }
 
             const subtotal = subtotalCentavos / 100;
-
-            // Frete e cupons ainda não alteram o valor nesta etapa do sistema.
             const frete = 0;
             const desconto = 0;
             const total = subtotal + frete - desconto;
@@ -162,7 +276,6 @@ const Pedido = {
             const enderecoId = enderecoResultado.insertId;
             const numeroPedido = gerarNumeroPedido();
 
-            // Define o momento em que um pedido não pago deve ser cancelado automaticamente.
             const expiraEm = new Date(
                 Date.now() + obterExpiracaoSegundos() * 1000
             );
@@ -196,36 +309,51 @@ const Pedido = {
 
             const pedidoId = pedidoResultado.insertId;
 
-            // Registra os itens e reserva o estoque correspondente ao pedido.
+            // Registra os itens e reserva o estoque correspondente.
             for (const item of itens) {
                 const quantidade = Number(item.quantidade);
                 const preco = Number(item.preco_unitario);
-                const subtotalItem = Math.round(preco * quantidade * 100) / 100;
+                const subtotalItem =
+                    Math.round(preco * quantidade * 100) / 100;
 
-                await connection.execute(`
+                const [itemResultado] = await connection.execute(`
                     INSERT INTO itens_pedido (
                         pedido_id,
                         produto_id,
                         codigo_produto,
                         nome_produto,
                         tamanho,
+                        preferencia_box,
                         quantidade,
                         preco_unitario,
                         subtotal
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 `, [
                     pedidoId,
                     item.produto_id,
                     item.codigo,
                     item.nome,
                     item.tamanho,
+                    item.preferencia_box || null,
                     quantidade,
                     preco,
                     subtotalItem
                 ]);
 
-                // A condição estoque >= quantidade evita deixar o estoque negativo.
+                if (item.categoria_slug === 'box-misteriosas') {
+                    await reservarEstoqueBox({
+                        connection,
+                        itemPedidoId: itemResultado.insertId,
+                        tipoCamisa: item.tipo_camisa,
+                        tamanho: item.tamanho,
+                        quantidade
+                    });
+
+                    continue;
+                }
+
+                // Produto comum: baixa diretamente a própria variação.
                 const [estoqueResultado] = await connection.execute(`
                     UPDATE produto_tamanhos
                     SET estoque = estoque - ?
@@ -243,7 +371,6 @@ const Pedido = {
                 }
             }
 
-            // Após a criação do pedido, o carrinho deixa de ser considerado ativo.
             await connection.execute(`
                 UPDATE carrinhos
                 SET status = 'Finalizado'
@@ -279,7 +406,6 @@ const Pedido = {
         try {
             await connection.beginTransaction();
 
-            // O filtro por usuário é utilizado quando o cancelamento parte do cliente.
             let sqlPedido = `
                 SELECT id, usuario_id, status, estoque_restituido
                 FROM pedidos
@@ -305,19 +431,18 @@ const Pedido = {
 
             const pedido = pedidos[0];
 
-            // Clientes só podem cancelar pedidos que ainda aguardam pagamento.
             if (somentePendente && pedido.status !== 'Pendente') {
-                throw criarErro('Este pedido não pode mais ser cancelado.');
+                throw criarErro(
+                    'Este pedido não pode mais ser cancelado.'
+                );
             }
 
-            // A restituição é permitida somente antes do processamento da venda.
             if (!['Pendente', 'Cancelado'].includes(pedido.status)) {
                 throw criarErro(
                     'O estoque deste pedido não pode ser restituído neste status.'
                 );
             }
 
-            // Impede que a mesma compra devolva o estoque duas vezes.
             if (Number(pedido.estoque_restituido) === 1) {
                 throw criarErro(
                     'O estoque deste pedido já foi restituído.'
@@ -325,9 +450,16 @@ const Pedido = {
             }
 
             const [itens] = await connection.execute(`
-                SELECT produto_id, tamanho, quantidade
-                FROM itens_pedido
-                WHERE pedido_id = ?
+                SELECT
+                    ip.id AS item_pedido_id,
+                    ip.produto_id,
+                    ip.tamanho,
+                    ip.quantidade,
+                    c.slug AS categoria_slug
+                FROM itens_pedido ip
+                LEFT JOIN produtos p ON p.id = ip.produto_id
+                LEFT JOIN categorias c ON c.id = p.categoria_id
+                WHERE ip.pedido_id = ?
                 FOR UPDATE
             `, [pedidoId]);
 
@@ -335,8 +467,32 @@ const Pedido = {
                 throw criarErro('O pedido não possui produtos.');
             }
 
-            // Cada item do pedido retorna ao estoque do produto e tamanho correspondente.
             for (const item of itens) {
+                if (item.categoria_slug === 'box-misteriosas') {
+                    // Devolve as unidades reais que foram reservadas para a box.
+                    const [reservas] = await connection.execute(`
+                        SELECT produto_tamanho_id, quantidade
+                        FROM itens_pedido_reservas
+                        WHERE item_pedido_id = ?
+                        FOR UPDATE
+                    `, [item.item_pedido_id]);
+
+                    for (const reserva of reservas) {
+                        await connection.execute(`
+                            UPDATE produto_tamanhos
+                            SET estoque = estoque + ?
+                            WHERE id = ?
+                        `, [
+                            Number(reserva.quantidade),
+                            reserva.produto_tamanho_id
+                        ]);
+                    }
+
+                    // Pedidos de box criados antes desta nova regra não possuem
+                    // reservas e não devem acrescentar estoque virtual.
+                    continue;
+                }
+
                 const [resultado] = await connection.execute(`
                     UPDATE produto_tamanhos pt
                     INNER JOIN tamanhos t ON t.id = pt.tamanho_id
@@ -355,7 +511,6 @@ const Pedido = {
                 }
             }
 
-            // Marca a restituição para impedir futuras devoluções duplicadas.
             await connection.execute(`
                 UPDATE pedidos
                 SET

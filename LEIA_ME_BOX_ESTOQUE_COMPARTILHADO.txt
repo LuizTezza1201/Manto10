@@ -1,0 +1,20 @@
+MANTO 10 - AJUSTE DA BOX MISTERIOSA
+
+1. Pare o servidor com Ctrl + C.
+2. Execute no MySQL Workbench:
+   database/ajuste_box_estoque_compartilhado.sql
+3. Copie os arquivos deste patch para a pasta do projeto, substituindo os existentes.
+4. Rode npm run dev.
+5. Confira no Admin que o total de unidades físicas voltou para 189.
+6. Abra /camisas?categoria=box-misteriosas.
+7. A Box deve mostrar apenas se o tamanho está disponível, sem exibir quantidade.
+8. Crie um pedido Pendente com uma Box.
+   - O estoque físico deve diminuir em 1 unidade do tipo/tamanho correspondente.
+9. Cancele o pedido.
+   - O estoque físico deve voltar para o valor anterior.
+
+IMPORTANTE:
+- As Box Misteriosas não possuem estoque próprio.
+- Os registros P/M/G/GG das boxes ficam com estoque 0 apenas para representar a escolha de tamanho.
+- O estoque real é reservado das camisas comuns do mesmo tipo (Tailandesa ou Nacional Premium).
+- A preferência escolhida pelo cliente continua registrada no carrinho e no pedido.

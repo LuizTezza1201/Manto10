@@ -1,91 +1,59 @@
-<aside class="admin-sidebar">
+<aside
+    class="admin-sidebar"
+    id="adminSidebar"
+    aria-label="Menu administrativo"
+>
 
     <div class="admin-sidebar-cabecalho">
-
-        <span>
-            PAINEL
-        </span>
-
-        <strong>
-            MANTO 10
-        </strong>
-
-        <small>
-            Administração
-        </small>
-
+        <a
+            href="/admin"
+            class="admin-sidebar-logo"
+            aria-label="Manto 10 - Painel administrativo"
+        >
+            <img
+                src="/images/logotransparente.png"
+                alt="Manto 10"
+            >
+        </a>
     </div>
 
     <nav class="admin-sidebar-menu">
 
         <a
             href="/admin"
-            class="<%= secaoAdmin === 'dashboard'
-                ? 'ativo'
-                : ''
-            %>"
+            class="<%= secaoAdmin === 'dashboard' ? 'ativo' : '' %>"
         >
-            <span>
-                Dashboard
-            </span>
+            <span>Dashboard</span>
         </a>
 
         <a
             href="/admin/produtos"
-            class="<%= secaoAdmin === 'produtos'
-                ? 'ativo'
-                : ''
-            %>"
+            class="<%= secaoAdmin === 'produtos' ? 'ativo' : '' %>"
         >
-            <span>
-                Camisas
-            </span>
+            <span>Camisas</span>
         </a>
 
         <a
             href="/admin/usuarios"
-            class="<%= secaoAdmin === 'usuarios'
-                ? 'ativo'
-                : ''
-            %>"
+            class="<%= secaoAdmin === 'usuarios' ? 'ativo' : '' %>"
         >
-            <span>
-                Usuários
-            </span>
+            <span>Usuários</span>
         </a>
 
         <a
             href="/admin/pedidos"
-            class="<%= secaoAdmin === 'pedidos'
-                ? 'ativo'
-                : ''
-            %>"
+            class="<%= secaoAdmin === 'pedidos' ? 'ativo' : '' %>"
         >
-            <span>
-                Pedidos
-            </span>
+            <span>Pedidos</span>
         </a>
 
         <a
-    href="/admin/vendas"
-    class="<%= secaoAdmin === 'vendas'
-        ? 'ativo'
-        : ''
-    %>"
->
-    <span>
-        Vendas
-    </span>
-</a>
-
-    </nav>
-
-    <div class="admin-sidebar-rodape">
-
-        <a href="/">
-            Ver loja
+            href="/admin/vendas"
+            class="<%= secaoAdmin === 'vendas' ? 'ativo' : '' %>"
+        >
+            <span>Vendas</span>
         </a>
 
-    </div>
+    </nav>
 
 </aside>

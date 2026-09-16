@@ -126,6 +126,44 @@
                                     <%= pedido.data_formatada %>
                                 </small>
 
+                                <% if (pedido.itens && pedido.itens.length > 0) { %>
+
+                                    <div class="conta-pedido-produtos">
+
+                                        <% pedido.itens.forEach((item) => { %>
+
+                                            <div class="conta-pedido-produto-mini">
+
+                                                <img
+                                                    src="<%= item.imagem ? '/' + String(item.imagem).replace(/^\/+/, '') : '/images/produtos/placeholder.svg' %>"
+                                                    alt="<%= item.nome_produto %>"
+                                                    onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                                                >
+
+                                                <div>
+                                                    <strong>
+                                                        <%= item.nome_produto %>
+                                                    </strong>
+
+                                                    <small>
+                                                        <%= item.codigo_produto %> · Tam. <%= item.tamanho %> · <%= item.quantidade %> un.
+                                                    </small>
+
+                                                    <% if (item.preferencia_box) { %>
+                                                        <small>
+                                                            <%= item.preferencia_box %>
+                                                        </small>
+                                                    <% } %>
+                                                </div>
+
+                                            </div>
+
+                                        <% }) %>
+
+                                    </div>
+
+                                <% } %>
+
                             </div>
 
 

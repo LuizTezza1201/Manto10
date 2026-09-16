@@ -156,6 +156,7 @@
                                         name="produto_tamanho_id"
                                         value="<%= item.produto_tamanho_id %>"
                                         data-estoque="<%= item.estoque %>"
+                                        data-box="<%= produto.categoria_slug === 'box-misteriosas' ? '1' : '0' %>"
                                         disabled
                                     >
 
@@ -174,6 +175,7 @@
                                         name="produto_tamanho_id"
                                         value="<%= item.produto_tamanho_id %>"
                                         data-estoque="<%= item.estoque %>"
+                                        data-box="<%= produto.categoria_slug === 'box-misteriosas' ? '1' : '0' %>"
                                     >
 
                                     <span>
@@ -194,6 +196,51 @@
                     ></p>
 
                 </fieldset>
+
+                <% if (produto.categoria_slug === 'box-misteriosas') { %>
+
+                    <!-- PREFERÊNCIA DA BOX -->
+
+                    <fieldset class="produto-preferencia-box">
+
+                        <legend>
+                            Preferência da camisa:
+                        </legend>
+
+                        <div class="produto-preferencia-lista">
+
+                            <label class="preferencia-opcao">
+                                <input
+                                    type="radio"
+                                    name="preferencia_box"
+                                    value="Todas as camisas"
+                                >
+                                <span>
+                                    Todas as camisas
+                                </span>
+                            </label>
+
+                            <label class="preferencia-opcao">
+                                <input
+                                    type="radio"
+                                    name="preferencia_box"
+                                    value="Apenas times estrangeiros e seleções"
+                                >
+                                <span>
+                                    Apenas times estrangeiros e seleções
+                                </span>
+                            </label>
+
+                        </div>
+
+                        <p
+                            class="mensagem-tamanho"
+                            id="mensagemPreferenciaBox"
+                        ></p>
+
+                    </fieldset>
+
+                <% } %>
 
                 <!-- QUANTIDADE -->
 

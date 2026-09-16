@@ -864,3 +864,48 @@
     font-size: 9px;
     font-weight: 700;
 }
+
+/* ============================================================
+   PRÉVIA DOS PRODUTOS NO HISTÓRICO DE PEDIDOS
+   ============================================================ */
+
+.conta-pedido-produtos {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.conta-pedido-produto-mini {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 220px;
+}
+
+.conta-pedido-produto-mini img {
+    width: 48px;
+    height: 48px;
+    border-radius: 7px;
+    object-fit: cover;
+    background: #f3f3f3;
+}
+
+.conta-pedido-produto-mini > div {
+    min-width: 0;
+}
+
+.conta-pedido-produto-mini strong,
+.conta-pedido-produto-mini small {
+    display: block;
+}
+
+.conta-pedido-produto-mini strong {
+    font-size: 13px;
+    line-height: 1.25;
+}
+
+.conta-pedido-produto-mini small {
+    margin-top: 2px;
+    color: #6a6a6a;
+    font-size: 11px;
+}

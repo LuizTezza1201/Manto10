@@ -10,69 +10,53 @@ const Admin = {
         // PRODUTOS E ESTOQUE
         // ==================================================
 
+        // As Box Misteriosas são produtos virtuais e não possuem
+        // estoque próprio. Por isso, elas contam como produtos no
+        // catálogo, mas não acrescentam unidades nem entram nos
+        // indicadores de estoque baixo/sem estoque.
         const [[produtos]] =
             await pool.execute(`
                 SELECT
-
-                    COUNT(*)
-                        AS total_produtos,
+                    COUNT(*) AS total_produtos,
 
                     COALESCE(
                         SUM(
-                            estoque_total
+                            CASE
+                                WHEN categoria_slug = 'box-misteriosas'
+                                THEN 0
+                                ELSE estoque_total
+                            END
                         ),
                         0
                     ) AS unidades_estoque,
 
                     SUM(
                         CASE
-
-                            WHEN
-                                estoque_total = 0
-
+                            WHEN categoria_slug <> 'box-misteriosas'
+                                 AND estoque_total = 0
                             THEN 1
-
                             ELSE 0
-
                         END
                     ) AS sem_estoque,
 
                     SUM(
                         CASE
-
-                            WHEN
-                                estoque_total
-                                BETWEEN 1 AND 5
-
+                            WHEN categoria_slug <> 'box-misteriosas'
+                                 AND estoque_total BETWEEN 1 AND 5
                             THEN 1
-
                             ELSE 0
-
                         END
                     ) AS estoque_baixo
 
                 FROM (
-
                     SELECT
-
                         p.id,
-
-                        COALESCE(
-                            SUM(
-                                pt.estoque
-                            ),
-                            0
-                        ) AS estoque_total
-
+                        c.slug AS categoria_slug,
+                        COALESCE(SUM(pt.estoque), 0) AS estoque_total
                     FROM produtos p
-
-                    LEFT JOIN produto_tamanhos pt
-                        ON pt.produto_id =
-                           p.id
-
-                    GROUP BY
-                        p.id
-
+                    INNER JOIN categorias c ON c.id = p.categoria_id
+                    LEFT JOIN produto_tamanhos pt ON pt.produto_id = p.id
+                    GROUP BY p.id, c.slug
                 ) AS resumo
             `);
 

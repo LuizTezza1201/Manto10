@@ -1,4 +1,4 @@
-<%- include('../partials/header') %>
+<%- include('../partials/admin-header') %>
 
 <%
     const transicoesStatus = {
@@ -323,6 +323,15 @@
                                                     <%= item.tamanho %>
                                                 </strong>
                                             </p>
+
+                                            <% if (item.preferencia_box) { %>
+                                                <p>
+                                                    Preferência:
+                                                    <strong>
+                                                        <%= item.preferencia_box %>
+                                                    </strong>
+                                                </p>
+                                            <% } %>
 
                                         </div>
 
@@ -987,4 +996,4 @@
 
 </div>
 
-<%- include('../partials/footer') %>
+<%- include('../partials/admin-footer') %>

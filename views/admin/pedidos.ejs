@@ -1,4 +1,4 @@
-<%- include('../partials/header') %>
+<%- include('../partials/admin-header') %>
 
 <div class="admin-layout">
 
@@ -271,6 +271,45 @@
                                 </div>
 
 
+                                <% if (pedido.itens && pedido.itens.length > 0) { %>
+
+                                    <div class="pedido-produtos-mini-lista">
+
+                                        <% pedido.itens.forEach((item) => { %>
+
+                                            <div class="pedido-produto-mini">
+
+                                                <img
+                                                    src="<%= item.imagem ? '/' + String(item.imagem).replace(/^\/+/, '') : '/images/produtos/placeholder.svg' %>"
+                                                    alt="<%= item.nome_produto %>"
+                                                    onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                                                >
+
+                                                <div>
+                                                    <strong>
+                                                        <%= item.nome_produto %>
+                                                    </strong>
+
+                                                    <small>
+                                                        <%= item.codigo_produto %> · Tam. <%= item.tamanho %> · <%= item.quantidade %> un.
+                                                    </small>
+
+                                                    <% if (item.preferencia_box) { %>
+                                                        <small>
+                                                            <%= item.preferencia_box %>
+                                                        </small>
+                                                    <% } %>
+                                                </div>
+
+                                            </div>
+
+                                        <% }) %>
+
+                                    </div>
+
+                                <% } %>
+
+
                                 <h2>
                                     <%= pedido.cliente_nome %>
                                 </h2>
@@ -374,4 +413,4 @@
 
 </div>
 
-<%- include('../partials/footer') %>
+<%- include('../partials/admin-footer') %>

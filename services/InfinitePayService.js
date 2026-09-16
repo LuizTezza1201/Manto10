@@ -225,7 +225,10 @@ function montarItensCheckout(itens) {
             description:
                 (
                     `${item.nome_produto}` +
-                    ` - Tam. ${item.tamanho}`
+                    ` - Tam. ${item.tamanho}` +
+                    (item.preferencia_box
+                        ? ` - ${item.preferencia_box}`
+                        : '')
                 )
                     .slice(0, 200)
         };

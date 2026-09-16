@@ -385,16 +385,21 @@ document.addEventListener(
                             estoqueSelecionado
                         ) {
 
+                            const ehBox =
+                                tamanho.dataset.box === '1';
+
                             estoqueSelecionado.textContent =
-                                `${estoqueAtual} unidade${
-                                    estoqueAtual === 1
-                                        ? ''
-                                        : 's'
-                                } disponível${
-                                    estoqueAtual === 1
-                                        ? ''
-                                        : 'is'
-                                }`;
+                                ehBox
+                                    ? 'Tamanho disponível'
+                                    : `${estoqueAtual} unidade${
+                                        estoqueAtual === 1
+                                            ? ''
+                                            : 's'
+                                    } disponível${
+                                        estoqueAtual === 1
+                                            ? ''
+                                            : 'is'
+                                    }`;
 
                         }
 

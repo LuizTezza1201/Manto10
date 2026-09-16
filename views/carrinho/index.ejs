@@ -98,6 +98,15 @@
                                     </strong>
                                 </p>
 
+                                <% if (item.preferenciaBox) { %>
+                                    <p>
+                                        Preferência:
+                                        <strong>
+                                            <%= item.preferenciaBox %>
+                                        </strong>
+                                    </p>
+                                <% } %>
+
                                 <p>
                                     Código:
                                     <%= item.codigo %>

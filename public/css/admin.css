@@ -2305,23 +2305,187 @@ input[type="file"]::file-selector-button:hover {
 }
 
 /* =========================================================
+   ESTRUTURA GERAL DO PAINEL ADMINISTRATIVO
+========================================================= */
+
+body.admin-body {
+    min-height: 100vh;
+    margin: 0;
+
+    background: #f6f6f7;
+}
+
+body.admin-menu-aberto {
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   CABEÇALHO EXCLUSIVO DO ADMIN
+========================================================= */
+
+.admin-cabecalho {
+    position: fixed;
+    z-index: 950;
+
+    top: 0;
+    right: 0;
+    left: 235px;
+
+    height: 70px;
+    padding: 0 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+
+    border-bottom: 1px solid #e7e7e7;
+
+    background: #ffffff;
+}
+
+.admin-cabecalho-identidade {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.admin-cabecalho-identidade strong {
+    color: #111111;
+
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.admin-cabecalho-identidade span {
+    color: #777777;
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.admin-cabecalho-acoes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-cabecalho-form {
+    margin: 0;
+}
+
+.admin-cabecalho-botao {
+    min-height: 38px;
+    padding: 0 15px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid transparent;
+    border-radius: 7px;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 900;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.admin-cabecalho-botao-loja {
+    border-color: #dddddd;
+
+    background: #ffffff;
+    color: #222222;
+}
+
+.admin-cabecalho-botao-loja:hover {
+    border-color: #9d00de;
+
+    color: #9d00de;
+}
+
+.admin-cabecalho-botao-sair {
+    background: #0b0b0b;
+    color: #ffffff;
+}
+
+.admin-cabecalho-botao-sair:hover {
+    background: #9d00de;
+}
+
+
+/* =========================================================
+   BOTÃO HAMBÚRGUER DO ADMIN
+========================================================= */
+
+.admin-menu-mobile {
+    width: 42px;
+    height: 42px;
+
+    display: none;
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    border: 1px solid #e4e4e4;
+    border-radius: 8px;
+
+    background: #ffffff;
+}
+
+.admin-menu-mobile span {
+    width: 20px;
+    height: 2px;
+
+    display: block;
+
+    background: #111111;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.admin-menu-mobile.ativo span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.admin-menu-mobile.ativo span:nth-child(2) {
+    opacity: 0;
+}
+
+.admin-menu-mobile.ativo span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+
+/* =========================================================
    LAYOUT ADMINISTRATIVO
 ========================================================= */
 
 .admin-layout {
     width: 100%;
+    min-height: 100vh;
 
-    display: grid;
+    padding-top: 70px;
+    padding-left: 235px;
 
-    grid-template-columns:
-        235px
-        minmax(0, 1fr);
-
-    align-items: stretch;
+    display: block;
 
     background: #f6f6f7;
-
-    min-height: 700px;
 }
 
 .admin-conteudo {
@@ -2331,75 +2495,85 @@ input[type="file"]::file-selector-button:hover {
     box-sizing: border-box;
 }
 
+.admin-layout .admin-pagina {
+    min-height: calc(100vh - 70px);
+    margin: 0;
+
+    padding-left: 35px;
+    padding-right: 35px;
+}
+
+.admin-layout .admin-container {
+    width: 100%;
+    max-width: 1180px;
+
+    margin-right: auto;
+    margin-left: auto;
+}
+
 
 /* =========================================================
-   SIDEBAR
+   SIDEBAR - OCUPA TODA A LATERAL
 ========================================================= */
 
 .admin-sidebar {
+    position: fixed;
+    z-index: 1000;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
     width: 235px;
-    min-height: 100%;
-
-    padding: 30px 18px 24px;
-
-    box-sizing: border-box;
+    height: 100vh;
+    min-height: 0;
+    padding: 24px 18px;
 
     display: flex;
     flex-direction: column;
 
+    overflow-y: auto;
+
+    box-sizing: border-box;
+
     background: #0b0b0b;
-
     color: #ffffff;
-
-    position: relative;
 }
 
-
-/* =========================================================
-   CABEÇALHO
-========================================================= */
-
 .admin-sidebar-cabecalho {
-    padding: 3px 12px 25px;
+    min-height: 112px;
+    padding: 0 8px 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     border-bottom: 1px solid #282828;
 }
 
-.admin-sidebar-cabecalho span {
-    display: block;
+.admin-sidebar-logo {
+    width: 128px;
+    height: 88px;
 
-    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    color: #9d00de;
-
-    font-size: 8px;
-    font-weight: 900;
-
-    letter-spacing: 1px;
+    overflow: hidden;
 }
 
-.admin-sidebar-cabecalho strong {
+.admin-sidebar-logo img {
+    width: 100%;
+    height: 100%;
+
     display: block;
 
-    color: #ffffff;
-
-    font-size: 22px;
-    font-weight: 900;
-}
-
-.admin-sidebar-cabecalho small {
-    display: block;
-
-    margin-top: 4px;
-
-    color: #888888;
-
-    font-size: 9px;
+    object-fit: contain;
 }
 
 
 /* =========================================================
-   MENU
+   MENU LATERAL
 ========================================================= */
 
 .admin-sidebar-menu {
@@ -2407,22 +2581,18 @@ input[type="file"]::file-selector-button:hover {
 
     display: flex;
     flex-direction: column;
-
     gap: 7px;
 }
 
-.admin-sidebar-menu > a,
-.admin-sidebar-item-desabilitado {
+.admin-sidebar-menu > a {
     width: 100%;
     min-height: 44px;
-
     padding: 0 14px;
 
     box-sizing: border-box;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
 
     border-radius: 8px;
 
@@ -2439,31 +2609,18 @@ input[type="file"]::file-selector-button:hover {
         transform 0.2s ease;
 }
 
-
-/* =========================================================
-   HOVER
-========================================================= */
-
 .admin-sidebar-menu > a:hover {
     background: #1c1c1c;
-
     color: #ffffff;
 
     transform: translateX(2px);
 }
 
-
-/* =========================================================
-   MENU ATIVO
-========================================================= */
-
 .admin-sidebar-menu > a.ativo {
     background: #9d00de;
-
     color: #ffffff;
 
-    box-shadow:
-        0 6px 18px rgba(157, 0, 222, 0.22);
+    box-shadow: 0 6px 18px rgba(157, 0, 222, 0.22);
 }
 
 .admin-sidebar-menu > a.ativo:hover {
@@ -2474,175 +2631,148 @@ input[type="file"]::file-selector-button:hover {
 
 
 /* =========================================================
-   DESABILITADOS
+   FUNDO DO MENU MOBILE
 ========================================================= */
 
-.admin-sidebar-item-desabilitado {
-    color: #666666;
+.admin-sidebar-overlay {
+    position: fixed;
+    z-index: 980;
+    inset: 0;
 
-    cursor: default;
-}
+    display: block;
 
-.admin-sidebar-item-desabilitado small {
-    padding: 3px 6px;
+    border: 0;
 
-    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.48);
 
-    background: #181818;
-
-    color: #666666;
-
-    font-size: 7px;
-    font-weight: 800;
-}
-
-
-/* =========================================================
-   RODAPÉ DA SIDEBAR
-========================================================= */
-
-.admin-sidebar-rodape {
-    margin-top: auto;
-
-    padding-top: 25px;
-
-    border-top: 1px solid #282828;
-}
-
-.admin-sidebar-rodape a {
-    width: 100%;
-    height: 40px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    box-sizing: border-box;
-
-    border: 1px solid #333333;
-    border-radius: 7px;
-
-    color: #cccccc;
-
-    font-size: 9px;
-    font-weight: 800;
-
-    text-decoration: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 
     transition:
-        border-color 0.2s ease,
-        color 0.2s ease,
-        background-color 0.2s ease;
+        opacity 0.2s ease,
+        visibility 0.2s ease;
 }
 
-.admin-sidebar-rodape a:hover {
-    border-color: #9d00de;
-
-    background: #161616;
-
-    color: #ffffff;
+.admin-sidebar-overlay.visivel {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 
 /* =========================================================
-   AJUSTE DA ÁREA INTERNA
-========================================================= */
-
-.admin-layout
-.admin-pagina {
-    margin: 0;
-
-    padding-left: 35px;
-    padding-right: 35px;
-}
-
-.admin-layout
-.admin-container {
-    width: 100%;
-    max-width: 1180px;
-
-    margin-left: auto;
-    margin-right: auto;
-}
-
-
-/* =========================================================
-   TABLET
+   RESPONSIVIDADE DO LAYOUT ADMINISTRATIVO
 ========================================================= */
 
 @media (max-width: 1000px) {
 
+    .admin-cabecalho {
+        left: 205px;
+        padding-right: 22px;
+        padding-left: 22px;
+    }
+
     .admin-layout {
-        grid-template-columns:
-            190px
-            minmax(0, 1fr);
+        padding-left: 205px;
     }
 
     .admin-sidebar {
-        width: 190px;
+        width: 205px;
 
-        padding-left: 12px;
-        padding-right: 12px;
+        padding-right: 13px;
+        padding-left: 13px;
     }
 
-    .admin-layout
-    .admin-pagina {
-        padding-left: 22px;
+    .admin-sidebar-logo {
+        width: 116px;
+    }
+
+    .admin-layout .admin-pagina {
         padding-right: 22px;
+        padding-left: 22px;
     }
-
 }
 
+@media (max-width: 760px) {
 
-/* =========================================================
-   CELULAR
-========================================================= */
+    .admin-cabecalho {
+        left: 0;
 
-@media (max-width: 720px) {
+        height: 64px;
+        padding: 0 14px;
 
-    .admin-layout {
-        display: block;
+        gap: 12px;
     }
 
-    .admin-sidebar {
-        width: 100%;
-        min-height: auto;
-
-        padding: 15px;
+    .admin-menu-mobile {
+        display: flex;
     }
 
-    .admin-sidebar-cabecalho {
-        padding-bottom: 14px;
+    .admin-cabecalho-identidade {
+        margin-right: auto;
     }
 
-    .admin-sidebar-menu {
-        margin-top: 15px;
+    .admin-cabecalho-identidade span {
+        display: none;
+    }
 
-        display: grid;
-
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
+    .admin-cabecalho-acoes {
         gap: 7px;
     }
 
-    .admin-sidebar-menu > a,
-    .admin-sidebar-item-desabilitado {
-        min-height: 40px;
+    .admin-cabecalho-botao {
+        min-height: 36px;
+        padding: 0 10px;
     }
 
-    .admin-sidebar-rodape {
-        margin-top: 15px;
-
-        padding-top: 15px;
+    .admin-layout {
+        padding-top: 64px;
+        padding-left: 0;
     }
 
-    .admin-layout
-    .admin-pagina {
-        padding-left: 15px;
+    .admin-layout .admin-pagina {
+        min-height: calc(100vh - 64px);
+
         padding-right: 15px;
+        padding-left: 15px;
     }
 
+    .admin-sidebar {
+        width: min(82vw, 290px);
+
+        padding: 20px 15px;
+
+        transform: translateX(-100%);
+
+        transition: transform 0.25s ease;
+    }
+
+    .admin-sidebar.aberta {
+        transform: translateX(0);
+
+        box-shadow: 16px 0 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .admin-sidebar-cabecalho {
+        min-height: 98px;
+    }
+
+    .admin-sidebar-logo {
+        width: 118px;
+        height: 78px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .admin-cabecalho-identidade strong {
+        font-size: 12px;
+    }
+
+    .admin-cabecalho-botao {
+        font-size: 9px;
+    }
 }
 
 /* =========================================================
@@ -2675,4 +2805,37 @@ input[type="file"]::file-selector-button:hover {
         margin-left: 0;
     }
 
+}
+
+/* ============================================================
+   BOTÃO VOLTAR - PAINEL ADMINISTRATIVO
+   ============================================================ */
+
+.admin-voltar-botao {
+    min-height: 38px;
+    padding: 0 14px;
+
+    border: 1px solid #d7d7d7;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #111111;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 900;
+
+    cursor: pointer;
+}
+
+.admin-voltar-botao:hover {
+    border-color: #9d00de;
+    color: #9d00de;
+}
+
+@media (max-width: 700px) {
+    .admin-voltar-botao {
+        min-width: 44px;
+        padding: 0 10px;
+    }
 }

@@ -1,4 +1,4 @@
-<%- include('../partials/header') %>
+<%- include('../partials/admin-header') %>
 
 <%
     /*
@@ -322,6 +322,42 @@
                             #<%= venda.numero_pedido %>
                         </strong>
 
+                        <% if (venda.itens && venda.itens.length > 0) { %>
+
+                            <div class="venda-produtos-mini-lista">
+
+                                <% venda.itens.forEach((item) => { %>
+
+                                    <div class="venda-produto-mini">
+                                        <img
+                                            src="<%= item.imagem ? '/' + String(item.imagem).replace(/^\/+/, '') : '/images/produtos/placeholder.svg' %>"
+                                            alt="<%= item.nome_produto %>"
+                                            onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                                        >
+
+                                        <div>
+                                            <strong>
+                                                <%= item.nome_produto %>
+                                            </strong>
+
+                                            <small>
+                                                <%= item.codigo_produto %> · Tam. <%= item.tamanho %> · <%= item.quantidade %> un.
+                                            </small>
+
+                                            <% if (item.preferencia_box) { %>
+                                                <small>
+                                                    <%= item.preferencia_box %>
+                                                </small>
+                                            <% } %>
+                                        </div>
+                                    </div>
+
+                                <% }) %>
+
+                            </div>
+
+                        <% } %>
+
                     </div>
 
 
@@ -622,7 +658,43 @@
                                         #<%= venda.numero_pedido %>
                                     </strong>
 
-                                </div>
+                                    <% if (venda.itens && venda.itens.length > 0) { %>
+
+                                        <div class="venda-produtos-mini-lista">
+
+                                            <% venda.itens.forEach((item) => { %>
+
+                                                <div class="venda-produto-mini">
+                                                    <img
+                                                        src="<%= item.imagem ? '/' + String(item.imagem).replace(/^\/+/, '') : '/images/produtos/placeholder.svg' %>"
+                                                        alt="<%= item.nome_produto %>"
+                                                        onerror="this.onerror=null;this.src='/images/produtos/placeholder.svg';"
+                                                    >
+
+                                                    <div>
+                                                        <strong>
+                                                            <%= item.nome_produto %>
+                                                        </strong>
+
+                                                        <small>
+                                                            <%= item.codigo_produto %> · Tam. <%= item.tamanho %> · <%= item.quantidade %> un.
+                                                        </small>
+
+                                                        <% if (item.preferencia_box) { %>
+                                                            <small>
+                                                                <%= item.preferencia_box %>
+                                                            </small>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+
+                                            <% }) %>
+
+                                        </div>
+
+                                    <% } %>
+
+                                            </div>
 
 
                                 <div class="venda-cliente">
@@ -780,4 +852,4 @@
 
 </div>
 
-<%- include('../partials/footer') %>
+<%- include('../partials/admin-footer') %>

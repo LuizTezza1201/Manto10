@@ -130,7 +130,98 @@ const AdminVenda = {
             LIMIT ${limiteSeguro}
         `);
 
-        return rows;
+        if (rows.length === 0) {
+            return rows;
+        }
+
+        const itensPorRegistro = new Map();
+
+        const idsPedidos = rows
+            .filter(venda => venda.tipo_registro === 'pedido')
+            .map(venda => Number(venda.id));
+
+        if (idsPedidos.length > 0) {
+            const placeholders = idsPedidos
+                .map(() => '?')
+                .join(', ');
+
+            const [itensPedido] = await pool.execute(`
+                SELECT
+                    ip.pedido_id AS registro_id,
+                    ip.codigo_produto,
+                    ip.nome_produto,
+                    ip.tamanho,
+                    ip.preferencia_box,
+                    ip.quantidade,
+                    (
+                        SELECT pi.caminho
+                        FROM produto_imagens pi
+                        WHERE pi.produto_id = ip.produto_id
+                        ORDER BY pi.principal DESC, pi.ordem ASC, pi.id ASC
+                        LIMIT 1
+                    ) AS imagem
+                FROM itens_pedido ip
+                WHERE ip.pedido_id IN (${placeholders})
+                ORDER BY ip.pedido_id, ip.id
+            `, idsPedidos);
+
+            itensPedido.forEach(item => {
+                const chave = `pedido:${Number(item.registro_id)}`;
+
+                if (!itensPorRegistro.has(chave)) {
+                    itensPorRegistro.set(chave, []);
+                }
+
+                itensPorRegistro.get(chave).push(item);
+            });
+        }
+
+        const idsManuais = rows
+            .filter(venda => venda.tipo_registro === 'manual')
+            .map(venda => Number(venda.id));
+
+        if (idsManuais.length > 0) {
+            const placeholders = idsManuais
+                .map(() => '?')
+                .join(', ');
+
+            const [itensManuais] = await pool.execute(`
+                SELECT
+                    ivm.venda_id AS registro_id,
+                    ivm.codigo_produto,
+                    ivm.nome_produto,
+                    ivm.tamanho,
+                    NULL AS preferencia_box,
+                    ivm.quantidade,
+                    (
+                        SELECT pi.caminho
+                        FROM produto_imagens pi
+                        WHERE pi.produto_id = ivm.produto_id
+                        ORDER BY pi.principal DESC, pi.ordem ASC, pi.id ASC
+                        LIMIT 1
+                    ) AS imagem
+                FROM itens_venda_manual ivm
+                WHERE ivm.venda_id IN (${placeholders})
+                ORDER BY ivm.venda_id, ivm.id
+            `, idsManuais);
+
+            itensManuais.forEach(item => {
+                const chave = `manual:${Number(item.registro_id)}`;
+
+                if (!itensPorRegistro.has(chave)) {
+                    itensPorRegistro.set(chave, []);
+                }
+
+                itensPorRegistro.get(chave).push(item);
+            });
+        }
+
+        return rows.map(venda => ({
+            ...venda,
+            itens: itensPorRegistro.get(
+                `${venda.tipo_registro}:${Number(venda.id)}`
+            ) || []
+        }));
     },
 
     // ======================================================
@@ -163,8 +254,11 @@ const AdminVenda = {
                 ) AS imagem
             FROM produto_tamanhos pt
             INNER JOIN produtos p ON p.id = pt.produto_id
+            INNER JOIN categorias c ON c.id = p.categoria_id
             INNER JOIN tamanhos t ON t.id = pt.tamanho_id
-            WHERE p.status = 'Ativo' AND pt.estoque > 0
+            WHERE p.status = 'Ativo'
+                AND pt.estoque > 0
+                AND c.slug <> 'box-misteriosas'
             ORDER BY p.nome ASC, FIELD(t.nome, 'P', 'M', 'G', 'GG')
         `);
 

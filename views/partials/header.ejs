@@ -25,6 +25,11 @@
 
     <link
         rel="stylesheet"
+        href="/css/acessibilidade.css"
+    >
+
+    <link
+        rel="stylesheet"
         href="/css/auth.css"
     >
 
@@ -88,3 +93,17 @@
 <body>
 
     <%- include('navbar') %>
+
+    <% if (typeof caminhoAtual !== 'undefined' && caminhoAtual !== '/') { %>
+
+        <div class="pagina-voltar-container">
+            <button
+                type="button"
+                class="pagina-voltar-botao"
+                onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '/'; }"
+            >
+                ← Voltar
+            </button>
+        </div>
+
+    <% } %>

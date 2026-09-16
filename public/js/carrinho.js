@@ -267,6 +267,13 @@ document.addEventListener(
                                             ${escaparHtml(item.tamanho)}
                                         </span>
 
+                                        ${item.preferenciaBox ? `
+                                            <span class="carrinho-item-tamanho">
+                                                Preferência:
+                                                ${escaparHtml(item.preferenciaBox)}
+                                            </span>
+                                        ` : ''}
+
                                         <div
                                             class="carrinho-item-rodape"
                                         >
@@ -580,6 +587,21 @@ document.addEventListener(
                             'quantidadeProduto'
                         );
 
+                    const preferenciaSelecionada =
+                        document.querySelector(
+                            'input[name="preferencia_box"]:checked'
+                        );
+
+                    const mensagemPreferenciaBox =
+                        document.getElementById(
+                            'mensagemPreferenciaBox'
+                        );
+
+                    const existePreferenciaBox =
+                        document.querySelector(
+                            'input[name="preferencia_box"]'
+                        );
+
                     const mensagemTamanho =
                         document.getElementById(
                             'mensagemTamanho'
@@ -596,11 +618,27 @@ document.addEventListener(
                         return;
                     }
 
+                    if (
+                        existePreferenciaBox &&
+                        !preferenciaSelecionada
+                    ) {
+                        if (mensagemPreferenciaBox) {
+                            mensagemPreferenciaBox.textContent =
+                                'Escolha uma preferência para a Box Misteriosa.';
+                        }
+
+                        return;
+                    }
+
                     try {
 
                         if (mensagemTamanho) {
-
                             mensagemTamanho.textContent =
+                                '';
+                        }
+
+                        if (mensagemPreferenciaBox) {
+                            mensagemPreferenciaBox.textContent =
                                 '';
                         }
 
@@ -618,7 +656,12 @@ document.addEventListener(
                                             inputQuantidade
                                                 ? inputQuantidade.value
                                                 : 1
-                                        )
+                                        ),
+
+                                    preferencia_box:
+                                        preferenciaSelecionada
+                                            ? preferenciaSelecionada.value
+                                            : ''
                                 }
                             );
 

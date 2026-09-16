@@ -1,0 +1,11 @@
+MANTO 10 - FASE 4 - NOVO PAINEL ADMINISTRATIVO
+
+ALTERAÇÕES:
+- Área /admin não carrega mais cabeçalho, menu, barra de atendimento, rodapé, WhatsApp, carrinho ou acessibilidade da loja pública.
+- Sidebar fixa ocupa toda a lateral da tela no desktop.
+- Logo Manto 10 substitui os textos antigos do topo da sidebar.
+- Novo cabeçalho do Admin com botões "Ir à loja" e "Sair".
+- Menu lateral vira hambúrguer no celular.
+- Administrador, ao navegar na loja, vê o botão "Ir ao painel ADM" e o botão "Sair".
+
+NÃO HÁ ALTERAÇÃO DE BANCO DE DADOS NESTA FASE.

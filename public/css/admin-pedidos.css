@@ -1028,3 +1028,48 @@
 
     line-height: 1.5;
 }
+
+/* ============================================================
+   PRÉVIA DOS PRODUTOS NA LISTA DE PEDIDOS
+   ============================================================ */
+
+.pedido-produtos-mini-lista {
+    display: grid;
+    gap: 8px;
+    margin: 12px 0 14px;
+}
+
+.pedido-produto-mini {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pedido-produto-mini img {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: #f3f3f3;
+}
+
+.pedido-produto-mini > div {
+    min-width: 0;
+}
+
+.pedido-produto-mini strong,
+.pedido-produto-mini small {
+    display: block;
+}
+
+.pedido-produto-mini strong {
+    font-size: 13px;
+    line-height: 1.25;
+}
+
+.pedido-produto-mini small {
+    margin-top: 3px;
+    color: #707070;
+    font-size: 11px;
+}

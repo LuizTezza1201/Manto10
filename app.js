@@ -146,6 +146,11 @@ app.use((req, res, next) => {
     res.locals.usuario =
         req.session.usuario || null;
 
+    // Permite que as views saibam qual página está aberta.
+    // Isso é usado, por exemplo, para exibir o botão Voltar
+    // somente nas páginas internas do sistema.
+    res.locals.caminhoAtual = req.path;
+
     next();
 });
 

@@ -1,4 +1,4 @@
-<%- include('../partials/header') %>
+<%- include('../partials/admin-header') %>
 
 <%
     const mapaProdutos = new Map();
@@ -271,6 +271,71 @@
                 </section>
 
 
+                <% if (produtosAgrupados.length > 0) { %>
+
+                        <!-- ==================================
+                             ITENS ADICIONADOS
+                        =================================== -->
+
+                        <section class="venda-itens-selecionados nova-venda-resumo-topo">
+
+                            <div class="nova-venda-bloco-topo">
+
+                                <div>
+
+                                    <span>
+                                        VENDA
+                                    </span>
+
+                                    <h2>
+                                        Camisas adicionadas
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="nova-venda-itens-vazio"
+                                id="vendaItensVazio"
+                            >
+                                Nenhuma camisa adicionada.
+                            </div>
+
+
+                            <div
+                                class="nova-venda-itens"
+                                id="vendaItens"
+                            ></div>
+
+
+                            <div class="nova-venda-total">
+
+                                <span>
+                                    Total da venda
+                                </span>
+
+                                <strong id="totalVenda">
+                                    R$ 0,00
+                                </strong>
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="admin-botao-principal nova-venda-finalizar"
+                            >
+                                Registrar venda
+                            </button>
+
+                        </section>
+
+
+                <% } %>
+
+
                 <!-- ======================================
                      ESCOLHER CAMISAS
                 ======================================= -->
@@ -526,65 +591,6 @@
 
                         </div>
 
-
-                        <!-- ==================================
-                             ITENS ADICIONADOS
-                        =================================== -->
-
-                        <div class="venda-itens-selecionados">
-
-                            <div class="nova-venda-bloco-topo">
-
-                                <div>
-
-                                    <span>
-                                        VENDA
-                                    </span>
-
-                                    <h2>
-                                        Camisas adicionadas
-                                    </h2>
-
-                                </div>
-
-                            </div>
-
-
-                            <div
-                                class="nova-venda-itens-vazio"
-                                id="vendaItensVazio"
-                            >
-                                Nenhuma camisa adicionada.
-                            </div>
-
-
-                            <div
-                                class="nova-venda-itens"
-                                id="vendaItens"
-                            ></div>
-
-
-                            <div class="nova-venda-total">
-
-                                <span>
-                                    Total da venda
-                                </span>
-
-                                <strong id="totalVenda">
-                                    R$ 0,00
-                                </strong>
-
-                            </div>
-
-
-                            <button
-                                type="submit"
-                                class="admin-botao-principal nova-venda-finalizar"
-                            >
-                                Registrar venda
-                            </button>
-
-                        </div>
 
                     <% } else { %>
 
@@ -1279,4 +1285,4 @@
 })();
 </script>
 
-<%- include('../partials/footer') %>
+<%- include('../partials/admin-footer') %>

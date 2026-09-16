@@ -1,0 +1,155 @@
+<!-- =========================================================
+     ACESSIBILIDADE, LIBRAS E PREFERÊNCIAS DE COOKIES
+========================================================= -->
+
+<div
+    class="acessibilidade-container"
+    id="acessibilidadeContainer"
+>
+    <button
+        type="button"
+        class="acessibilidade-atalho"
+        id="botaoAcessibilidade"
+        aria-expanded="false"
+        aria-controls="painelAcessibilidade"
+    >
+        <span class="acessibilidade-atalho-simbolo" aria-hidden="true">A+</span>
+        <span>Acessibilidade</span>
+    </button>
+
+    <section
+        class="acessibilidade-painel"
+        id="painelAcessibilidade"
+        aria-label="Opções de acessibilidade"
+        hidden
+    >
+        <div class="acessibilidade-painel-topo">
+            <h2>Acessibilidade</h2>
+
+            <button
+                type="button"
+                class="acessibilidade-fechar"
+                id="fecharAcessibilidade"
+                aria-label="Fechar opções de acessibilidade"
+            >
+                ×
+            </button>
+        </div>
+
+        <div class="acessibilidade-grupo">
+            <p class="acessibilidade-rotulo">Tamanho da página</p>
+
+            <div class="acessibilidade-controles-fonte">
+                <button
+                    type="button"
+                    id="diminuirFonte"
+                    aria-label="Diminuir tamanho da página"
+                >
+                    A−
+                </button>
+
+                <span
+                    class="acessibilidade-percentual"
+                    id="percentualFonte"
+                    aria-live="polite"
+                >
+                    100%
+                </span>
+
+                <button
+                    type="button"
+                    id="aumentarFonte"
+                    aria-label="Aumentar tamanho da página"
+                >
+                    A+
+                </button>
+            </div>
+        </div>
+
+        <div class="acessibilidade-acoes">
+            <button
+                type="button"
+                id="alternarContraste"
+                aria-pressed="false"
+            >
+                Alto contraste
+            </button>
+
+            <button
+                type="button"
+                id="alternarLinks"
+                aria-pressed="false"
+            >
+                Destacar links
+            </button>
+
+            <button
+                type="button"
+                id="alternarMovimento"
+                aria-pressed="false"
+            >
+                Reduzir animações
+            </button>
+
+            <button
+                type="button"
+                class="acessibilidade-restaurar"
+                id="restaurarAcessibilidade"
+            >
+                Restaurar padrão
+            </button>
+        </div>
+    </section>
+</div>
+
+<p
+    class="visualmente-oculto"
+    id="avisoAcessibilidade"
+    aria-live="polite"
+></p>
+
+<section
+    class="cookies-banner"
+    id="cookiesBanner"
+    aria-label="Preferências de cookies"
+    hidden
+>
+    <div class="cookies-conteudo">
+        <div class="cookies-texto">
+            <h2>Cookies e privacidade</h2>
+
+            <p>
+                A Manto 10 utiliza cookies essenciais para manter o login e o funcionamento do sistema,
+                além de armazenamento local para lembrar suas preferências de acessibilidade.
+                Não utilizamos cookies de publicidade neste projeto.
+            </p>
+        </div>
+
+        <div class="cookies-acoes">
+            <button
+                type="button"
+                class="cookies-botao cookies-botao-secundario"
+                id="cookiesNecessarios"
+            >
+                Somente necessários
+            </button>
+
+            <button
+                type="button"
+                class="cookies-botao cookies-botao-principal"
+                id="cookiesAceitar"
+            >
+                Aceitar
+            </button>
+        </div>
+    </div>
+</section>
+
+<!--
+    VLibras é carregado diretamente do serviço oficial.
+    O widget traduz conteúdos em Português Brasileiro para Libras.
+-->
+<script
+    src="https://vlibras.gov.br/app/vlibras-plugin.js"
+    defer
+></script>

@@ -244,6 +244,13 @@
                                         <%= item.tamanho %>
                                     </span>
 
+                                    <% if (item.preferenciaBox) { %>
+                                        <span>
+                                            Preferência:
+                                            <%= item.preferenciaBox %>
+                                        </span>
+                                    <% } %>
+
                                     <span>
                                         Quantidade:
                                         <%= item.quantidade %>

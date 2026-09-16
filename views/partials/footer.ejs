@@ -3,119 +3,105 @@
     <div class="rodape-container">
 
         <div class="rodape-coluna">
+            <a
+                href="/"
+                class="footer-logo"
+                aria-label="Manto 10 - Página inicial"
+            >
+                <img
+                    src="/images/logotransparente.png"
+                    alt="Manto 10"
+                >
+            </a>
+        </div>
+
+        <div class="rodape-coluna">
+            <h3>Manto 10</h3>
+
+            <a href="/">Início</a>
+            <a href="/camisas">Camisas</a>
+            <a href="/camisas?categoria=retro">Retrô</a>
+            <a href="/camisas?categoria=box-misteriosas">Box Misteriosas</a>
+        </div>
+
+        <div class="rodape-coluna">
+            <h3>Atendimento</h3>
 
             <a
-    href="/"
-    class="footer-logo"
-    aria-label="Manto 10 - Página inicial"
->
-    <img
-        src="/images/logotransparente.png"
-        alt="Manto 10"
-    >
-</a>
+                href="https://wa.me/5545988230340?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20loja%20Manto%2010%20e%20gostaria%20de%20atendimento."
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                WhatsApp: (45) 98823-0340
+            </a>
 
+            <a
+                href="https://www.instagram.com/mantodez.store/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Instagram: @mantodez.store
+            </a>
+
+            <a href="/minha-conta">Minha conta</a>
         </div>
 
         <div class="rodape-coluna">
-
-            <h3>
-                Manto 10
-            </h3>
-
-            <a href="/">
-                Início
-            </a>
-
-            <a href="/camisas?categoria=lancamentos">
-                Lançamentos
-            </a>
-
-            <a href="/camisas?categoria=retro">
-                Retrô
-            </a>
-
-            <a href="/camisas?categoria=infantil">
-                Infantil
-            </a>
-
-        </div>
-
-        <div class="rodape-coluna">
-
-            <h3>
-                Atendimento
-            </h3>
-
-            <a href="#">
-                Fale conosco
-            </a>
-
-            <a href="#">
-                Meus pedidos
-            </a>
-
-            <a href="#">
-                Minha conta
-            </a>
-
-        </div>
-
-        <div class="rodape-coluna">
-
-            <h3>
-                Compra segura
-            </h3>
+            <h3>Compra segura</h3>
 
             <p>
                 Seus dados são tratados com segurança durante sua navegação.
             </p>
 
+            <% if (typeof paginaAtual === 'undefined' || paginaAtual !== 'admin') { %>
+                <button
+                    type="button"
+                    class="rodape-link-botao"
+                    id="abrirCookies"
+                >
+                    Preferências de cookies
+                </button>
+            <% } %>
         </div>
 
     </div>
 
     <div class="rodape-inferior">
-
-        <p>
-            &copy; 2026 Manto 10. Todos os direitos reservados.
-        </p>
-
-        <p>
-            Projeto de TCC
-        </p>
-
+        <p>&copy; 2026 Manto 10. Todos os direitos reservados.</p>
+        <p>Projeto de TCC</p>
     </div>
 
 </footer>
 
-<button
-    type="button"
+<a
+    href="https://wa.me/5545988230340?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20loja%20Manto%2010%20e%20gostaria%20de%20atendimento."
     class="whatsapp-flutuante"
     id="whatsappFlutuante"
     title="Falar pelo WhatsApp"
     aria-label="Falar pelo WhatsApp"
+    target="_blank"
+    rel="noopener noreferrer"
 >
-
-    <svg
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-    >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
         <path
             d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.6 4.1 1.6 5.9L.2 24l6.5-1.7a11.6 11.6 0 0 0 5.4 1.4h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.2-6.1-3.5-8.4Z"
         ></path>
     </svg>
+</a>
 
-</button>
+<% if (typeof paginaAtual === 'undefined' || paginaAtual !== 'admin') { %>
+    <%- include('acessibilidade') %>
+<% } %>
 
 <%- include('carrinho-lateral') %>
 
-<!-- Carrinho é carregado antes do main.js
-     para assumir o formulário do produto. -->
-
+<!-- Carrinho é carregado antes do main.js para assumir o formulário do produto. -->
 <script src="/js/carrinho.js"></script>
 <script src="/js/main.js"></script>
 
-</body>
+<% if (typeof paginaAtual === 'undefined' || paginaAtual !== 'admin') { %>
+    <script src="/js/acessibilidade.js"></script>
+<% } %>
 
+</body>
 </html>

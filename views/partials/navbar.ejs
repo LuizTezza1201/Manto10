@@ -58,54 +58,60 @@
 
             <% if (usuario) { %>
 
-                <a
-                    href="<%= usuario.tipo === 'Administrador' ? '/admin' : '/minha-conta' %>"
-                    class="acao-topo"
-                    title="Usuário conectado"
-                >
+                <% if (usuario.tipo === 'Administrador') { %>
 
-                    <svg
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
+                    <a
+                        href="/admin"
+                        class="botao-painel-topo"
                     >
-                        <circle
-                            cx="12"
-                            cy="8"
-                            r="4"
-                        ></circle>
+                        Ir ao painel ADM
+                    </a>
 
-                        <path
-                            d="M4 21C4 16.6 7.6 13 12 13C16.4 13 20 16.6 20 21"
-                        ></path>
-                    </svg>
+                <% } else { %>
 
-                    <span class="acao-texto">
+                    <a
+                        href="/minha-conta"
+                        class="acao-topo"
+                        title="Minha conta"
+                    >
 
-                        <small>
-                            Olá,
-                        </small>
+                        <svg
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <circle
+                                cx="12"
+                                cy="8"
+                                r="4"
+                            ></circle>
 
-                        <strong>
-                            <%= usuario.nome.split(' ')[0] %>
-                        </strong>
+                            <path
+                                d="M4 21C4 16.6 7.6 13 12 13C16.4 13 20 16.6 20 21"
+                            ></path>
+                        </svg>
 
-                    </span>
+                        <span class="acao-texto">
+                            <small>Olá,</small>
+                            <strong>
+                                <%= usuario.nome.split(' ')[0] %>
+                            </strong>
+                        </span>
 
-                </a>
+                    </a>
+
+                <% } %>
 
                 <form
                     action="/logout"
                     method="POST"
-                    class="form-logout-topo"
+                    class="form-logout-topo <%= usuario.tipo === 'Administrador' ? 'form-logout-admin-loja' : '' %>"
                 >
-
                     <button
                         type="submit"
                         class="botao-logout-topo"
                     >
                         Sair
                     </button>
-
                 </form>
 
             <% } else { %>
@@ -133,15 +139,8 @@
                     </svg>
 
                     <span class="acao-texto">
-
-                        <small>
-                            Olá!
-                        </small>
-
-                        <strong>
-                            Entrar
-                        </strong>
-
+                        <small>Olá!</small>
+                        <strong>Entrar</strong>
                     </span>
 
                 </a>
@@ -229,32 +228,25 @@
     <div class="menu-container">
 
         <a
-    href="/camisas?categoria=lancamentos"
-    class="<%= paginaAtual === 'lancamentos' ? 'ativo' : '' %>"
->
-    Lançamentos
-</a>
+            href="/camisas"
+            class="<%= paginaAtual === 'camisas' ? 'ativo' : '' %>"
+        >
+            Camisas
+        </a>
 
-<a
-    href="/camisas?categoria=retro"
-    class="<%= paginaAtual === 'retro' ? 'ativo' : '' %>"
->
-    Retrô
-</a>
+        <a
+            href="/camisas?categoria=retro"
+            class="<%= paginaAtual === 'retro' ? 'ativo' : '' %>"
+        >
+            Retrô
+        </a>
 
-<a
-    href="/camisas?categoria=infantil"
-    class="<%= paginaAtual === 'infantil' ? 'ativo' : '' %>"
->
-    Infantil
-</a>
-
-<a
-    href="/camisas?categoria=box-misteriosas"
-    class="<%= paginaAtual === 'box-misteriosas' ? 'ativo' : '' %>"
->
-    Box Misteriosas
-</a>
+        <a
+            href="/camisas?categoria=box-misteriosas"
+            class="<%= paginaAtual === 'box-misteriosas' ? 'ativo' : '' %>"
+        >
+            Box Misteriosas
+        </a>
 
     </div>
 

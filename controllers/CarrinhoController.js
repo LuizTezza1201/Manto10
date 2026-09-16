@@ -74,6 +74,9 @@ async function montarResumo(
                     tamanho:
                         item.tamanho,
 
+                    preferenciaBox:
+                        item.preferencia_box || '',
+
                     quantidade,
 
                     estoque:
@@ -241,6 +244,13 @@ const CarrinhoController = {
                     req.body.quantidade
                 );
 
+            const preferenciaBox =
+                String(
+                    req.body.preferencia_box || ''
+                )
+                    .trim()
+                    .slice(0, 60);
+
             if (
                 !Number.isInteger(
                     produtoTamanhoId
@@ -280,7 +290,9 @@ const CarrinhoController = {
 
                 produtoTamanhoId,
 
-                quantidade
+                quantidade,
+
+                preferenciaBox
             });
 
             const carrinho =

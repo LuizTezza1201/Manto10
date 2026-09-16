@@ -141,3 +141,27 @@ body {
         max-width: 300px;
     }
 }
+
+.erro-403-acoes {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.erro-403-botao {
+    border: 0;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.erro-403-botao-secundario {
+    background: #ffffff;
+    color: #111111;
+}
+
+@media (max-width: 600px) {
+    .erro-403-acoes {
+        flex-direction: column;
+    }
+}

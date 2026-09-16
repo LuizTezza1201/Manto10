@@ -149,21 +149,26 @@
    ORDENAÇÃO
 ========================================================= */
 
-.ordenacao-catalogo {
+.controles-catalogo {
     display: flex;
-
-    align-items: center;
-
-    gap: 9px;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.ordenacao-catalogo label {
+.controle-catalogo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.controle-catalogo label {
     color: #666666;
 
     font-size: 12px;
 }
 
-.ordenacao-catalogo select {
+.controle-catalogo select {
     min-width: 170px;
 
     height: 42px;
@@ -184,7 +189,7 @@
     cursor: pointer;
 }
 
-.ordenacao-catalogo select:focus {
+.controle-catalogo select:focus {
     border-color: #9d00de;
 }
 
@@ -280,6 +285,19 @@
 .card-catalogo:hover
 .card-catalogo-imagem img {
     transform: scale(1.035);
+}
+
+
+.card-catalogo-link {
+    display: block;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+
+.card-catalogo-link:focus-visible {
+    outline: 3px solid rgba(157, 0, 222, 0.35);
+    outline-offset: -3px;
 }
 
 /* =========================================================
@@ -430,43 +448,6 @@
 }
 
 /* =========================================================
-   BOTÃO
-========================================================= */
-
-.botao-ver-produto {
-    width: 100%;
-
-    min-height: 44px;
-
-    margin-top: 8px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 8px;
-
-    background-color: #9d00de;
-
-    color: #ffffff;
-
-    font-size: 12px;
-    font-weight: 800;
-
-    transition:
-        background-color 0.2s ease;
-}
-
-.botao-ver-produto:hover {
-    background-color: #7800aa;
-}
-
-.botao-ver-produto.indisponivel {
-    background-color: #bdbdbd;
-}
-
-/* =========================================================
    CATÁLOGO VAZIO
 ========================================================= */
 
@@ -604,12 +585,12 @@
         flex-direction: column;
     }
 
-    .ordenacao-catalogo {
+    .controles-catalogo {
         justify-content:
             space-between;
     }
 
-    .ordenacao-catalogo select {
+    .controle-catalogo select {
         flex: 1;
     }
 
@@ -713,12 +694,6 @@
     .estoque-baixo-catalogo,
     .sem-estoque-catalogo {
         font-size: 8px;
-    }
-
-    .botao-ver-produto {
-        min-height: 38px;
-
-        font-size: 10px;
     }
 
 }

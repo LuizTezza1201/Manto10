@@ -76,6 +76,9 @@ async function montarCheckout(
                     tamanho:
                         item.tamanho,
 
+                    preferenciaBox:
+                        item.preferencia_box || '',
+
                     quantidade,
 
                     imagem:

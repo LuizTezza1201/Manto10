@@ -209,8 +209,64 @@ const AdminPedido = {
             `, parametros);
 
 
-        return rows;
+        if (rows.length === 0) {
+            return rows;
+        }
+
+        // Busca os produtos de todos os pedidos retornados para
+        // exibir uma prévia visual diretamente na listagem.
+        const idsPedidos = rows.map(
+            pedido => Number(pedido.id)
+        );
+
+        const placeholders = idsPedidos
+            .map(() => '?')
+            .join(', ');
+
+        const [itens] = await pool.execute(
+            `
+                SELECT
+                    ip.pedido_id,
+                    ip.codigo_produto,
+                    ip.nome_produto,
+                    ip.tamanho,
+                    ip.preferencia_box,
+                    ip.quantidade,
+                    (
+                        SELECT pi.caminho
+                        FROM produto_imagens pi
+                        WHERE pi.produto_id = ip.produto_id
+                        ORDER BY
+                            pi.principal DESC,
+                            pi.ordem ASC,
+                            pi.id ASC
+                        LIMIT 1
+                    ) AS imagem
+                FROM itens_pedido ip
+                WHERE ip.pedido_id IN (${placeholders})
+                ORDER BY ip.pedido_id, ip.id
+            `,
+            idsPedidos
+        );
+
+        const itensPorPedido = new Map();
+
+        itens.forEach(item => {
+            const pedidoId = Number(item.pedido_id);
+
+            if (!itensPorPedido.has(pedidoId)) {
+                itensPorPedido.set(pedidoId, []);
+            }
+
+            itensPorPedido.get(pedidoId).push(item);
+        });
+
+        return rows.map(pedido => ({
+            ...pedido,
+            itens: itensPorPedido.get(Number(pedido.id)) || []
+        }));
     },
+
 
 
     // ======================================================
@@ -348,6 +404,8 @@ const AdminPedido = {
                     ip.nome_produto,
 
                     ip.tamanho,
+
+                    ip.preferencia_box,
 
                     ip.quantidade,
 

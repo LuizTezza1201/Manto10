@@ -1722,3 +1722,56 @@
             1fr;
     }
 }
+
+/* ============================================================
+   RESUMO DA NOVA VENDA NO TOPO
+   ============================================================ */
+
+.nova-venda-resumo-topo {
+    margin-bottom: 24px;
+}
+
+/* ============================================================
+   PRÉVIA DOS PRODUTOS NAS VENDAS
+   ============================================================ */
+
+.venda-produtos-mini-lista {
+    display: grid;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.venda-produto-mini {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.venda-produto-mini img {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    border-radius: 7px;
+    object-fit: cover;
+    background: #f3f3f3;
+}
+
+.venda-produto-mini > div {
+    min-width: 0;
+}
+
+.venda-produto-mini strong,
+.venda-produto-mini small {
+    display: block;
+}
+
+.venda-produto-mini strong {
+    font-size: 12px;
+    line-height: 1.25;
+}
+
+.venda-produto-mini small {
+    margin-top: 2px;
+    color: #707070;
+    font-size: 10px;
+}

@@ -1,4 +1,4 @@
-<%- include('../partials/header') %>
+<%- include('../partials/admin-header') %>
 
 <div class="admin-layout">
 
@@ -349,10 +349,21 @@
                                     <%= produto.status %>
                                 </span>
 
-                                <% if (Number(produto.estoque_total) === 0) { %>
+                                <% if (
+                                    produto.categoria_slug !== 'box-misteriosas' &&
+                                    Number(produto.estoque_total) === 0
+                                ) { %>
 
                                     <span class="admin-sem-estoque">
                                         Sem estoque
+                                    </span>
+
+                                <% } %>
+
+                                <% if (produto.categoria_slug === 'box-misteriosas') { %>
+
+                                    <span class="admin-status ativo">
+                                        Estoque compartilhado
                                     </span>
 
                                 <% } %>
@@ -436,6 +447,30 @@
                     <!-- ==================================
                          ESTOQUE
                     =================================== -->
+
+                    <% if (produto.categoria_slug === 'box-misteriosas') { %>
+
+                        <div class="admin-form-estoque">
+
+                            <div class="admin-estoque-cabecalho">
+                                <div>
+                                    <strong>Estoque</strong>
+                                    <span>
+                                        Compartilhado com as camisas
+                                        <b><%= produto.tipo_camisa %></b>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <p>
+                                A Box Misteriosa não cria unidades próprias no estoque.
+                                A disponibilidade é calculada a partir das camisas reais
+                                do mesmo tipo e tamanho.
+                            </p>
+
+                        </div>
+
+                    <% } else { %>
 
                     <form
                         action="/admin/produtos/<%= produto.id %>/estoque"
@@ -543,6 +578,8 @@
 
                     </form>
 
+                    <% } %>
+
                 </article>
 
             <% }) %>
@@ -571,4 +608,4 @@
 
 </div>
 
-<%- include('../partials/footer') %>
+<%- include('../partials/admin-footer') %>

@@ -31,270 +31,199 @@
 
         <div class="catalogo-filtros">
 
-<%
-    function montarUrlTipo(tipo) {
+            <%
+                function montarUrlTipo(tipo) {
+                    const parametros = [];
 
-        const parametros = [];
+                    if (tipo) {
+                        parametros.push(
+                            'tipo=' + encodeURIComponent(tipo)
+                        );
+                    }
 
-        if (tipo) {
-            parametros.push(
-                'tipo=' +
-                encodeURIComponent(tipo)
-            );
-        }
+                    if (ordemSelecionada) {
+                        parametros.push(
+                            'ordem=' + encodeURIComponent(ordemSelecionada)
+                        );
+                    }
 
-        if (ordemSelecionada) {
-            parametros.push(
-                'ordem=' +
-                encodeURIComponent(
-                    ordemSelecionada
-                )
-            );
-        }
+                    if (buscaSelecionada) {
+                        parametros.push(
+                            'busca=' + encodeURIComponent(buscaSelecionada)
+                        );
+                    }
 
-        if (buscaSelecionada) {
-            parametros.push(
-                'busca=' +
-                encodeURIComponent(
-                    buscaSelecionada
-                )
-            );
-        }
+                    if (categoriaSelecionada) {
+                        parametros.push(
+                            'categoria=' + encodeURIComponent(categoriaSelecionada)
+                        );
+                    }
 
-        if (categoriaSelecionada) {
-            parametros.push(
-                'categoria=' +
-                encodeURIComponent(
-                    categoriaSelecionada
-                )
-            );
-        }
+                    if (ligaSelecionada) {
+                        parametros.push(
+                            'liga=' + encodeURIComponent(ligaSelecionada)
+                        );
+                    }
 
-        if (ligaSelecionada) {
-            parametros.push(
-                'liga=' +
-                encodeURIComponent(
-                    ligaSelecionada
-                )
-            );
-        }
+                    if (tamanhoSelecionado) {
+                        parametros.push(
+                            'tamanho=' + encodeURIComponent(tamanhoSelecionado)
+                        );
+                    }
 
-        return '/camisas' +
-            (
-                parametros.length > 0
-                    ? '?' +
-                      parametros.join('&')
-                    : ''
-            );
-    }
-%>
+                    return '/camisas' +
+                        (
+                            parametros.length > 0
+                                ? '?' + parametros.join('&')
+                                : ''
+                        );
+                }
+            %>
 
-             <div class="filtro-tipo">
+            <div class="filtro-tipo">
+                <a
+                    href="<%= montarUrlTipo('') %>"
+                    class="<%= tipoSelecionado === '' ? 'ativo' : '' %>"
+                >
+                    Todas
+                </a>
 
-        <a
-            href="<%= montarUrlTipo('') %>"
-            class="<%= tipoSelecionado === '' ? 'ativo' : '' %>"
-        >
-            Todas
-        </a>
+                <a
+                    href="<%= montarUrlTipo('Tailandesa') %>"
+                    class="<%= tipoSelecionado === 'Tailandesa' ? 'ativo' : '' %>"
+                >
+                    Tailandesas
+                </a>
 
-        <a
-            href="<%= montarUrlTipo('Tailandesa') %>"
-            class="<%= tipoSelecionado === 'Tailandesa' ? 'ativo' : '' %>"
-        >
-            Tailandesas
-        </a>
-
-        <a
-            href="<%= montarUrlTipo('Nacional Premium') %>"
-            class="<%= tipoSelecionado === 'Nacional Premium' ? 'ativo' : '' %>"
-        >
-            Nacional Premium
-        </a>
-
-    </div>
+                <a
+                    href="<%= montarUrlTipo('Nacional Premium') %>"
+                    class="<%= tipoSelecionado === 'Nacional Premium' ? 'ativo' : '' %>"
+                >
+                    Nacional Premium
+                </a>
+            </div>
 
             <form
                 action="/camisas"
                 method="GET"
-                class="ordenacao-catalogo"
+                class="controles-catalogo"
             >
-
-            <% if (buscaSelecionada) { %>
-
-    <input
-        type="hidden"
-        name="busca"
-        value="<%= buscaSelecionada %>"
-    >
-
-<% } %>
-
-<% if (categoriaSelecionada) { %>
-
-    <input
-        type="hidden"
-        name="categoria"
-        value="<%= categoriaSelecionada %>"
-    >
-
-<% } %>
-
-<% if (ligaSelecionada) { %>
-
-    <input
-        type="hidden"
-        name="liga"
-        value="<%= ligaSelecionada %>"
-    >
-
-<% } %>
-
-                <% if (tipoSelecionado) { %>
-
-                    <input
-                        type="hidden"
-                        name="tipo"
-                        value="<%= tipoSelecionado %>"
-                    >
-
+                <% if (buscaSelecionada) { %>
+                    <input type="hidden" name="busca" value="<%= buscaSelecionada %>">
                 <% } %>
 
-                <label for="ordem">
-                    Ordenar:
-                </label>
+                <% if (categoriaSelecionada) { %>
+                    <input type="hidden" name="categoria" value="<%= categoriaSelecionada %>">
+                <% } %>
 
-                <select
-                    id="ordem"
-                    name="ordem"
-                    onchange="this.form.submit()"
-                >
+                <% if (ligaSelecionada) { %>
+                    <input type="hidden" name="liga" value="<%= ligaSelecionada %>">
+                <% } %>
 
-                    <option
-                        value="recentes"
-                        <%= ordemSelecionada === 'recentes' ? 'selected' : '' %>
+                <% if (tipoSelecionado) { %>
+                    <input type="hidden" name="tipo" value="<%= tipoSelecionado %>">
+                <% } %>
+
+                <div class="controle-catalogo">
+                    <label for="tamanho">Tamanho:</label>
+
+                    <select
+                        id="tamanho"
+                        name="tamanho"
+                        onchange="this.form.submit()"
                     >
-                        Mais recentes
-                    </option>
+                        <option value="">Todos</option>
+                        <% ['P', 'M', 'G', 'GG'].forEach((tamanho) => { %>
+                            <option
+                                value="<%= tamanho %>"
+                                <%= tamanhoSelecionado === tamanho ? 'selected' : '' %>
+                            >
+                                <%= tamanho %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
 
-                    <option
-                        value="az"
-                        <%= ordemSelecionada === 'az' ? 'selected' : '' %>
+                <div class="controle-catalogo">
+                    <label for="ordem">Ordenar:</label>
+
+                    <select
+                        id="ordem"
+                        name="ordem"
+                        onchange="this.form.submit()"
                     >
-                        Nome A-Z
-                    </option>
-
-                    <option
-                        value="za"
-                        <%= ordemSelecionada === 'za' ? 'selected' : '' %>
-                    >
-                        Nome Z-A
-                    </option>
-
-                    <option
-                        value="menor_preco"
-                        <%= ordemSelecionada === 'menor_preco' ? 'selected' : '' %>
-                    >
-                        Menor preço
-                    </option>
-
-                    <option
-                        value="maior_preco"
-                        <%= ordemSelecionada === 'maior_preco' ? 'selected' : '' %>
-                    >
-                        Maior preço
-                    </option>
-
-                    <option
-                        value="menor_estoque"
-                        <%= ordemSelecionada === 'menor_estoque' ? 'selected' : '' %>
-                    >
-                        Menor estoque
-                    </option>
-
-                    <option
-                        value="maior_estoque"
-                        <%= ordemSelecionada === 'maior_estoque' ? 'selected' : '' %>
-                    >
-                        Maior estoque
-                    </option>
-
-                </select>
-
+                        <option value="recentes" <%= ordemSelecionada === 'recentes' ? 'selected' : '' %>>
+                            Mais recentes
+                        </option>
+                        <option value="az" <%= ordemSelecionada === 'az' ? 'selected' : '' %>>
+                            Nome A-Z
+                        </option>
+                        <option value="za" <%= ordemSelecionada === 'za' ? 'selected' : '' %>>
+                            Nome Z-A
+                        </option>
+                        <option value="menor_preco" <%= ordemSelecionada === 'menor_preco' ? 'selected' : '' %>>
+                            Menor preço
+                        </option>
+                        <option value="maior_preco" <%= ordemSelecionada === 'maior_preco' ? 'selected' : '' %>>
+                            Maior preço
+                        </option>
+                    </select>
+                </div>
             </form>
 
         </div>
 
         <%
-    const possuiFiltro =
-        buscaSelecionada ||
-        categoriaSelecionada ||
-        ligaSelecionada ||
-        tipoSelecionado;
-%>
+            const possuiFiltro =
+                buscaSelecionada ||
+                categoriaSelecionada ||
+                ligaSelecionada ||
+                tipoSelecionado ||
+                tamanhoSelecionado;
+        %>
 
-<% if (possuiFiltro) { %>
+        <% if (possuiFiltro) { %>
 
-    <div class="filtros-ativos">
+            <div class="filtros-ativos">
+                <div class="filtros-ativos-lista">
+                    <% if (buscaSelecionada) { %>
+                        <span>
+                            Busca: <strong><%= buscaSelecionada %></strong>
+                        </span>
+                    <% } %>
 
-        <div class="filtros-ativos-lista">
+                    <% if (tipoSelecionado) { %>
+                        <span>
+                            Tipo: <strong><%= tipoSelecionado %></strong>
+                        </span>
+                    <% } %>
 
-            <% if (buscaSelecionada) { %>
+                    <% if (tamanhoSelecionado) { %>
+                        <span>
+                            Tamanho: <strong><%= tamanhoSelecionado %></strong>
+                        </span>
+                    <% } %>
 
-                <span>
-                    Busca:
-                    <strong>
-                        <%= buscaSelecionada %>
-                    </strong>
-                </span>
+                    <% if (categoriaSelecionada) { %>
+                        <span>
+                            Categoria: <strong><%= tituloCatalogo %></strong>
+                        </span>
+                    <% } %>
 
-            <% } %>
+                    <% if (ligaSelecionada) { %>
+                        <span>
+                            Liga:
+                            <strong>
+                                <%= produtos.length > 0 ? produtos[0].liga : ligaSelecionada %>
+                            </strong>
+                        </span>
+                    <% } %>
+                </div>
 
-            <% if (tipoSelecionado) { %>
+                <a href="/camisas">Limpar filtros</a>
+            </div>
 
-                <span>
-                    Tipo:
-                    <strong>
-                        <%= tipoSelecionado %>
-                    </strong>
-                </span>
-
-            <% } %>
-
-            <% if (categoriaSelecionada) { %>
-
-                <span>
-                    Categoria:
-                    <strong>
-                        <%= tituloCatalogo %>
-                    </strong>
-                </span>
-
-            <% } %>
-
-            <% if (ligaSelecionada) { %>
-
-                <span>
-                    Liga:
-                    <strong>
-                        <%= produtos.length > 0
-                            ? produtos[0].liga
-                            : ligaSelecionada
-                        %>
-                    </strong>
-                </span>
-
-            <% } %>
-
-        </div>
-
-        <a href="/camisas">
-            Limpar filtros
-        </a>
-
-    </div>
-
-<% } %>
+        <% } %>
 
         <!-- ==============================================
              CONTAGEM
@@ -326,6 +255,12 @@
                 <% produtos.forEach((produto) => { %>
 
                     <article class="card-catalogo">
+
+                        <a
+                            href="/produto/<%= produto.slug %>"
+                            class="card-catalogo-link"
+                            aria-label="Ver <%= produto.nome %>"
+                        >
 
                         <div class="card-catalogo-imagem">
 
@@ -400,7 +335,13 @@
 
                             <div class="estoque-catalogo">
 
-                                <% if (produto.estoqueTotal > 5) { %>
+                                <% if (produto.categoria_slug === 'box-misteriosas') { %>
+
+                                    <span class="estoque-disponivel">
+                                        Disponível
+                                    </span>
+
+                                <% } else if (produto.estoqueTotal > 5) { %>
 
                                     <span class="estoque-disponivel">
                                         Em estoque
@@ -424,20 +365,9 @@
 
                             </div>
 
-                            <a
-                                href="/produto/<%= produto.slug %>"
-                                class="
-                                    botao-ver-produto
-                                    <%= produto.estoqueTotal === 0
-                                        ? 'indisponivel'
-                                        : ''
-                                    %>
-                                "
-                            >
-                                Ver produto
-                            </a>
-
                         </div>
+
+                        </a>
 
                     </article>
 

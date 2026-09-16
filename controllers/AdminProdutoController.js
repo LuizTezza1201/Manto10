@@ -142,7 +142,7 @@ function valoresPadrao() {
             '119.99',
 
         desconto_pix:
-            '5',
+            '0',
 
         estoque_p:
             '0',

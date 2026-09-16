@@ -52,9 +52,19 @@
                 Hoje você foi moggado.
             </p>
 
-            <a href="/" class="erro-403-botao">
-                Voltar para a loja
-            </a>
+            <div class="erro-403-acoes">
+                <button
+                    type="button"
+                    class="erro-403-botao erro-403-botao-secundario"
+                    onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '/'; }"
+                >
+                    ← Voltar
+                </button>
+
+                <a href="/" class="erro-403-botao">
+                    Voltar para a loja
+                </a>
+            </div>
 
         </div>
 

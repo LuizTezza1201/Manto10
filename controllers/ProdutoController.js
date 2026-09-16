@@ -100,6 +100,13 @@ const ProdutoController = {
                     .trim()
                     .toLowerCase();
 
+            const tamanhoRecebido =
+                String(
+                    req.query.tamanho || ''
+                )
+                    .trim()
+                    .toUpperCase();
+
             const tiposPermitidos = [
                 '',
                 'Tailandesa',
@@ -112,6 +119,14 @@ const ProdutoController = {
                 'za',
                 'menor_preco',
                 'maior_preco'
+            ];
+
+            const tamanhosPermitidos = [
+                '',
+                'P',
+                'M',
+                'G',
+                'GG'
             ];
 
             const tipo =
@@ -128,13 +143,21 @@ const ProdutoController = {
                     ? ordemRecebida
                     : 'recentes';
 
+            const tamanho =
+                tamanhosPermitidos.includes(
+                    tamanhoRecebido
+                )
+                    ? tamanhoRecebido
+                    : '';
+
             const produtosBanco =
                 await Produto.listarCatalogo({
                     tipo,
                     ordem,
                     busca,
                     categoria,
-                    liga
+                    liga,
+                    tamanho
                 });
 
             const produtos =
@@ -153,14 +176,11 @@ const ProdutoController = {
             } else if (categoria) {
 
                 const nomesCategorias = {
-                    'lancamentos':
-                        'Lançamentos',
+                    'camisas':
+                        'Camisas',
 
                     'retro':
                         'Retrô',
-
-                    'infantil':
-                        'Infantil',
 
                     'box-misteriosas':
                         'Box Misteriosas'
@@ -205,7 +225,10 @@ const ProdutoController = {
                         categoria,
 
                     ligaSelecionada:
-                        liga
+                        liga,
+
+                    tamanhoSelecionado:
+                        tamanho
                 }
             );
 

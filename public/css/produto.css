@@ -623,3 +623,68 @@ input::-webkit-inner-spin-button {
 .produto-galeria-unica .produto-imagem-principal {
     width: 100%;
 }
+
+/* ============================================================
+   PREFERÊNCIA DA BOX MISTERIOSA
+   ============================================================ */
+
+.produto-preferencia-box {
+    margin: 22px 0 0;
+    padding: 0;
+    border: 0;
+}
+
+.produto-preferencia-box legend {
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.produto-preferencia-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.preferencia-opcao {
+    cursor: pointer;
+}
+
+.preferencia-opcao input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.preferencia-opcao span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 10px 14px;
+    border: 1px solid #d7d7d7;
+    border-radius: 8px;
+    background: #ffffff;
+    font-size: 13px;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.preferencia-opcao:hover span {
+    border-color: #9d00de;
+}
+
+.preferencia-opcao input:checked + span {
+    border-color: #9d00de;
+    background: rgba(157, 0, 222, 0.08);
+    font-weight: 700;
+}
+
+@media (max-width: 600px) {
+    .produto-preferencia-lista {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .preferencia-opcao span {
+        width: 100%;
+    }
+}

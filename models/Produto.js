@@ -15,13 +15,41 @@ const Produto = {
     // CATÁLOGO PÚBLICO
     // ======================================================
 
-    // Lista somente produtos ativos e com pelo menos uma unidade disponível.
-    async listarCatalogo({ tipo = '', ordem = 'recentes', busca = '', categoria = '', liga = '' } = {}) {
+    // Lista somente produtos ativos e disponíveis.
+    //
+    // As Box Misteriosas não possuem estoque próprio. Elas usam o
+    // estoque real das camisas do mesmo tipo (Tailandesa ou Nacional
+    // Premium), por isso a disponibilidade delas é calculada a partir
+    // desse estoque compartilhado.
+    async listarCatalogo({ tipo = '', ordem = 'recentes', busca = '', categoria = '', liga = '', tamanho = '' } = {}) {
         const filtros = [
             "p.status = 'Ativo'",
-            `EXISTS (
-                SELECT 1 FROM produto_tamanhos pt_estoque
-                WHERE pt_estoque.produto_id = p.id AND pt_estoque.estoque > 0
+            "c.status = 'Ativo'",
+            `(
+                (
+                    c.slug = 'box-misteriosas'
+                    AND EXISTS (
+                        SELECT 1
+                        FROM produto_tamanhos pt_pool
+                        INNER JOIN produtos p_pool ON p_pool.id = pt_pool.produto_id
+                        INNER JOIN categorias c_pool ON c_pool.id = p_pool.categoria_id
+                        WHERE p_pool.tipo_camisa = p.tipo_camisa
+                          AND p_pool.status = 'Ativo'
+                          AND c_pool.status = 'Ativo'
+                          AND c_pool.slug <> 'box-misteriosas'
+                          AND pt_pool.estoque > 0
+                    )
+                )
+                OR
+                (
+                    c.slug <> 'box-misteriosas'
+                    AND EXISTS (
+                        SELECT 1
+                        FROM produto_tamanhos pt_estoque
+                        WHERE pt_estoque.produto_id = p.id
+                          AND pt_estoque.estoque > 0
+                    )
+                )
             )`
         ];
         const parametros = [];
@@ -31,7 +59,6 @@ const Produto = {
             parametros.push(tipo);
         }
 
-        // A pesquisa considera os principais dados usados pelo cliente para encontrar uma camisa.
         if (busca) {
             filtros.push(`(
                 p.nome LIKE ? OR p.codigo LIKE ? OR p.temporada LIKE ? OR p.tipo_camisa LIKE ?
@@ -41,9 +68,14 @@ const Produto = {
             parametros.push(termo, termo, termo, termo, termo, termo, termo);
         }
 
+        // As boxes aparecem somente na seção Box Misteriosas.
+        // Assim elas não ocupam espaço entre as camisas normais da Home
+        // ou do catálogo principal.
         if (categoria) {
             filtros.push('c.slug = ?');
             parametros.push(categoria);
+        } else {
+            filtros.push("c.slug <> 'box-misteriosas'");
         }
 
         if (liga) {
@@ -51,7 +83,44 @@ const Produto = {
             parametros.push(liga);
         }
 
-        // Apenas opções conhecidas entram diretamente no ORDER BY.
+        if (TAMANHOS_PADRAO.includes(tamanho)) {
+            filtros.push(`(
+                (
+                    c.slug = 'box-misteriosas'
+                    AND EXISTS (
+                        SELECT 1
+                        FROM produto_tamanhos pt_pool_tamanho
+                        INNER JOIN produtos p_pool_tamanho
+                            ON p_pool_tamanho.id = pt_pool_tamanho.produto_id
+                        INNER JOIN categorias c_pool_tamanho
+                            ON c_pool_tamanho.id = p_pool_tamanho.categoria_id
+                        INNER JOIN tamanhos tam_pool_tamanho
+                            ON tam_pool_tamanho.id = pt_pool_tamanho.tamanho_id
+                        WHERE p_pool_tamanho.tipo_camisa = p.tipo_camisa
+                          AND p_pool_tamanho.status = 'Ativo'
+                          AND c_pool_tamanho.status = 'Ativo'
+                          AND c_pool_tamanho.slug <> 'box-misteriosas'
+                          AND tam_pool_tamanho.nome = ?
+                          AND pt_pool_tamanho.estoque > 0
+                    )
+                )
+                OR
+                (
+                    c.slug <> 'box-misteriosas'
+                    AND EXISTS (
+                        SELECT 1
+                        FROM produto_tamanhos pt_tamanho
+                        INNER JOIN tamanhos tam_tamanho
+                            ON tam_tamanho.id = pt_tamanho.tamanho_id
+                        WHERE pt_tamanho.produto_id = p.id
+                          AND tam_tamanho.nome = ?
+                          AND pt_tamanho.estoque > 0
+                    )
+                )
+            )`);
+            parametros.push(tamanho, tamanho);
+        }
+
         const ordenacoes = {
             recentes: 'p.id DESC',
             az: 'p.nome ASC',
@@ -69,12 +138,25 @@ const Produto = {
                 t.nome AS time, l.nome AS liga, l.slug AS liga_slug,
                 c.nome AS categoria, c.slug AS categoria_slug,
                 (
-                    SELECT pi.caminho FROM produto_imagens pi
+                    SELECT pi.caminho
+                    FROM produto_imagens pi
                     WHERE pi.produto_id = p.id
                     ORDER BY pi.principal DESC, pi.ordem ASC, pi.id ASC
                     LIMIT 1
                 ) AS imagem,
-                COALESCE(SUM(pt.estoque), 0) AS estoque_total
+                CASE
+                    WHEN c.slug = 'box-misteriosas' THEN (
+                        SELECT COALESCE(SUM(pt_pool.estoque), 0)
+                        FROM produto_tamanhos pt_pool
+                        INNER JOIN produtos p_pool ON p_pool.id = pt_pool.produto_id
+                        INNER JOIN categorias c_pool ON c_pool.id = p_pool.categoria_id
+                        WHERE p_pool.tipo_camisa = p.tipo_camisa
+                          AND p_pool.status = 'Ativo'
+                          AND c_pool.status = 'Ativo'
+                          AND c_pool.slug <> 'box-misteriosas'
+                    )
+                    ELSE COALESCE(SUM(pt.estoque), 0)
+                END AS estoque_total
             FROM produtos p
             LEFT JOIN times t ON t.id = p.time_id
             LEFT JOIN ligas l ON l.id = t.liga_id
@@ -100,7 +182,7 @@ const Produto = {
                 p.destaque, p.status,
                 t.id AS time_id, t.nome AS time,
                 l.id AS liga_id, l.nome AS liga,
-                c.id AS categoria_id, c.nome AS categoria
+                c.id AS categoria_id, c.nome AS categoria, c.slug AS categoria_slug
             FROM produtos p
             LEFT JOIN times t ON t.id = p.time_id
             LEFT JOIN ligas l ON l.id = t.liga_id
@@ -123,15 +205,64 @@ const Produto = {
         return rows;
     },
 
-    // Retorna os tamanhos ativos e o estoque de cada variação do produto.
+    // Retorna os tamanhos disponíveis do produto.
+    // Para Box Misteriosa, o estoque mostrado internamente é o total real
+    // das camisas do mesmo tipo e tamanho, sem criar unidades extras.
     async listarTamanhos(produtoId) {
+        const [produtos] = await pool.execute(`
+            SELECT p.tipo_camisa, c.slug AS categoria_slug
+            FROM produtos p
+            INNER JOIN categorias c ON c.id = p.categoria_id
+            WHERE p.id = ?
+            LIMIT 1
+        `, [produtoId]);
+
+        if (produtos.length === 0) {
+            return [];
+        }
+
+        const produto = produtos[0];
+
+        if (produto.categoria_slug === 'box-misteriosas') {
+            const [rows] = await pool.execute(`
+                SELECT
+                    pt.id AS produto_tamanho_id,
+                    t.id AS tamanho_id,
+                    t.nome AS tamanho,
+                    (
+                        SELECT COALESCE(SUM(pt_pool.estoque), 0)
+                        FROM produto_tamanhos pt_pool
+                        INNER JOIN produtos p_pool ON p_pool.id = pt_pool.produto_id
+                        INNER JOIN categorias c_pool ON c_pool.id = p_pool.categoria_id
+                        INNER JOIN tamanhos t_pool ON t_pool.id = pt_pool.tamanho_id
+                        WHERE p_pool.tipo_camisa = ?
+                          AND p_pool.status = 'Ativo'
+                          AND c_pool.status = 'Ativo'
+                          AND c_pool.slug <> 'box-misteriosas'
+                          AND t_pool.nome = t.nome
+                    ) AS estoque
+                FROM produto_tamanhos pt
+                INNER JOIN tamanhos t ON t.id = pt.tamanho_id
+                WHERE pt.produto_id = ?
+                  AND t.status = 'Ativo'
+                ORDER BY t.ordem ASC
+            `, [produto.tipo_camisa, produtoId]);
+
+            return rows;
+        }
+
         const [rows] = await pool.execute(`
-            SELECT pt.id AS produto_tamanho_id, t.id AS tamanho_id, t.nome AS tamanho, pt.estoque
+            SELECT
+                pt.id AS produto_tamanho_id,
+                t.id AS tamanho_id,
+                t.nome AS tamanho,
+                pt.estoque
             FROM produto_tamanhos pt
             INNER JOIN tamanhos t ON t.id = pt.tamanho_id
             WHERE pt.produto_id = ? AND t.status = 'Ativo'
             ORDER BY t.ordem ASC
         `, [produtoId]);
+
         return rows;
     },
 
@@ -180,6 +311,7 @@ const Produto = {
             SELECT
                 p.id, p.codigo, p.nome, p.slug, p.temporada, p.tipo_camisa,
                 p.preco, p.preco_promocional, p.status,
+                c.slug AS categoria_slug,
                 (
                     SELECT pi.caminho FROM produto_imagens pi
                     WHERE pi.produto_id = p.id
@@ -192,12 +324,13 @@ const Produto = {
                 COALESCE(MAX(CASE WHEN tam.nome = 'G' THEN pt.estoque ELSE 0 END), 0) AS estoque_g,
                 COALESCE(MAX(CASE WHEN tam.nome = 'GG' THEN pt.estoque ELSE 0 END), 0) AS estoque_gg
             FROM produtos p
+            INNER JOIN categorias c ON c.id = p.categoria_id
             LEFT JOIN produto_tamanhos pt ON pt.produto_id = p.id
             LEFT JOIN tamanhos tam ON tam.id = pt.tamanho_id
             WHERE ${whereSql}
             GROUP BY
                 p.id, p.codigo, p.nome, p.slug, p.temporada, p.tipo_camisa,
-                p.preco, p.preco_promocional, p.status
+                p.preco, p.preco_promocional, p.status, c.slug
             ${havingSql}
             ORDER BY ${ordemSql}
         `, parametros);
@@ -214,9 +347,26 @@ const Produto = {
 
             // Bloqueia o produto durante a alteração para evitar atualizações concorrentes.
             const [produtos] = await connection.execute(`
-                SELECT id FROM produtos WHERE id = ? LIMIT 1 FOR UPDATE
+                SELECT p.id, c.slug AS categoria_slug
+                FROM produtos p
+                INNER JOIN categorias c ON c.id = p.categoria_id
+                WHERE p.id = ?
+                LIMIT 1
+                FOR UPDATE
             `, [produtoId]);
-            if (produtos.length === 0) throw criarErro('Produto não encontrado.', 404);
+
+            if (produtos.length === 0) {
+                throw criarErro('Produto não encontrado.', 404);
+            }
+
+            // Box Misteriosa usa o estoque das camisas reais e não pode
+            // receber um estoque independente pelo painel.
+            if (produtos[0].categoria_slug === 'box-misteriosas') {
+                throw criarErro(
+                    'A Box Misteriosa utiliza estoque compartilhado e não possui estoque próprio.',
+                    400
+                );
+            }
 
             const [tamanhos] = await connection.execute(`
                 SELECT id, nome FROM tamanhos
