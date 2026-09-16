@@ -292,3 +292,61 @@
     }
 
 }
+
+/* Acesso temporário usado em testes e apresentações. */
+.acesso-demo {
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid #dddddd;
+}
+
+.titulo-demo {
+    display: block;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #777777;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.botoes-demo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.botoes-demo form {
+    margin: 0;
+}
+
+.botao-demo {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px;
+    border: 0;
+    border-radius: 9px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.botao-demo-admin {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.botao-demo-cliente {
+    background-color: #eeeeee;
+    color: #000000;
+}
+
+.botao-demo:hover {
+    transform: translateY(-1px);
+    opacity: 0.88;
+}
+
+@media (max-width: 500px) {
+    .botoes-demo {
+        grid-template-columns: 1fr;
+    }
+}

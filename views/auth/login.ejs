@@ -1,53 +1,24 @@
 <%- include('../partials/header') %>
 
 <main class="pagina-auth">
-
     <section class="cartao-auth">
-
         <div class="cabecalho-auth">
-
-            <span class="marca-auth">
-                MANTO <strong>10</strong>
-            </span>
-
-            <h1>
-                Entrar
-            </h1>
-
-            <p>
-                Acesse sua conta para continuar.
-            </p>
-
+            <span class="marca-auth">MANTO <strong>10</strong></span>
+            <h1>Entrar</h1>
+            <p>Acesse sua conta para continuar.</p>
         </div>
 
         <% if (sucesso) { %>
-
-            <div class="mensagem-auth sucesso">
-                <%= sucesso %>
-            </div>
-
+            <div class="mensagem-auth sucesso"><%= sucesso %></div>
         <% } %>
 
         <% if (erro) { %>
-
-            <div class="mensagem-auth erro">
-                <%= erro %>
-            </div>
-
+            <div class="mensagem-auth erro"><%= erro %></div>
         <% } %>
 
-        <form
-            action="/login"
-            method="POST"
-            class="formulario-auth"
-        >
-
+        <form action="/login" method="POST" class="formulario-auth">
             <div class="campo-auth">
-
-                <label for="email">
-                    E-mail
-                </label>
-
+                <label for="email">E-mail</label>
                 <input
                     type="email"
                     id="email"
@@ -58,15 +29,10 @@
                     autocomplete="email"
                     required
                 >
-
             </div>
 
             <div class="campo-auth">
-
-                <label for="senha">
-                    Senha
-                </label>
-
+                <label for="senha">Senha</label>
                 <input
                     type="password"
                     id="senha"
@@ -75,40 +41,41 @@
                     autocomplete="current-password"
                     required
                 >
-
             </div>
 
             <div class="opcoes-auth">
-
-                <span class="link-futuro">
-                    Esqueci minha senha
-                </span>
-
+                <span class="link-futuro">Esqueci minha senha</span>
             </div>
 
-            <button
-                type="submit"
-                class="botao-auth"
-            >
-                Entrar
-            </button>
-
+            <button type="submit" class="botao-auth">Entrar</button>
         </form>
 
+        <!-- Acessos temporários usados apenas durante testes e apresentações. -->
+        <% if (process.env.DEMO_LOGIN === 'true') { %>
+            <div class="acesso-demo">
+                <span class="titulo-demo">Acesso rápido para demonstração</span>
+
+                <div class="botoes-demo">
+                    <form action="/login/demo/admin" method="POST">
+                        <button type="submit" class="botao-demo botao-demo-admin">
+                            Entrar como Administrador
+                        </button>
+                    </form>
+
+                    <form action="/login/demo/cliente" method="POST">
+                        <button type="submit" class="botao-demo botao-demo-cliente">
+                            Entrar como Cliente
+                        </button>
+                    </form>
+                </div>
+            </div>
+        <% } %>
+
         <div class="rodape-auth">
-
-            <span>
-                Ainda não possui conta?
-            </span>
-
-            <a href="/cadastro">
-                Criar conta
-            </a>
-
+            <span>Ainda não possui conta?</span>
+            <a href="/cadastro">Criar conta</a>
         </div>
-
     </section>
-
 </main>
 
 <%- include('../partials/footer') %>
