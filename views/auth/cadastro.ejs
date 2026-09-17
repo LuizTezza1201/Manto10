@@ -1,237 +1,210 @@
-<%- include('../partials/header') %>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<main class="pagina-auth">
+    <meta
+        name="description"
+        content="Manto 10 - Cadastro de cliente."
+    >
 
-    <section class="cartao-auth">
+    <title><%= titulo %> | Manto 10</title>
 
-        <div class="cabecalho-auth">
-            <img
-                src="/images/logotransparente.png"
-                alt="Manto 10"
-                class="logo-auth"
+    <!--
+        As páginas de autenticação possuem um layout próprio.
+        Não carregamos o cabeçalho, o rodapé, o carrinho lateral
+        nem o botão flutuante do WhatsApp da loja.
+    -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/acessibilidade.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+
+<body class="pagina-auth-body">
+
+    <main class="pagina-auth">
+        <section class="cartao-auth">
+
+            <div class="cabecalho-auth">
+                <img
+                    src="/images/logotransparente.png"
+                    alt="Manto 10"
+                    class="logo-auth"
+                >
+
+                <h1>Criar conta</h1>
+
+                <p>
+                    Cadastre-se para comprar seus mantos favoritos.
+                </p>
+            </div>
+
+            <% if (erro) { %>
+                <div class="mensagem-auth erro">
+                    <%= erro %>
+                </div>
+            <% } %>
+
+            <form
+                action="/cadastro"
+                method="POST"
+                class="formulario-auth"
             >
 
-            <h1>
-                Criar conta
-            </h1>
+                <!-- NOME -->
+                <div class="campo-auth">
+                    <label for="nome">
+                        Nome completo
+                    </label>
 
-            <p>
-                Cadastre-se para comprar seus mantos favoritos.
-            </p>
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        value="<%= dados.nome %>"
+                        placeholder="Digite seu nome completo"
+                        maxlength="150"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
 
-        </div>
+                <!-- E-MAIL -->
+                <div class="campo-auth">
+                    <label for="email">
+                        E-mail
+                    </label>
 
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="<%= dados.email %>"
+                        placeholder="Digite seu e-mail"
+                        maxlength="190"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
 
-        <% if (erro) { %>
+                <!-- TELEFONE -->
+                <div class="campo-auth">
+                    <label for="telefone">
+                        Celular / WhatsApp
+                    </label>
 
-            <div class="mensagem-auth erro">
-                <%= erro %>
-            </div>
+                    <input
+                        type="tel"
+                        id="telefone"
+                        name="telefone"
+                        value="<%= dados.telefone || '' %>"
+                        placeholder="(45) 99999-9999"
+                        maxlength="15"
+                        inputmode="tel"
+                        autocomplete="tel"
+                        required
+                    >
 
-        <% } %>
+                    <small>
+                        Informe um celular com DDD.
+                    </small>
+                </div>
 
+                <!-- SENHA -->
+                <div class="campo-auth">
+                    <label for="senha">
+                        Senha
+                    </label>
 
-        <form
-            action="/cadastro"
-            method="POST"
-            class="formulario-auth"
-        >
+                    <input
+                        type="password"
+                        id="senha"
+                        name="senha"
+                        placeholder="Digite sua senha"
+                        minlength="6"
+                        autocomplete="new-password"
+                        required
+                    >
 
-            <!-- NOME -->
+                    <small>
+                        Utilize pelo menos 6 caracteres.
+                    </small>
+                </div>
 
-            <div class="campo-auth">
-
-                <label for="nome">
-                    Nome completo
-                </label>
-
-                <input
-                    type="text"
-                    id="nome"
-                    name="nome"
-                    value="<%= dados.nome %>"
-                    placeholder="Digite seu nome completo"
-                    maxlength="150"
-                    autocomplete="name"
-                    required
+                <button
+                    type="submit"
+                    class="botao-auth"
                 >
+                    Criar conta
+                </button>
 
+            </form>
+
+            <div class="rodape-auth">
+                <span>
+                    Já possui uma conta?
+                </span>
+
+                <a href="/login">
+                    Já sou cadastrado
+                </a>
             </div>
 
+        </section>
+    </main>
 
-            <!-- E-MAIL -->
+    <!--
+        Mantemos somente os recursos de acessibilidade, cookies e VLibras.
+        O rodapé comercial e o WhatsApp flutuante não fazem parte desta tela.
+    -->
+    <%- include('../partials/acessibilidade') %>
 
-            <div class="campo-auth">
+    <script>
+        const campoTelefone =
+            document.getElementById('telefone');
 
-                <label for="email">
-                    E-mail
-                </label>
+        if (campoTelefone) {
+            campoTelefone.addEventListener(
+                'input',
+                function () {
+                    let numeros =
+                        this.value.replace(/\D/g, '');
 
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="<%= dados.email %>"
-                    placeholder="Digite seu e-mail"
-                    maxlength="190"
-                    autocomplete="email"
-                    required
-                >
+                    /*
+                     * Se o usuário colar +55 45 99999-9999,
+                     * removemos o código do Brasil antes de aplicar a máscara.
+                     */
+                    if (
+                        numeros.startsWith('55') &&
+                        numeros.length > 11
+                    ) {
+                        numeros = numeros.slice(2);
+                    }
 
-            </div>
+                    numeros = numeros.slice(0, 11);
 
+                    if (numeros.length <= 2) {
+                        this.value = numeros;
+                        return;
+                    }
 
-            <!-- TELEFONE -->
-
-            <div class="campo-auth">
-
-                <label for="telefone">
-                    Celular / WhatsApp
-                </label>
-
-                <input
-                    type="tel"
-                    id="telefone"
-                    name="telefone"
-                    value="<%= dados.telefone || '' %>"
-                    placeholder="(45) 99999-9999"
-                    maxlength="15"
-                    inputmode="tel"
-                    autocomplete="tel"
-                    required
-                >
-
-                <small>
-                    Informe um celular com DDD.
-                </small>
-
-            </div>
-
-
-            <!-- SENHA -->
-
-            <div class="campo-auth">
-
-                <label for="senha">
-                    Senha
-                </label>
-
-                <input
-                    type="password"
-                    id="senha"
-                    name="senha"
-                    placeholder="Digite sua senha"
-                    minlength="6"
-                    autocomplete="new-password"
-                    required
-                >
-
-                <small>
-                    Utilize pelo menos 6 caracteres.
-                </small>
-
-            </div>
-
-
-            <button
-                type="submit"
-                class="botao-auth"
-            >
-                Criar conta
-            </button>
-
-        </form>
-
-
-        <div class="rodape-auth">
-
-            <span>
-                Já possui uma conta?
-            </span>
-
-            <a href="/login">
-                Já sou cadastrado
-            </a>
-
-        </div>
-
-    </section>
-
-</main>
-
-
-<script>
-    const campoTelefone =
-        document.getElementById(
-            'telefone'
-        );
-
-
-    if (campoTelefone) {
-
-        campoTelefone.addEventListener(
-            'input',
-            function () {
-
-                let numeros =
-                    this.value
-                        .replace(
-                            /\D/g,
-                            ''
-                        );
-
-
-                /*
-                 * Se o usuário colar
-                 * +55 45 99999-9999,
-                 * removemos o 55.
-                 */
-
-                if (
-                    numeros.startsWith('55') &&
-                    numeros.length > 11
-                ) {
-
-                    numeros =
-                        numeros.slice(2);
-                }
-
-
-                numeros =
-                    numeros.slice(
-                        0,
-                        11
-                    );
-
-
-                if (
-                    numeros.length <= 2
-                ) {
+                    if (numeros.length <= 7) {
+                        this.value =
+                            `(${numeros.slice(0, 2)}) ${numeros.slice(2)}`;
+                        return;
+                    }
 
                     this.value =
-                        numeros;
-
-                    return;
+                        `(${numeros.slice(0, 2)}) ${numeros.slice(2, 7)}-${numeros.slice(7)}`;
                 }
+            );
+        }
+    </script>
 
-
-                if (
-                    numeros.length <= 7
-                ) {
-
-                    this.value =
-                        `(${numeros.slice(0, 2)}) ${numeros.slice(2)}`;
-
-                    return;
-                }
-
-
-                this.value =
-                    `(${numeros.slice(0, 2)}) ${numeros.slice(2, 7)}-${numeros.slice(7)}`;
-            }
-        );
-    }
-</script>
-
-
-<%- include('../partials/footer') %>
+    <script src="/js/acessibilidade.js"></script>
+</body>
+</html>

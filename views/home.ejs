@@ -207,7 +207,7 @@
     </section>
 
     <!-- =====================================================
-         LIGAS
+         LIGAS E SELEÇÕES
     ====================================================== -->
 
     <section
@@ -220,7 +220,7 @@
             <span></span>
 
             <h2>
-                LIGAS
+                LIGAS E SELEÇÕES
             </h2>
 
             <span></span>
@@ -258,8 +258,19 @@
 
                                     <img
                                         src="<%= liga.imagem %>"
-                                        alt="<%= liga.nome %>"
+                                        alt="Logotipo <%= liga.nome %>"
+                                        loading="lazy"
+                                        onerror="this.style.display='none'; this.nextElementSibling.hidden=false;"
                                     >
+
+                                    <span hidden>
+                                        <%= liga.nome
+                                            .split(' ')
+                                            .map(parte => parte.charAt(0))
+                                            .join('')
+                                            .substring(0, 3)
+                                        %>
+                                    </span>
 
                                 <% } else { %>
 

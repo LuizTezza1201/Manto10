@@ -3,22 +3,33 @@
    AUTENTICAÇÃO
 ========================================================= */
 
-.pagina-auth {
-    min-height: 650px;
+/*
+ * Login e cadastro utilizam um layout próprio.
+ * Nessas páginas não existe cabeçalho, rodapé, carrinho lateral
+ * nem botão flutuante do WhatsApp da loja.
+ */
 
-    padding: 60px 20px;
-
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
+.pagina-auth-body {
+    margin: 0;
+    min-height: 100%;
 
     background:
-        linear-gradient(
-            135deg,
-            #fafafa,
-            #f2f2f2
-        );
+        radial-gradient(
+            circle at top,
+            rgba(157, 0, 222, 0.08),
+            transparent 38%
+        ),
+        #f6f6f7;
+}
+
+.pagina-auth {
+    min-height: 100vh;
+
+    padding: 48px 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .cartao-auth {
@@ -27,15 +38,26 @@
 
     padding: 42px;
 
-    border: 1px solid #e6e6e6;
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 24px;
 
-    background-color: #ffffff;
+    background:
+        linear-gradient(
+            145deg,
+            #9d00de 0%,
+            #8700c0 100%
+        );
+
+    color: #ffffff;
 
     box-shadow:
-        0 15px 45px
-        rgba(0, 0, 0, 0.08);
+        0 24px 60px
+        rgba(83, 0, 118, 0.23);
 }
+
+/* =========================================================
+   CABEÇALHO DO FORMULÁRIO
+========================================================= */
 
 .cabecalho-auth {
     margin-bottom: 30px;
@@ -45,30 +67,45 @@
 
 .logo-auth {
     display: block;
-    width: 92px;
-    max-height: 52px;
+
+    width: 94px;
+    max-height: 68px;
+
     margin: 0 auto 18px;
+
+    /*
+     * A imagem original possui fundo transparente.
+     * O filtro transforma o desenho da logo em branco
+     * sem criar fundo ou caixa ao redor dela.
+     */
+    background: transparent;
     object-fit: contain;
-    filter: brightness(0);
+    filter: brightness(0) invert(1);
 }
 
 .cabecalho-auth h1 {
-    margin-bottom: 7px;
+    margin: 0 0 7px;
 
-    color: #000000;
+    color: #ffffff;
 
     font-size: 30px;
 }
 
 .cabecalho-auth p {
-    color: #777777;
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.82);
 
     font-size: 14px;
+    line-height: 1.5;
 }
+
+/* =========================================================
+   FORMULÁRIO
+========================================================= */
 
 .formulario-auth {
     display: flex;
-
     flex-direction: column;
 
     gap: 20px;
@@ -76,14 +113,13 @@
 
 .campo-auth {
     display: flex;
-
     flex-direction: column;
 
     gap: 8px;
 }
 
 .campo-auth label {
-    color: #222222;
+    color: #ffffff;
 
     font-size: 13px;
     font-weight: 700;
@@ -95,126 +131,212 @@
 
     padding: 0 17px;
 
-    border:
-        1px solid #dddddd;
-
+    border: 1px solid rgba(255, 255, 255, 0.42);
     border-radius: 10px;
 
     outline: none;
 
     background-color: #ffffff;
 
-    color: #000000;
+    color: #111111;
 
     transition:
         border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.campo-auth input::placeholder {
+    color: #858585;
 }
 
 .campo-auth input:focus {
-    border-color: #9d00de;
+    border-color: #ffffff;
 
     box-shadow:
-        0 0 0 3px
-        rgba(157, 0, 222, 0.1);
+        0 0 0 4px
+        rgba(255, 255, 255, 0.18);
 }
 
 .campo-auth small {
-    color: #888888;
+    color: rgba(255, 255, 255, 0.76);
 
     font-size: 11px;
+    line-height: 1.4;
 }
+
+/* =========================================================
+   BOTÃO PRINCIPAL
+========================================================= */
 
 .botao-auth {
     min-height: 52px;
 
     margin-top: 3px;
 
+    border: 1px solid #000000;
     border-radius: 10px;
 
-    background-color: #9d00de;
+    background-color: #000000;
 
     color: #ffffff;
 
     font-weight: 800;
 
+    cursor: pointer;
+
     transition:
         background-color 0.2s ease,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .botao-auth:hover {
-    background-color: #7800aa;
+    background-color: #171717;
 
     transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 22px
+        rgba(0, 0, 0, 0.18);
 }
+
+.botao-auth:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 3px;
+}
+
+/* =========================================================
+   RODAPÉ INTERNO DO CARTÃO
+========================================================= */
 
 .rodape-auth {
     margin-top: 27px;
 
     display: flex;
-
     justify-content: center;
 
     gap: 6px;
-
     flex-wrap: wrap;
 
-    color: #777777;
+    color: rgba(255, 255, 255, 0.80);
 
     font-size: 13px;
 }
 
 .rodape-auth a {
-    color: #9d00de;
+    color: #ffffff;
 
-    font-weight: 700;
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 .rodape-auth a:hover {
-    text-decoration: underline;
+    opacity: 0.82;
 }
 
-.opcoes-auth {
-    display: flex;
-
-    justify-content: flex-end;
-
-    margin-top: -5px;
-}
+/* =========================================================
+   MENSAGENS
+========================================================= */
 
 .mensagem-auth {
     width: 100%;
 
     margin-bottom: 22px;
-
     padding: 13px 15px;
 
-    border-radius: 8px;
+    border-radius: 10px;
 
     font-size: 13px;
+    line-height: 1.45;
 }
 
 .mensagem-auth.erro {
-    border:
-        1px solid #f1b4b4;
+    border: 1px solid rgba(255, 255, 255, 0.65);
 
-    background-color: #fff1f1;
+    background-color: rgba(97, 0, 0, 0.32);
 
-    color: #9f2424;
+    color: #ffffff;
 }
 
 .mensagem-auth.sucesso {
-    border:
-        1px solid #a8dab5;
+    border: 1px solid rgba(255, 255, 255, 0.65);
 
-    background-color: #effaf2;
+    background-color: rgba(0, 85, 35, 0.30);
 
-    color: #176b30;
+    color: #ffffff;
 }
 
 /* =========================================================
-   TROCA ENTRE LOJA E PAINEL ADMINISTRATIVO
+   ACESSO RÁPIDO DE DEMONSTRAÇÃO
+========================================================= */
+
+.acesso-demo {
+    margin-top: 22px;
+    padding-top: 20px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.titulo-demo {
+    display: block;
+
+    margin-bottom: 10px;
+
+    text-align: center;
+
+    color: rgba(255, 255, 255, 0.82);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.botoes-demo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+}
+
+.botoes-demo form {
+    margin: 0;
+}
+
+.botao-demo {
+    width: 100%;
+    min-height: 46px;
+
+    padding: 10px;
+
+    border: 1px solid transparent;
+    border-radius: 9px;
+
+    font-weight: 700;
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.botao-demo-admin,
+.botao-demo-cliente {
+    border-color: #ffffff;
+
+    background-color: #ffffff;
+
+    color: #6f009d;
+}
+
+.botao-demo:hover {
+    transform: translateY(-1px);
+    opacity: 0.90;
+}
+
+/* =========================================================
+   ELEMENTOS DO CABEÇALHO DA LOJA
+   (mantidos porque o mesmo CSS também é carregado em outras telas)
 ========================================================= */
 
 .botao-painel-topo {
@@ -246,23 +368,15 @@
     background: rgba(255, 255, 255, 0.12);
 }
 
-/* =========================================================
-   LOGOUT NO CABEÇALHO
-========================================================= */
-
 .form-logout-topo {
     display: flex;
-
     align-items: center;
 }
 
 .botao-logout-topo {
     padding: 8px 11px;
 
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.45);
-
+    border: 1px solid rgba(255, 255, 255, 0.45);
     border-radius: 7px;
 
     background-color: transparent;
@@ -272,25 +386,22 @@
     font-size: 11px;
     font-weight: 700;
 
-    transition:
-        background-color 0.2s ease;
+    transition: background-color 0.2s ease;
 }
 
 .botao-logout-topo:hover {
-    background-color:
-        rgba(255, 255, 255, 0.12);
+    background-color: rgba(255, 255, 255, 0.12);
 }
 
 /* =========================================================
-   RESPONSIVO
+   RESPONSIVIDADE
 ========================================================= */
 
 @media (max-width: 600px) {
-
     .pagina-auth {
-        min-height: 560px;
+        min-height: 100vh;
 
-        padding: 35px 15px;
+        padding: 28px 15px;
     }
 
     .cartao-auth {
@@ -301,6 +412,10 @@
 
     .cabecalho-auth h1 {
         font-size: 26px;
+    }
+
+    .logo-auth {
+        width: 88px;
     }
 
     .botao-logout-topo {
@@ -317,59 +432,6 @@
 
         font-size: 9px;
     }
-
-}
-
-/* Acesso temporário usado em testes e apresentações. */
-.acesso-demo {
-    margin-top: 22px;
-    padding-top: 20px;
-    border-top: 1px solid #dddddd;
-}
-
-.titulo-demo {
-    display: block;
-    margin-bottom: 10px;
-    text-align: center;
-    color: #777777;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.botoes-demo {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-
-.botoes-demo form {
-    margin: 0;
-}
-
-.botao-demo {
-    width: 100%;
-    min-height: 46px;
-    padding: 10px;
-    border: 0;
-    border-radius: 9px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.botao-demo-admin {
-    background-color: #000000;
-    color: #ffffff;
-}
-
-.botao-demo-cliente {
-    background-color: #eeeeee;
-    color: #000000;
-}
-
-.botao-demo:hover {
-    transform: translateY(-1px);
-    opacity: 0.88;
 }
 
 @media (max-width: 500px) {

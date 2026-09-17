@@ -126,7 +126,7 @@ function valoresPadrao() {
         categoria_id:
             '',
 
-        time_id:
+        liga_id:
             '',
 
         temporada:
@@ -181,7 +181,7 @@ async function renderizarFormulario(
 
     const [
         categorias,
-        times
+        ligas
     ] =
         await Promise.all([
 
@@ -189,7 +189,7 @@ async function renderizarFormulario(
                 .listarCategorias(),
 
             AdminProduto
-                .listarTimes()
+                .listarLigas()
 
         ]);
 
@@ -207,7 +207,7 @@ async function renderizarFormulario(
 
                 categorias,
 
-                times,
+                ligas,
 
                 valores,
 
@@ -301,9 +301,9 @@ const AdminProdutoController = {
                     ''
                 ),
 
-            time_id:
+            liga_id:
                 String(
-                    req.body.time_id ||
+                    req.body.liga_id ||
                     ''
                 ),
 
@@ -392,12 +392,10 @@ const AdminProdutoController = {
                     valores.categoria_id
                 );
 
-            const timeId =
-                valores.time_id
-                    ? Number(
-                        valores.time_id
-                    )
-                    : null;
+            const ligaId =
+                Number(
+                    valores.liga_id
+                );
 
             const preco =
                 converterDecimal(
@@ -501,22 +499,19 @@ const AdminProdutoController = {
             }
 
             // ==========================================
-            // TIME
+            // LIGA
             // ==========================================
 
             if (
-                timeId !== null &&
-                (
-                    !Number.isInteger(
-                        timeId
-                    ) ||
-                    timeId <= 0
-                )
+                !Number.isInteger(
+                    ligaId
+                ) ||
+                ligaId <= 0
             ) {
 
                 throw Object.assign(
                     new Error(
-                        'Selecione um time válido.'
+                        'Selecione uma liga válida.'
                     ),
                     {
                         status: 400
@@ -673,7 +668,7 @@ const AdminProdutoController = {
 
                 slug,
 
-                timeId,
+                ligaId,
 
                 categoriaId,
 

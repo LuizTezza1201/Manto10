@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 const Admin =
     require('../models/Admin');
 
@@ -77,6 +80,50 @@ function converterDecimal(
     }
 
     return Number(texto);
+}
+
+
+// ======================================================
+// REMOVER ARQUIVOS DE UPLOAD
+// ======================================================
+
+function removerArquivoFisico(caminhoArquivo) {
+    if (!caminhoArquivo) {
+        return;
+    }
+
+    try {
+        if (fs.existsSync(caminhoArquivo)) {
+            fs.unlinkSync(caminhoArquivo);
+        }
+    } catch (erro) {
+        console.error(
+            'Não foi possível remover a imagem:',
+            erro.message
+        );
+    }
+}
+
+// Remove apenas imagens que foram enviadas pelo painel.
+// Imagens antigas do catálogo original não são apagadas.
+function removerImagemUploadAnterior(caminhoPublico) {
+    if (
+        !caminhoPublico ||
+        !caminhoPublico.startsWith(
+            '/images/produtos/uploads/'
+        )
+    ) {
+        return;
+    }
+
+    const caminhoFisico = path.join(
+        __dirname,
+        '..',
+        'public',
+        caminhoPublico.replace(/^\/+/, '')
+    );
+
+    removerArquivoFisico(caminhoFisico);
 }
 
 // ======================================================
@@ -367,7 +414,7 @@ const AdminController = {
             const [
                 produto,
                 categorias,
-                times
+                ligas
             ] =
                 await Promise.all([
 
@@ -380,7 +427,7 @@ const AdminController = {
                         .listarCategoriasAdmin(),
 
                     Produto
-                        .listarTimesAdmin()
+                        .listarLigasAdmin()
 
                 ]);
 
@@ -406,7 +453,7 @@ const AdminController = {
 
                     categorias,
 
-                    times,
+                    ligas,
 
                     erro:
                         '',
@@ -479,10 +526,10 @@ const AdminController = {
                     req.body.categoria_id
                 );
 
-            const timeId =
-                req.body.time_id
+            let ligaId =
+                req.body.liga_id
                     ? Number(
-                        req.body.time_id
+                        req.body.liga_id
                     )
                     : null;
 
@@ -580,24 +627,52 @@ const AdminController = {
                 );
             }
 
+            const categoriaSelecionada =
+                await Produto.buscarCategoriaAdmin(
+                    categoriaId
+                );
+
             if (
-                timeId !== null &&
-                (
-                    !Number.isInteger(
-                        timeId
-                    ) ||
-                    timeId <= 0
-                )
+                !categoriaSelecionada ||
+                categoriaSelecionada.status !== 'Ativo'
             ) {
 
                 throw Object.assign(
                     new Error(
-                        'Selecione um time válido.'
+                        'Selecione uma categoria válida.'
                     ),
                     {
                         status: 400
                     }
                 );
+            }
+
+            const categoriaEhBox =
+                categoriaSelecionada.slug ===
+                'box-misteriosas';
+
+            if (
+                !categoriaEhBox &&
+                (
+                    !Number.isInteger(
+                        ligaId
+                    ) ||
+                    ligaId <= 0
+                )
+            ) {
+
+                throw Object.assign(
+                    new Error(
+                        'Selecione uma liga válida.'
+                    ),
+                    {
+                        status: 400
+                    }
+                );
+            }
+
+            if (categoriaEhBox) {
+                ligaId = null;
             }
 
             if (
@@ -688,7 +763,7 @@ const AdminController = {
 
                     slug,
 
-                    timeId,
+                    ligaId,
 
                     categoriaId,
 
@@ -709,11 +784,39 @@ const AdminController = {
                     maisVendido
                 });
 
+            // Se uma nova foto foi enviada, ela substitui a imagem
+            // principal usada pelo produto.
+            if (req.file) {
+                const novoCaminhoImagem =
+                    `/images/produtos/uploads/${req.file.filename}`;
+
+                const caminhoAnterior =
+                    await Produto.atualizarImagemPrincipalAdmin({
+                        produtoId,
+                        caminho:
+                            novoCaminhoImagem,
+                        textoAlternativo:
+                            nome
+                    });
+
+                removerImagemUploadAnterior(
+                    caminhoAnterior
+                );
+            }
+
             return res.redirect(
                 `/admin/produtos/${produtoId}/editar?sucesso=dados`
             );
 
         } catch (erro) {
+
+            // Se a edição falhar, remove o arquivo recém-enviado
+            // para não deixar uploads sem uso no servidor.
+            if (req.file) {
+                removerArquivoFisico(
+                    req.file.path
+                );
+            }
 
             if (
                 erro.status === 400
@@ -724,7 +827,7 @@ const AdminController = {
                     const [
                         produto,
                         categorias,
-                        times
+                        ligas
                     ] =
                         await Promise.all([
 
@@ -737,7 +840,7 @@ const AdminController = {
                                 .listarCategoriasAdmin(),
 
                             Produto
-                                .listarTimesAdmin()
+                                .listarLigasAdmin()
 
                         ]);
 
@@ -765,7 +868,7 @@ const AdminController = {
 
                                 categorias,
 
-                                times,
+                                ligas,
 
                                 erro:
                                     erro.message,

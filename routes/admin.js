@@ -174,6 +174,7 @@ router.get(
 // Salva as alterações feitas nos dados do produto.
 router.post(
     '/produtos/:id/editar',
+    uploadImagemProduto,
     AdminController.salvarProduto
 );
 

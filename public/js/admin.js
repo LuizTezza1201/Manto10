@@ -58,3 +58,28 @@
         }
     });
 })();
+
+// ============================================================
+// CAMPOS DE UPLOAD DE IMAGEM
+// ============================================================
+
+(() => {
+    const campos = document.querySelectorAll('[data-upload-input]');
+
+    campos.forEach((input) => {
+        const container = input.closest('.admin-upload');
+        const nomeArquivo = container?.querySelector('[data-upload-nome]');
+
+        if (!nomeArquivo) {
+            return;
+        }
+
+        input.addEventListener('change', () => {
+            const arquivo = input.files?.[0];
+
+            nomeArquivo.textContent = arquivo
+                ? arquivo.name
+                : 'Nenhuma imagem selecionada';
+        });
+    });
+})();

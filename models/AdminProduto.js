@@ -17,7 +17,9 @@ const AdminProduto = {
 
                 FROM categorias
 
-                WHERE status = 'Ativo'
+                WHERE
+                    status = 'Ativo'
+                    AND slug <> 'box-misteriosas'
 
                 ORDER BY
                     nome ASC
@@ -27,10 +29,10 @@ const AdminProduto = {
     },
 
     // ======================================================
-    // TIMES
+    // LIGAS
     // ======================================================
 
-    async listarTimes() {
+    async listarLigas() {
 
         const [rows] =
             await pool.execute(`
@@ -38,11 +40,16 @@ const AdminProduto = {
                     id,
                     nome
 
-                FROM times
+                FROM ligas
 
                 WHERE status = 'Ativo'
 
                 ORDER BY
+                    CASE
+                        WHEN slug = 'outras' THEN 2
+                        WHEN slug = 'selecoes' THEN 1
+                        ELSE 0
+                    END,
                     nome ASC
             `);
 
@@ -59,7 +66,7 @@ const AdminProduto = {
         nome,
         slug,
 
-        timeId,
+        ligaId,
         categoriaId,
 
         temporada,
@@ -186,41 +193,36 @@ const AdminProduto = {
             }
 
             // ==============================================
-            // VERIFICAR TIME
+            // VERIFICAR LIGA
             // ==============================================
 
+            const [ligas] =
+                await connection.execute(`
+                    SELECT id
+
+                    FROM ligas
+
+                    WHERE
+                        id = ?
+                        AND status = 'Ativo'
+
+                    LIMIT 1
+                `, [
+                    ligaId
+                ]);
+
             if (
-                timeId !== null
+                ligas.length === 0
             ) {
 
-                const [times] =
-                    await connection.execute(`
-                        SELECT id
+                const erro =
+                    new Error(
+                        'Liga não encontrada.'
+                    );
 
-                        FROM times
+                erro.status = 400;
 
-                        WHERE
-                            id = ?
-                            AND status = 'Ativo'
-
-                        LIMIT 1
-                    `, [
-                        timeId
-                    ]);
-
-                if (
-                    times.length === 0
-                ) {
-
-                    const erro =
-                        new Error(
-                            'Time não encontrado.'
-                        );
-
-                    erro.status = 400;
-
-                    throw erro;
-                }
+                throw erro;
             }
 
             // ==============================================
@@ -236,6 +238,7 @@ const AdminProduto = {
                         slug,
 
                         time_id,
+                        liga_id,
                         categoria_id,
 
                         temporada,
@@ -257,6 +260,7 @@ const AdminProduto = {
                         ?,
                         ?,
                         ?,
+                        NULL,
                         ?,
                         ?,
                         ?,
@@ -275,7 +279,7 @@ const AdminProduto = {
                     nome,
                     slug,
 
-                    timeId,
+                    ligaId,
                     categoriaId,
 
                     temporada,

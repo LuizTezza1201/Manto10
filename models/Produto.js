@@ -159,7 +159,7 @@ const Produto = {
                 END AS estoque_total
             FROM produtos p
             LEFT JOIN times t ON t.id = p.time_id
-            LEFT JOIN ligas l ON l.id = t.liga_id
+            LEFT JOIN ligas l ON l.id = COALESCE(p.liga_id, t.liga_id)
             INNER JOIN categorias c ON c.id = p.categoria_id
             LEFT JOIN produto_tamanhos pt ON pt.produto_id = p.id
             WHERE ${whereSql}
@@ -185,7 +185,7 @@ const Produto = {
                 c.id AS categoria_id, c.nome AS categoria, c.slug AS categoria_slug
             FROM produtos p
             LEFT JOIN times t ON t.id = p.time_id
-            LEFT JOIN ligas l ON l.id = t.liga_id
+            LEFT JOIN ligas l ON l.id = COALESCE(p.liga_id, t.liga_id)
             INNER JOIN categorias c ON c.id = p.categoria_id
             WHERE p.slug = ? AND p.status = 'Ativo'
             LIMIT 1
@@ -421,7 +421,7 @@ const Produto = {
     async buscarPorIdAdmin(produtoId) {
         const [rows] = await pool.execute(`
             SELECT
-                p.id, p.codigo, p.nome, p.slug, p.time_id, p.categoria_id,
+                p.id, p.codigo, p.nome, p.slug, p.time_id, p.liga_id, p.categoria_id,
                 p.temporada, p.descricao, p.tipo_camisa, p.preco,
                 p.preco_promocional, p.desconto_pix, p.destaque,
                 p.mais_vendido, p.status,
@@ -442,22 +442,53 @@ const Produto = {
     // Fornece as categorias disponíveis no formulário administrativo.
     async listarCategoriasAdmin() {
         const [rows] = await pool.execute(`
-            SELECT id, nome, status FROM categorias ORDER BY nome ASC
+            SELECT id, nome, slug, status
+            FROM categorias
+            ORDER BY nome ASC
         `);
         return rows;
     },
 
-    // Fornece os times disponíveis no formulário administrativo.
-    async listarTimesAdmin() {
+    // Busca uma categoria específica para validar regras administrativas.
+    async buscarCategoriaAdmin(categoriaId) {
         const [rows] = await pool.execute(`
-            SELECT id, nome, status FROM times ORDER BY nome ASC
+            SELECT id, nome, slug, status
+            FROM categorias
+            WHERE id = ?
+            LIMIT 1
+        `, [categoriaId]);
+
+        return rows[0] || null;
+    },
+
+    // Fornece somente as ligas ativas que podem ser escolhidas
+    // no cadastro e na edição de uma camisa.
+    async listarLigasAdmin() {
+        const [rows] = await pool.execute(`
+            SELECT id, nome, slug, status
+            FROM ligas
+            WHERE status = 'Ativo'
+            ORDER BY
+                CASE slug
+                    WHEN 'premier-league' THEN 1
+                    WHEN 'laliga' THEN 2
+                    WHEN 'brasileirao' THEN 3
+                    WHEN 'serie-a' THEN 4
+                    WHEN 'bundesliga' THEN 5
+                    WHEN 'ligue-1' THEN 6
+                    WHEN 'selecoes' THEN 7
+                    WHEN 'outras' THEN 8
+                    ELSE 99
+                END,
+                nome ASC
         `);
+
         return rows;
     },
 
     // Atualiza os dados gerais da camisa sem alterar seu estoque.
     async atualizarDadosAdmin({
-        produtoId, codigo, nome, slug, timeId, categoriaId, temporada, descricao,
+        produtoId, codigo, nome, slug, ligaId, categoriaId, temporada, descricao,
         tipoCamisa, preco, precoPromocional, descontoPix, destaque, maisVendido
     }) {
         const [produtoAtual] = await pool.execute(
@@ -465,6 +496,51 @@ const Produto = {
             [produtoId]
         );
         if (produtoAtual.length === 0) throw criarErro('Produto não encontrado.', 404);
+
+        const categoria =
+            await this.buscarCategoriaAdmin(categoriaId);
+
+        if (!categoria) {
+            throw criarErro(
+                'Categoria não encontrada.',
+                400
+            );
+        }
+
+        if (categoria.status !== 'Ativo') {
+            throw criarErro(
+                'A categoria selecionada está inativa.',
+                400
+            );
+        }
+
+        if (categoria.slug !== 'box-misteriosas') {
+            if (
+                !Number.isInteger(ligaId) ||
+                ligaId <= 0
+            ) {
+                throw criarErro(
+                    'Selecione uma liga válida.',
+                    400
+                );
+            }
+
+            const [ligas] = await pool.execute(`
+                SELECT id
+                FROM ligas
+                WHERE id = ? AND status = 'Ativo'
+                LIMIT 1
+            `, [ligaId]);
+
+            if (ligas.length === 0) {
+                throw criarErro(
+                    'Liga não encontrada ou inativa.',
+                    400
+                );
+            }
+        } else {
+            ligaId = null;
+        }
 
         // Código e slug precisam permanecer únicos entre os produtos.
         const [codigoDuplicado] = await pool.execute(
@@ -485,16 +561,83 @@ const Produto = {
 
         await pool.execute(`
             UPDATE produtos SET
-                codigo = ?, nome = ?, slug = ?, time_id = ?, categoria_id = ?, temporada = ?,
+                codigo = ?, nome = ?, slug = ?, liga_id = ?, categoria_id = ?, temporada = ?,
                 descricao = ?, tipo_camisa = ?, preco = ?, preco_promocional = ?, desconto_pix = ?,
                 destaque = ?, mais_vendido = ?
             WHERE id = ?
         `, [
-            codigo, nome, slug, timeId, categoriaId, temporada, descricao, tipoCamisa,
+            codigo, nome, slug, ligaId, categoriaId, temporada, descricao, tipoCamisa,
             preco, precoPromocional, descontoPix, destaque, maisVendido, produtoId
         ]);
 
         return true;
+    },
+
+    // Atualiza a imagem principal do produto.
+    // Se o produto ainda não possuir imagem, cria o primeiro registro.
+    async atualizarImagemPrincipalAdmin({
+        produtoId,
+        caminho,
+        textoAlternativo
+    }) {
+        const connection = await pool.getConnection();
+
+        try {
+            await connection.beginTransaction();
+
+            const [imagens] = await connection.execute(`
+                SELECT id, caminho
+                FROM produto_imagens
+                WHERE produto_id = ?
+                ORDER BY principal DESC, ordem ASC, id ASC
+                LIMIT 1
+                FOR UPDATE
+            `, [produtoId]);
+
+            let caminhoAnterior = null;
+
+            if (imagens.length > 0) {
+                caminhoAnterior = imagens[0].caminho;
+
+                await connection.execute(`
+                    UPDATE produto_imagens
+                    SET
+                        caminho = ?,
+                        texto_alternativo = ?,
+                        principal = TRUE,
+                        ordem = 1
+                    WHERE id = ?
+                `, [
+                    caminho,
+                    textoAlternativo,
+                    imagens[0].id
+                ]);
+            } else {
+                await connection.execute(`
+                    INSERT INTO produto_imagens (
+                        produto_id,
+                        caminho,
+                        texto_alternativo,
+                        principal,
+                        ordem
+                    )
+                    VALUES (?, ?, ?, TRUE, 1)
+                `, [
+                    produtoId,
+                    caminho,
+                    textoAlternativo
+                ]);
+            }
+
+            await connection.commit();
+
+            return caminhoAnterior;
+        } catch (erro) {
+            await connection.rollback();
+            throw erro;
+        } finally {
+            connection.release();
+        }
     },
 
     // Alterna rapidamente a visibilidade do produto entre Ativo e Inativo.

@@ -194,32 +194,33 @@
 
                     </label>
 
-                    <!-- TIME -->
+                    <!-- LIGA -->
 
                     <label>
 
                         <span>
-                            Time
+                            Liga
                         </span>
 
                         <select
-                            name="time_id"
+                            name="liga_id"
+                            required
                         >
 
                             <option value="">
-                                Não definido
+                                Selecione
                             </option>
 
-                            <% times.forEach((time) => { %>
+                            <% ligas.forEach((liga) => { %>
 
                                 <option
-                                    value="<%= time.id %>"
-                                    <%= Number(valores.time_id) === Number(time.id)
+                                    value="<%= liga.id %>"
+                                    <%= Number(valores.liga_id) === Number(liga.id)
                                         ? 'selected'
                                         : ''
                                     %>
                                 >
-                                    <%= time.nome %>
+                                    <%= liga.nome %>
                                 </option>
 
                             <% }) %>
@@ -306,24 +307,43 @@
 
                     <!-- FOTO -->
 
-                    <label class="admin-form-campo-largo">
+                    <div class="admin-form-campo admin-form-campo-largo">
 
-                        <span>
+                        <span class="admin-form-label">
                             Foto frontal da camisa
                         </span>
 
-                        <input
-                            type="file"
-                            name="imagem"
-                            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-                        >
+                        <div class="admin-upload">
+                            <input
+                                type="file"
+                                name="imagem"
+                                id="imagemProdutoNovo"
+                                class="admin-upload-input"
+                                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                data-upload-input
+                                required
+                            >
+
+                            <label
+                                for="imagemProdutoNovo"
+                                class="admin-upload-botao"
+                            >
+                                Escolher imagem
+                            </label>
+
+                            <span
+                                class="admin-upload-nome"
+                                data-upload-nome
+                            >
+                                Nenhuma imagem selecionada
+                            </span>
+                        </div>
 
                         <small>
-                            JPG, PNG ou WEBP.
-                            Máximo de 5 MB.
+                            JPG, PNG ou WEBP. Máximo de 5 MB.
                         </small>
 
-                    </label>
+                    </div>
 
                     <!-- DESCRIÇÃO -->
 

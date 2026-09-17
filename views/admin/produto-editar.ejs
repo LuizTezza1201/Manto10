@@ -76,8 +76,8 @@
                 </span>
 
                 <p>
-                    A troca da imagem será adicionada
-                    na próxima etapa do painel.
+                    Você pode substituir a foto atual
+                    selecionando uma nova imagem no formulário.
                 </p>
 
             </aside>
@@ -85,6 +85,7 @@
             <form
                 action="/admin/produtos/<%= produto.id %>/editar"
                 method="POST"
+                enctype="multipart/form-data"
                 class="admin-form-produto"
             >
 
@@ -165,6 +166,7 @@
 
                         <select
                             name="categoria_id"
+                            id="categoriaEdicaoProduto"
                             required
                         >
 
@@ -172,6 +174,7 @@
 
                                 <option
                                     value="<%= categoria.id %>"
+                                    data-slug="<%= categoria.slug %>"
                                     <%= Number(produto.categoria_id) === Number(categoria.id)
                                         ? 'selected'
                                         : ''
@@ -193,27 +196,31 @@
                     <label>
 
                         <span>
-                            Time
+                            Liga
                         </span>
 
-                        <select name="time_id">
+                        <select
+                            name="liga_id"
+                            id="ligaEdicaoProduto"
+                            required
+                        >
 
                             <option value="">
-                                Não definido
+                                Não se aplica
                             </option>
 
-                            <% times.forEach((time) => { %>
+                            <% ligas.forEach((liga) => { %>
 
                                 <option
-                                    value="<%= time.id %>"
-                                    <%= Number(produto.time_id) === Number(time.id)
+                                    value="<%= liga.id %>"
+                                    <%= Number(produto.liga_id) === Number(liga.id)
                                         ? 'selected'
                                         : ''
                                     %>
                                 >
-                                    <%= time.nome %>
-                                    <%= time.status === 'Inativo'
-                                        ? ' - Inativo'
+                                    <%= liga.nome %>
+                                    <%= liga.status === 'Inativo'
+                                        ? ' - Inativa'
                                         : ''
                                     %>
                                 </option>
@@ -292,6 +299,44 @@
                         >
 
                     </label>
+
+                    <div class="admin-form-campo admin-form-campo-largo">
+
+                        <span class="admin-form-label">
+                            Alterar foto frontal
+                        </span>
+
+                        <div class="admin-upload">
+                            <input
+                                type="file"
+                                name="imagem"
+                                id="imagemProdutoEditar"
+                                class="admin-upload-input"
+                                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                                data-upload-input
+                            >
+
+                            <label
+                                for="imagemProdutoEditar"
+                                class="admin-upload-botao"
+                            >
+                                Escolher imagem
+                            </label>
+
+                            <span
+                                class="admin-upload-nome"
+                                data-upload-nome
+                            >
+                                Nenhuma imagem selecionada
+                            </span>
+                        </div>
+
+                        <small>
+                            Deixe sem selecionar para manter a foto atual.
+                            JPG, PNG ou WEBP. Máximo de 5 MB.
+                        </small>
+
+                    </div>
 
                     <label class="admin-form-campo-largo">
 
@@ -376,5 +421,54 @@
     </main>
 
 </div>
+
+<script>
+
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+        const categoria =
+            document.getElementById(
+                'categoriaEdicaoProduto'
+            );
+
+        const liga =
+            document.getElementById(
+                'ligaEdicaoProduto'
+            );
+
+        if (!categoria || !liga) {
+            return;
+        }
+
+        function atualizarLiga() {
+            const opcao =
+                categoria.options[
+                    categoria.selectedIndex
+                ];
+
+            const ehBox =
+                opcao &&
+                opcao.dataset.slug ===
+                    'box-misteriosas';
+
+            liga.disabled = ehBox;
+            liga.required = !ehBox;
+
+            if (ehBox) {
+                liga.value = '';
+            }
+        }
+
+        categoria.addEventListener(
+            'change',
+            atualizarLiga
+        );
+
+        atualizarLiga();
+    }
+);
+
+</script>
 
 <%- include('../partials/admin-footer') %>
