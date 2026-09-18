@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
@@ -12,44 +14,90 @@
         content="Manto 10 - Acesso à conta do cliente."
     >
 
+    <meta
+        name="theme-color"
+        content="#9d00de"
+    >
+
     <title><%= titulo %> | Manto 10</title>
+
+    <!-- FAVICON MANTO 10 -->
+    <link
+        rel="icon"
+        type="image/png"
+        href="/images/logoroxa.png"
+    >
+
+    <link
+        rel="shortcut icon"
+        type="image/png"
+        href="/images/logoroxa.png"
+    >
+
+    <link
+        rel="apple-touch-icon"
+        href="/images/logoroxa.png"
+    >
 
     <!--
         As páginas de autenticação possuem um layout próprio.
         Não carregamos o cabeçalho, o rodapé, o carrinho lateral
         nem o botão flutuante do WhatsApp da loja.
     -->
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/acessibilidade.css">
-    <link rel="stylesheet" href="/css/auth.css">
+    <link
+        rel="stylesheet"
+        href="/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/acessibilidade.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/auth.css"
+    >
 </head>
 
 <body class="pagina-auth-body">
 
     <main class="pagina-auth">
+
         <section class="cartao-auth">
 
             <div class="cabecalho-auth">
+
                 <img
                     src="/images/logotransparente.png"
                     alt="Manto 10"
                     class="logo-auth"
                 >
 
-                <h1>Entrar</h1>
-                <p>Acesse sua conta para continuar.</p>
+                <h1>
+                    Entrar
+                </h1>
+
+                <p>
+                    Acesse sua conta para continuar.
+                </p>
+
             </div>
 
             <% if (sucesso) { %>
+
                 <div class="mensagem-auth sucesso">
                     <%= sucesso %>
                 </div>
+
             <% } %>
 
             <% if (erro) { %>
+
                 <div class="mensagem-auth erro">
                     <%= erro %>
                 </div>
+
             <% } %>
 
             <form
@@ -57,8 +105,12 @@
                 method="POST"
                 class="formulario-auth"
             >
+
                 <div class="campo-auth">
-                    <label for="email">E-mail</label>
+
+                    <label for="email">
+                        E-mail
+                    </label>
 
                     <input
                         type="email"
@@ -70,10 +122,14 @@
                         autocomplete="email"
                         required
                     >
+
                 </div>
 
                 <div class="campo-auth">
-                    <label for="senha">Senha</label>
+
+                    <label for="senha">
+                        Senha
+                    </label>
 
                     <input
                         type="password"
@@ -83,6 +139,7 @@
                         autocomplete="current-password"
                         required
                     >
+
                 </div>
 
                 <button
@@ -91,51 +148,29 @@
                 >
                     Entrar
                 </button>
+
             </form>
 
-            <!-- Acessos temporários usados apenas durante testes e apresentações. -->
-            <% if (process.env.DEMO_LOGIN === 'true') { %>
-                <div class="acesso-demo">
-                    <span class="titulo-demo">
-                        Acesso rápido para demonstração
-                    </span>
-
-                    <div class="botoes-demo">
-                        <form action="/login/demo/admin" method="POST">
-                            <button
-                                type="submit"
-                                class="botao-demo botao-demo-admin"
-                            >
-                                Entrar como Administrador
-                            </button>
-                        </form>
-
-                        <form action="/login/demo/cliente" method="POST">
-                            <button
-                                type="submit"
-                                class="botao-demo botao-demo-cliente"
-                            >
-                                Entrar como Cliente
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            <% } %>
-
             <div class="rodape-auth">
-                <span>Ainda não possui conta?</span>
-                <a href="/cadastro">Criar conta</a>
+
+                <span>
+                    Ainda não possui conta?
+                </span>
+
+                <a href="/cadastro">
+                    Criar conta
+                </a>
+
             </div>
 
         </section>
+
     </main>
 
-    <!--
-        Mantemos somente os recursos de acessibilidade, cookies e VLibras.
-        O rodapé comercial e o WhatsApp flutuante não fazem parte desta tela.
-    -->
     <%- include('../partials/acessibilidade') %>
 
     <script src="/js/acessibilidade.js"></script>
+
 </body>
+
 </html>

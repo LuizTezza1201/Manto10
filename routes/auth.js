@@ -1,5 +1,6 @@
 const express = require('express');
-const pool = require('../config/database');
+const rateLimit = require('express-rate-limit');
+
 const AuthController = require('../controllers/AuthController');
 const ContaController = require('../controllers/ContaController');
 const { exigirLogin } = require('../middlewares/auth');
@@ -7,62 +8,35 @@ const { exigirLogin } = require('../middlewares/auth');
 const router = express.Router();
 
 // ======================================================
-// ACESSO TEMPORÁRIO PARA DEMONSTRAÇÃO
+// LIMITADOR DE TENTATIVAS DE LOGIN
 // ======================================================
+//
+// Objetivo:
+// impedir tentativas repetidas de senha no formulário de login.
+//
+// Regra:
+// no máximo 5 tentativas em 15 minutos por IP.
+//
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
 
-// Entra diretamente com um usuário ativo do perfil escolhido.
-// Este recurso existe somente para facilitar testes e apresentações.
-router.post('/login/demo/:perfil', async (req, res, next) => {
-    try {
-        if (process.env.DEMO_LOGIN !== 'true') {
-            return res.status(404).send('Acesso de demonstração desativado.');
-        }
-
-        const perfis = {
-            admin: 'Administrador',
-            cliente: 'Cliente'
-        };
-
-        const tipo = perfis[req.params.perfil];
-        if (!tipo) return res.redirect('/login');
-
-        // Procura um usuário ativo sem precisar armazenar senhas no código.
-        const [usuarios] = await pool.execute(`
-            SELECT id, nome, email, telefone, tipo
-            FROM usuarios
-            WHERE tipo = ? AND status = 'Ativo'
-            ORDER BY id ASC
-            LIMIT 1
-        `, [tipo]);
-
-        if (usuarios.length === 0) {
-            return res.status(404).send(`Nenhum usuário ${tipo} ativo foi encontrado.`);
-        }
-
-        const usuario = usuarios[0];
-
-        // Regenera a sessão da mesma forma que acontece no login normal.
-        req.session.regenerate((erroSessao) => {
-            if (erroSessao) return next(erroSessao);
-
-            req.session.usuario = {
-                id: usuario.id,
-                nome: usuario.nome,
-                email: usuario.email,
-                telefone: usuario.telefone,
-                tipo: usuario.tipo
-            };
-
-            req.session.save((erroSalvar) => {
-                if (erroSalvar) return next(erroSalvar);
-
-                return tipo === 'Administrador'
-                    ? res.redirect('/admin')
-                    : res.redirect('/');
+    handler: (req, res) => {
+        return res
+            .status(429)
+            .render('auth/login', {
+                titulo: 'Entrar',
+                paginaAtual: '',
+                erro: 'Muitas tentativas de login. Tente novamente em 15 minutos.',
+                sucesso: null,
+                dados: {
+                    email: String(req.body.email || '')
+                        .trim()
+                        .toLowerCase()
+                }
             });
-        });
-    } catch (erro) {
-        return next(erro);
     }
 });
 
@@ -74,7 +48,7 @@ router.get('/cadastro', AuthController.exibirCadastro);
 router.post('/cadastro', AuthController.cadastrar);
 
 router.get('/login', AuthController.exibirLogin);
-router.post('/login', AuthController.login);
+router.post('/login', loginLimiter, AuthController.login);
 
 // ======================================================
 // MINHA CONTA

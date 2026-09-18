@@ -1022,3 +1022,51 @@ img {
         padding-inline: 15px;
     }
 }
+
+
+/* ============================================================
+   CABEÇALHO SIMPLIFICADO - CARRINHO E CHECKOUT
+   ============================================================ */
+
+.cabecalho-checkout-simples {
+    width: 100%;
+    min-height: 125px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 15px 20px;
+
+    background: var(--roxo);
+}
+
+.cabecalho-checkout-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 0;
+}
+
+.cabecalho-checkout-logo img {
+    width: auto;
+    height: 78px;
+    max-width: 210px;
+
+    object-fit: contain;
+
+    filter: brightness(0) invert(1);
+}
+
+@media (max-width: 600px) {
+    .cabecalho-checkout-simples {
+        min-height: 105px;
+        padding: 12px 16px;
+    }
+
+    .cabecalho-checkout-logo img {
+        height: 64px;
+        max-width: 175px;
+    }
+}
