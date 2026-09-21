@@ -22,6 +22,7 @@ const loginLimiter = rateLimit({
     limit: 5,
     standardHeaders: true,
     legacyHeaders: false,
+    skipSuccessfulRequests: true,
 
     handler: (req, res) => {
         return res

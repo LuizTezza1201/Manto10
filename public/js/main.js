@@ -271,61 +271,6 @@ document.addEventListener(
             );
 
         // ==================================================
-        // GALERIA DO PRODUTO
-        // ==================================================
-
-        const imagemPrincipal =
-            document.getElementById(
-                'imagemProdutoPrincipal'
-            );
-
-        const miniaturas =
-            document.querySelectorAll(
-                '.produto-miniatura'
-            );
-
-        if (
-            imagemPrincipal &&
-            miniaturas.length > 0
-        ) {
-
-            miniaturas.forEach(
-                (miniatura) => {
-
-                    miniatura.addEventListener(
-                        'click',
-                        () => {
-
-                            miniaturas.forEach(
-                                (item) => {
-
-                                    item.classList.remove(
-                                        'ativo'
-                                    );
-
-                                }
-                            );
-
-                            miniatura.classList.add(
-                                'ativo'
-                            );
-
-                            imagemPrincipal.src =
-                                miniatura.dataset.imagem;
-
-                            imagemPrincipal.alt =
-                                miniatura.dataset.alt ||
-                                'Imagem do produto';
-
-                        }
-                    );
-
-                }
-            );
-
-        }
-
-        // ==================================================
         // TAMANHO E QUANTIDADE
         // ==================================================
 

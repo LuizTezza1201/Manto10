@@ -26,6 +26,29 @@ function criarErro(mensagem, status = 502) {
 }
 
 
+function obterTimeoutInfinitePayMs() {
+    const timeout = Number(
+        process.env.INFINITEPAY_TIMEOUT_MS || 15000
+    );
+
+    return Number.isInteger(timeout) && timeout > 0
+        ? timeout
+        : 15000;
+}
+
+function validarUrlHttp(url) {
+    try {
+        const parsed = new URL(String(url || '').trim());
+
+        return ['http:', 'https:'].includes(parsed.protocol)
+            ? parsed.toString()
+            : '';
+    } catch {
+        return '';
+    }
+}
+
+
 // ============================================================
 // CONFIGURAÇÕES DA INFINITEPAY
 // ============================================================
@@ -123,6 +146,11 @@ async function enviarPostJson(
     mensagemErroConexao
 ) {
     let resposta;
+    const controller = new AbortController();
+    const timeout = setTimeout(
+        () => controller.abort(),
+        obterTimeoutInfinitePayMs()
+    );
 
     try {
         resposta = await fetch(
@@ -139,7 +167,10 @@ async function enviarPostJson(
                 },
 
                 body:
-                    JSON.stringify(payload)
+                    JSON.stringify(payload),
+
+                signal:
+                    controller.signal
             }
         );
 
@@ -147,6 +178,8 @@ async function enviarPostJson(
         throw criarErro(
             mensagemErroConexao
         );
+    } finally {
+        clearTimeout(timeout);
     }
 
     let dados = {};
@@ -409,17 +442,16 @@ async function criarLinkPagamento({
     }
 
 
-    if (
-        !dados.url ||
-        typeof dados.url !== 'string'
-    ) {
+    const urlPagamento = validarUrlHttp(dados.url);
+
+    if (!urlPagamento) {
         throw criarErro(
-            'A InfinitePay não retornou o link de pagamento.'
+            'A InfinitePay não retornou um link de pagamento válido.'
         );
     }
 
 
-    return dados.url;
+    return urlPagamento;
 }
 
 
@@ -498,16 +530,6 @@ async function verificarPagamento({
         amount:
             Number(
                 dados.amount || 0
-            ),
-
-        paidAmount:
-            Number(
-                dados.paid_amount || 0
-            ),
-
-        installments:
-            Number(
-                dados.installments || 1
             ),
 
         captureMethod:

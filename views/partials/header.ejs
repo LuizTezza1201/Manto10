@@ -115,7 +115,34 @@
 
 <body>
 
-    <%- include('navbar') %>
+    <% const checkoutSimplificado =
+        typeof caminhoAtual !== 'undefined' &&
+        (
+            String(caminhoAtual) === '/carrinho' ||
+            String(caminhoAtual).startsWith('/checkout')
+        );
+    %>
+
+    <% if (checkoutSimplificado) { %>
+
+        <header class="cabecalho-checkout-simples">
+            <a
+                href="/"
+                class="cabecalho-checkout-logo"
+                aria-label="Manto 10 - Página inicial"
+            >
+                <img
+                    src="/images/logotransparente.png"
+                    alt="Manto 10"
+                >
+            </a>
+        </header>
+
+    <% } else { %>
+
+        <%- include('navbar') %>
+
+    <% } %>
 
     <% if (
         typeof caminhoAtual !== 'undefined' &&

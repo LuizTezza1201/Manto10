@@ -26,7 +26,7 @@ CREATE TABLE `carrinhos` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `usuario_id` int unsigned NOT NULL,
   `cupom_id` int unsigned DEFAULT NULL,
-  `status` enum('Ativo','Finalizado','Abandonado') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
+  `status` enum('Ativo','Finalizado','Abandonado') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -35,7 +35,7 @@ CREATE TABLE `carrinhos` (
   KEY `idx_carrinhos_status` (`status`),
   CONSTRAINT `fk_carrinhos_cupom` FOREIGN KEY (`cupom_id`) REFERENCES `cupons` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `fk_carrinhos_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,6 @@ CREATE TABLE `carrinhos` (
 
 LOCK TABLES `carrinhos` WRITE;
 /*!40000 ALTER TABLE `carrinhos` DISABLE KEYS */;
-INSERT INTO `carrinhos` VALUES (3,3,NULL,'Finalizado','2026-09-16 15:52:54','2026-09-16 17:51:40'),(4,3,NULL,'Finalizado','2026-09-17 16:40:15','2026-09-18 15:09:39'),(5,3,NULL,'Finalizado','2026-09-18 15:12:07','2026-09-18 16:01:51');
 /*!40000 ALTER TABLE `carrinhos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,10 +56,10 @@ DROP TABLE IF EXISTS `categorias`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `categorias` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `nome` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descricao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` enum('Ativo','Inativo') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
+  `nome` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descricao` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('Ativo','Inativo') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -88,16 +87,16 @@ DROP TABLE IF EXISTS `cupons`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cupons` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `codigo` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descricao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `tipo` enum('Percentual','Valor') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `codigo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descricao` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tipo` enum('Percentual','Valor') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `valor` decimal(10,2) NOT NULL,
   `valor_minimo` decimal(10,2) NOT NULL DEFAULT '0.00',
   `data_inicio` datetime DEFAULT NULL,
   `data_fim` datetime DEFAULT NULL,
   `limite_uso` int unsigned DEFAULT NULL,
   `quantidade_usada` int unsigned NOT NULL DEFAULT '0',
-  `status` enum('Ativo','Inativo') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
+  `status` enum('Ativo','Inativo') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -127,21 +126,21 @@ DROP TABLE IF EXISTS `enderecos`;
 CREATE TABLE `enderecos` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `usuario_id` int unsigned NOT NULL,
-  `apelido` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cep` varchar(9) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `logradouro` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `numero` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `complemento` varchar(120) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `bairro` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cidade` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `estado` char(2) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `apelido` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `cep` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `logradouro` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `numero` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `complemento` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bairro` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cidade` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `estado` char(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `principal` tinyint(1) NOT NULL DEFAULT '0',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_enderecos_usuario` (`usuario_id`),
   CONSTRAINT `fk_enderecos_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,7 +149,6 @@ CREATE TABLE `enderecos` (
 
 LOCK TABLES `enderecos` WRITE;
 /*!40000 ALTER TABLE `enderecos` DISABLE KEYS */;
-INSERT INTO `enderecos` VALUES (3,3,'Entrega','85884000','R. Ver. Hilário Bordignon','1555','Casa','Centro','Medianeira','PR',0,'2026-09-16 17:51:40','2026-09-18 15:09:39'),(4,3,'Entrega','85884000','R. Ver. Hilário Bordignon','1555','Casa','Centro','Medianeira','PR',0,'2026-09-18 15:09:39','2026-09-18 16:01:51'),(5,3,'Entrega','85884000','R. Ver. Hilário Bordignon','1555','Casa','Centro','Medianeira','PR',1,'2026-09-18 16:01:51','2026-09-18 16:01:51');
 /*!40000 ALTER TABLE `enderecos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,7 +163,7 @@ CREATE TABLE `itens_carrinho` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `carrinho_id` int unsigned NOT NULL,
   `produto_tamanho_id` int unsigned NOT NULL,
-  `preferencia_box` varchar(60) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `preferencia_box` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `quantidade` int unsigned NOT NULL DEFAULT '1',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -176,7 +174,7 @@ CREATE TABLE `itens_carrinho` (
   CONSTRAINT `fk_itens_carrinho_carrinho` FOREIGN KEY (`carrinho_id`) REFERENCES `carrinhos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_itens_carrinho_produto_tamanho` FOREIGN KEY (`produto_tamanho_id`) REFERENCES `produto_tamanhos` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `itens_carrinho_chk_1` CHECK ((`quantidade` > 0))
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +183,6 @@ CREATE TABLE `itens_carrinho` (
 
 LOCK TABLES `itens_carrinho` WRITE;
 /*!40000 ALTER TABLE `itens_carrinho` DISABLE KEYS */;
-INSERT INTO `itens_carrinho` VALUES (10,3,423,'Apenas times estrangeiros e seleções',1,'2026-09-16 17:51:07','2026-09-16 17:51:07'),(13,4,352,'',1,'2026-09-18 15:06:30','2026-09-18 15:06:30'),(17,5,358,'',1,'2026-09-18 16:01:46','2026-09-18 16:01:46');
 /*!40000 ALTER TABLE `itens_carrinho` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -200,10 +197,10 @@ CREATE TABLE `itens_pedido` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `pedido_id` int unsigned NOT NULL,
   `produto_id` int unsigned DEFAULT NULL,
-  `codigo_produto` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nome_produto` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tamanho` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `preferencia_box` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `codigo_produto` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nome_produto` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tamanho` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `preferencia_box` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `quantidade` int unsigned NOT NULL,
   `preco_unitario` decimal(10,2) NOT NULL,
   `subtotal` decimal(10,2) NOT NULL,
@@ -216,7 +213,7 @@ CREATE TABLE `itens_pedido` (
   CONSTRAINT `itens_pedido_chk_1` CHECK ((`quantidade` > 0)),
   CONSTRAINT `itens_pedido_chk_2` CHECK ((`preco_unitario` >= 0)),
   CONSTRAINT `itens_pedido_chk_3` CHECK ((`subtotal` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -271,10 +268,10 @@ CREATE TABLE `itens_venda_manual` (
   `venda_id` int unsigned NOT NULL,
   `produto_id` int unsigned DEFAULT NULL,
   `produto_tamanho_id` int unsigned DEFAULT NULL,
-  `codigo_produto` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nome_produto` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tipo_camisa` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tamanho` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `codigo_produto` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nome_produto` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipo_camisa` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tamanho` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `quantidade` int unsigned NOT NULL,
   `preco_unitario` decimal(10,2) NOT NULL,
   `subtotal` decimal(10,2) NOT NULL,
@@ -307,11 +304,11 @@ DROP TABLE IF EXISTS `ligas`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ligas` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `nome` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(140) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `pais` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `imagem` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` enum('Ativo','Inativo') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
+  `nome` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(140) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pais` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `imagem` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('Ativo','Inativo') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -340,12 +337,12 @@ DROP TABLE IF EXISTS `pagamentos`;
 CREATE TABLE `pagamentos` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `pedido_id` int unsigned NOT NULL,
-  `forma_pagamento` enum('Pix','Cartao','Dinheiro','WhatsApp') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `provedor` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` enum('Pendente','Aprovado','Recusado','Cancelado') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Pendente',
-  `transaction_nsu` varchar(120) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `invoice_slug` varchar(120) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `comprovante_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `forma_pagamento` enum('Pix','Cartao','Dinheiro','WhatsApp') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `provedor` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('Pendente','Aprovado','Recusado','Cancelado') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Pendente',
+  `transaction_nsu` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `invoice_slug` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `comprovante_url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `valor` decimal(10,2) NOT NULL,
   `pago_em` datetime DEFAULT NULL,
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -356,7 +353,7 @@ CREATE TABLE `pagamentos` (
   KEY `idx_pagamentos_status` (`status`),
   CONSTRAINT `fk_pagamentos_pedido` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `pagamentos_chk_1` CHECK ((`valor` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -377,7 +374,7 @@ DROP TABLE IF EXISTS `pedidos`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pedidos` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `numero_pedido` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `numero_pedido` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `usuario_id` int unsigned NOT NULL,
   `endereco_id` int unsigned NOT NULL,
   `cupom_id` int unsigned DEFAULT NULL,
@@ -385,13 +382,13 @@ CREATE TABLE `pedidos` (
   `frete` decimal(10,2) NOT NULL DEFAULT '0.00',
   `desconto` decimal(10,2) NOT NULL DEFAULT '0.00',
   `total` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `status` enum('Pendente','Pago','Preparando','Enviado','Entregue','Cancelado') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Pendente',
-  `observacao` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('Pendente','Pago','Preparando','Enviado','Entregue','Cancelado') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Pendente',
+  `observacao` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `estoque_restituido` tinyint(1) NOT NULL DEFAULT '0',
   `expira_em` datetime DEFAULT NULL,
-  `codigo_rastreio` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `codigo_rastreio` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `rastreio_atualizado_em` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `numero_pedido` (`numero_pedido`),
@@ -429,8 +426,8 @@ DROP TABLE IF EXISTS `produto_imagens`;
 CREATE TABLE `produto_imagens` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `produto_id` int unsigned NOT NULL,
-  `caminho` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `texto_alternativo` varchar(180) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `caminho` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `texto_alternativo` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `principal` tinyint(1) NOT NULL DEFAULT '0',
   `ordem` int unsigned NOT NULL DEFAULT '0',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -521,21 +518,21 @@ DROP TABLE IF EXISTS `produtos`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `produtos` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `codigo` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nome` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `codigo` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nome` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `time_id` int unsigned DEFAULT NULL,
   `liga_id` int unsigned DEFAULT NULL,
   `categoria_id` int unsigned NOT NULL,
-  `temporada` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `descricao` text COLLATE utf8mb4_unicode_ci,
-  `tipo_camisa` enum('Tailandesa','Nacional Premium') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Tailandesa',
+  `temporada` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `descricao` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `tipo_camisa` enum('Tailandesa','Nacional Premium') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Tailandesa',
   `preco` decimal(10,2) NOT NULL,
   `preco_promocional` decimal(10,2) DEFAULT NULL,
   `desconto_pix` decimal(5,2) NOT NULL DEFAULT '0.00',
   `destaque` tinyint(1) NOT NULL DEFAULT '0',
   `mais_vendido` tinyint(1) NOT NULL DEFAULT '0',
-  `status` enum('Ativo','Inativo') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
+  `status` enum('Ativo','Inativo') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -576,13 +573,13 @@ DROP TABLE IF EXISTS `promocoes`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `promocoes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `nome` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `descricao` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `tipo` enum('Percentual','Valor') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nome` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `descricao` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tipo` enum('Percentual','Valor') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `valor` decimal(10,2) NOT NULL,
   `data_inicio` datetime NOT NULL,
   `data_fim` datetime NOT NULL,
-  `status` enum('Ativo','Inativo') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
+  `status` enum('Ativo','Inativo') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -609,9 +606,9 @@ DROP TABLE IF EXISTS `tamanhos`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tamanhos` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `nome` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nome` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `ordem` int unsigned NOT NULL DEFAULT '0',
-  `status` enum('Ativo','Inativo') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
+  `status` enum('Ativo','Inativo') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
   PRIMARY KEY (`id`),
   UNIQUE KEY `nome` (`nome`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -637,10 +634,10 @@ DROP TABLE IF EXISTS `times`;
 CREATE TABLE `times` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `liga_id` int unsigned DEFAULT NULL,
-  `nome` varchar(120) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(140) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `escudo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` enum('Ativo','Inativo') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
+  `nome` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(140) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `escudo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('Ativo','Inativo') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -670,12 +667,12 @@ DROP TABLE IF EXISTS `usuarios`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuarios` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `nome` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `telefone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `senha` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tipo` enum('Cliente','Administrador') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Cliente',
-  `status` enum('Ativo','Inativo') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
+  `nome` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `telefone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `senha` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tipo` enum('Cliente','Administrador') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Cliente',
+  `status` enum('Ativo','Inativo') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Ativo',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -683,7 +680,7 @@ CREATE TABLE `usuarios` (
   KEY `idx_usuarios_nome` (`nome`),
   KEY `idx_usuarios_tipo` (`tipo`),
   KEY `idx_usuarios_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -692,7 +689,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Manto 10','mantodez.store@gmail.com',NULL,'$2b$10$VlT2zKxxh3D17fi5VGWix.QSM6uDmVcAFGJDoUvRrZTlhXo6Z4fRG','Administrador','Ativo','2026-08-20 00:27:01','2026-09-09 15:00:15'),(3,'Cliente Teste','cliente@gmail.com','5545988230340','$2b$10$1574Mh6Wg5q1SsNCp6s.ieVBvZpm9uxXSmcKoDX57Y7aFvE/kKDC2','Cliente','Ativo','2026-09-15 15:57:09','2026-09-15 15:57:09');
+INSERT INTO `usuarios` VALUES (1,'Manto 10','mantodez.store@gmail.com',NULL,'$2b$10$VlT2zKxxh3D17fi5VGWix.QSM6uDmVcAFGJDoUvRrZTlhXo6Z4fRG','Administrador','Ativo','2026-08-20 00:27:01','2026-09-09 15:00:15');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -705,14 +702,14 @@ DROP TABLE IF EXISTS `vendas_manuais`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vendas_manuais` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `numero_venda` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `numero_venda` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `administrador_id` int unsigned NOT NULL,
-  `origem` enum('Loja física','Venda externa') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `cliente_nome` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `forma_pagamento` enum('Pix','Cartão','Dinheiro') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `origem` enum('Loja física','Venda externa') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cliente_nome` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `forma_pagamento` enum('Pix','Cartão','Dinheiro') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `total` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `observacao` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` enum('Concluída','Cancelada') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Concluída',
+  `observacao` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('Concluída','Cancelada') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Concluída',
   `estoque_restituido` tinyint(1) NOT NULL DEFAULT '0',
   `criado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `atualizado_em` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -743,4 +740,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-18 16:51:10
+-- Dump completed on 2026-09-21 11:59:46

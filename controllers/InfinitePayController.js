@@ -16,6 +16,18 @@ const InfinitePayService = require('../services/InfinitePayService');
 //
 // Esta função centraliza a leitura desses dados e evita
 // repetir a mesma lógica nos dois fluxos.
+function limparUrlComprovante(url) {
+    try {
+        const parsed = new URL(String(url || '').trim());
+
+        return ['http:', 'https:'].includes(parsed.protocol)
+            ? parsed.toString()
+            : '';
+    } catch {
+        return '';
+    }
+}
+
 function lerDadosPagamento(origem, origemWebhook = false) {
     const orderNsu = String(
         origem.order_nsu || ''
@@ -35,9 +47,9 @@ function lerDadosPagamento(origem, origemWebhook = false) {
         origem.capture_method || ''
     ).trim();
 
-    const receiptUrl = String(
-        origem.receipt_url || ''
-    ).trim();
+    const receiptUrl = limparUrlComprovante(
+        origem.receipt_url
+    );
 
     return {
         orderNsu,
@@ -434,7 +446,6 @@ const InfinitePayController = {
                 .json({
                     success: false,
                     message:
-                        erro.message ||
                         'Não foi possível processar o pagamento.'
                 });
         }

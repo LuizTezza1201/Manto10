@@ -269,72 +269,6 @@
 }
 
 /* =========================================================
-   ACESSO RÁPIDO DE DEMONSTRAÇÃO
-========================================================= */
-
-.acesso-demo {
-    margin-top: 22px;
-    padding-top: 20px;
-
-    border-top: 1px solid rgba(255, 255, 255, 0.28);
-}
-
-.titulo-demo {
-    display: block;
-
-    margin-bottom: 10px;
-
-    text-align: center;
-
-    color: rgba(255, 255, 255, 0.82);
-
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.botoes-demo {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-
-    gap: 10px;
-}
-
-.botoes-demo form {
-    margin: 0;
-}
-
-.botao-demo {
-    width: 100%;
-    min-height: 46px;
-
-    padding: 10px;
-
-    border: 1px solid transparent;
-    border-radius: 9px;
-
-    font-weight: 700;
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        opacity 0.2s ease;
-}
-
-.botao-demo-admin,
-.botao-demo-cliente {
-    border-color: #ffffff;
-
-    background-color: #ffffff;
-
-    color: #6f009d;
-}
-
-.botao-demo:hover {
-    transform: translateY(-1px);
-    opacity: 0.90;
-}
-
-/* =========================================================
    ELEMENTOS DO CABEÇALHO DA LOJA
    (mantidos porque o mesmo CSS também é carregado em outras telas)
 ========================================================= */
@@ -434,8 +368,3 @@
     }
 }
 
-@media (max-width: 500px) {
-    .botoes-demo {
-        grid-template-columns: 1fr;
-    }
-}

@@ -40,7 +40,8 @@ async function reservarEstoqueBox({
     itemPedidoId,
     tipoCamisa,
     tamanho,
-    quantidade
+    quantidade,
+    preferenciaBox = ''
 }) {
     const [fontes] = await connection.execute(`
         SELECT
@@ -50,15 +51,24 @@ async function reservarEstoqueBox({
         INNER JOIN produtos p ON p.id = pt.produto_id
         INNER JOIN categorias c ON c.id = p.categoria_id
         INNER JOIN tamanhos t ON t.id = pt.tamanho_id
+        LEFT JOIN ligas l ON l.id = p.liga_id
         WHERE p.tipo_camisa = ?
           AND p.status = 'Ativo'
           AND c.status = 'Ativo'
           AND c.slug <> 'box-misteriosas'
           AND t.nome = ?
           AND pt.estoque > 0
+          AND (
+              ? <> 'Apenas times estrangeiros e seleções'
+              OR (l.slug IS NOT NULL AND l.slug <> 'brasileirao')
+          )
         ORDER BY pt.estoque DESC, pt.id ASC
         FOR UPDATE
-    `, [tipoCamisa, tamanho]);
+    `, [
+        tipoCamisa,
+        tamanho,
+        preferenciaBox
+    ]);
 
     let restante = Number(quantidade);
 
@@ -347,7 +357,8 @@ const Pedido = {
                         itemPedidoId: itemResultado.insertId,
                         tipoCamisa: item.tipo_camisa,
                         tamanho: item.tamanho,
-                        quantidade
+                        quantidade,
+                        preferenciaBox: item.preferencia_box || ''
                     });
 
                     continue;

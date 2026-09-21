@@ -325,34 +325,6 @@
 }
 
 
-/* PAGAMENTO */
-
-.checkout-pagamento-aviso {
-    margin-top: 20px;
-
-    padding: 14px;
-
-    border-radius: 8px;
-
-    background: #f6f0f9;
-}
-
-.checkout-pagamento-aviso strong {
-    color: #9d00de;
-
-    font-size: 10px;
-}
-
-.checkout-pagamento-aviso p {
-    margin: 5px 0 0;
-
-    color: #666666;
-
-    font-size: 9px;
-
-    line-height: 1.5;
-}
-
 
 /* BOTÃO */
 

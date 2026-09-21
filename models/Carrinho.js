@@ -6,22 +6,44 @@ function criarErroCarrinho(mensagem, status = 400) {
     return erro;
 }
 
+const PREFERENCIA_BOX_ESTRANGEIROS =
+    'Apenas times estrangeiros e seleções';
+
+const PREFERENCIAS_BOX_PERMITIDAS = [
+    'Todas as camisas',
+    PREFERENCIA_BOX_ESTRANGEIROS
+];
+
 // Retorna o estoque real que pode atender uma Box Misteriosa.
 // As boxes não possuem unidades próprias: elas compartilham o estoque
 // das camisas normais do mesmo tipo e tamanho.
-async function obterEstoqueCompartilhadoBox(executor, tipoCamisa, tamanho) {
+async function obterEstoqueCompartilhadoBox(
+    executor,
+    tipoCamisa,
+    tamanho,
+    preferenciaBox = ''
+) {
     const [[resultado]] = await executor.execute(`
         SELECT COALESCE(SUM(pt.estoque), 0) AS estoque
         FROM produto_tamanhos pt
         INNER JOIN produtos p ON p.id = pt.produto_id
         INNER JOIN categorias c ON c.id = p.categoria_id
         INNER JOIN tamanhos t ON t.id = pt.tamanho_id
+        LEFT JOIN ligas l ON l.id = p.liga_id
         WHERE p.tipo_camisa = ?
           AND p.status = 'Ativo'
           AND c.status = 'Ativo'
           AND c.slug <> 'box-misteriosas'
           AND t.nome = ?
-    `, [tipoCamisa, tamanho]);
+          AND (
+              ? <> 'Apenas times estrangeiros e seleções'
+              OR (l.slug IS NOT NULL AND l.slug <> 'brasileirao')
+          )
+    `, [
+        tipoCamisa,
+        tamanho,
+        preferenciaBox
+    ]);
 
     return Number(resultado.estoque || 0);
 }
@@ -47,11 +69,16 @@ const Carrinho = {
                         INNER JOIN produtos p_pool ON p_pool.id = pt_pool.produto_id
                         INNER JOIN categorias c_pool ON c_pool.id = p_pool.categoria_id
                         INNER JOIN tamanhos t_pool ON t_pool.id = pt_pool.tamanho_id
+                        LEFT JOIN ligas l_pool ON l_pool.id = p_pool.liga_id
                         WHERE p_pool.tipo_camisa = p.tipo_camisa
                           AND p_pool.status = 'Ativo'
                           AND c_pool.status = 'Ativo'
                           AND c_pool.slug <> 'box-misteriosas'
                           AND t_pool.nome = tam.nome
+                          AND (
+                              ic.preferencia_box <> 'Apenas times estrangeiros e seleções'
+                              OR (l_pool.slug IS NOT NULL AND l_pool.slug <> 'brasileirao')
+                          )
                     )
                     ELSE pt.estoque
                 END AS estoque,
@@ -178,11 +205,6 @@ const Carrinho = {
             const ehBox =
                 variacao.categoria_slug === 'box-misteriosas';
 
-            const preferenciasPermitidas = [
-                'Todas as camisas',
-                'Apenas times estrangeiros e seleções'
-            ];
-
             let preferenciaNormalizada = '';
 
             if (ehBox) {
@@ -190,7 +212,7 @@ const Carrinho = {
                     preferenciaBox || ''
                 ).trim();
 
-                if (!preferenciasPermitidas.includes(preferenciaNormalizada)) {
+                if (!PREFERENCIAS_BOX_PERMITIDAS.includes(preferenciaNormalizada)) {
                     throw criarErroCarrinho(
                         'Escolha uma preferência válida para a Box Misteriosa.'
                     );
@@ -201,7 +223,8 @@ const Carrinho = {
                 ? await obterEstoqueCompartilhadoBox(
                     connection,
                     variacao.tipo_camisa,
-                    variacao.tamanho
+                    variacao.tamanho,
+                    preferenciaNormalizada
                 )
                 : Number(variacao.estoque);
 
@@ -290,6 +313,7 @@ const Carrinho = {
             const [rows] = await connection.execute(`
                 SELECT
                     ic.id,
+                    ic.preferencia_box,
                     pt.estoque,
                     p.tipo_camisa,
                     cat.slug AS categoria_slug,
@@ -321,7 +345,8 @@ const Carrinho = {
                 ? await obterEstoqueCompartilhadoBox(
                     connection,
                     item.tipo_camisa,
-                    item.tamanho
+                    item.tamanho,
+                    item.preferencia_box || ''
                 )
                 : Number(item.estoque);
 
