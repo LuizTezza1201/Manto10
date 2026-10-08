@@ -403,6 +403,19 @@ const Pedido = {
         }
     },
 
+
+    async contarPendentesUsuario(usuarioId) {
+        const [rows] = await pool.execute(`
+            SELECT COUNT(*) AS total
+            FROM pedidos
+            WHERE usuario_id = ?
+              AND status = 'Pendente'
+              AND (expira_em IS NULL OR expira_em > NOW())
+        `, [usuarioId]);
+
+        return Number(rows[0]?.total || 0);
+    },
+
     // ======================================================
     // CANCELAMENTO E RESTITUIÇÃO DE ESTOQUE
     // ======================================================

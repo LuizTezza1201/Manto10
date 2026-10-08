@@ -438,16 +438,22 @@ const InfinitePayController = {
                 erro
             );
 
-            // Uma resposta de erro permite que uma nova
-            // tentativa de processamento seja realizada
-            // conforme o fluxo do provedor de pagamento.
-            return res
-                .status(400)
-                .json({
-                    success: false,
-                    message:
-                        'Não foi possível processar o pagamento.'
+            if (erro.status === 409 || erro.status === 404) {
+                console.warn(
+                    'Webhook recebido para pagamento que exige análise manual:',
+                    erro.message
+                );
+
+                return res.status(200).json({
+                    success: true,
+                    message: 'Pagamento recebido para análise manual.'
                 });
+            }
+
+            return res.status(400).json({
+                success: false,
+                message: 'Não foi possível processar o pagamento.'
+            });
         }
     }
 };

@@ -4,6 +4,9 @@ const Carrinho =
 const Pedido =
     require('../models/Pedido');
 
+const { bodySeguro } = require('../utils/http');
+const { limitePedidosPendentes } = require('../utils/regras');
+
 
 // ======================================================
 // MOEDA
@@ -353,32 +356,32 @@ const CheckoutController = {
 
         try {
 
-            const endereco =
-                validarEndereco(
-                    req.body
+            const body = bodySeguro(req);
+            const pendentes = await Pedido.contarPendentesUsuario(usuarioId);
+            const limitePendentes = limitePedidosPendentes();
+
+            if (pendentes >= limitePendentes) {
+                const erro = new Error(
+                    `Você já possui ${limitePendentes} pedido(s) pendente(s). Finalize ou aguarde a expiração antes de criar outro pedido.`
                 );
+                erro.status = 409;
+                throw erro;
+            }
 
+            const endereco = validarEndereco(body);
 
-            const pedido =
-                await Pedido
-                    .criarDoCarrinho({
+            const pedido = await Pedido.criarDoCarrinho({
+                usuarioId,
+                endereco
+            });
 
-                        usuarioId,
-
-                        endereco
-
-                    });
-
-
-            return res.redirect(
-    `/pagamento/infinitepay/${pedido.id}`
-);
+            return res.redirect(`/pagamento/infinitepay/${pedido.id}`);
 
 
         } catch (erro) {
 
             if (
-                erro.status === 400
+                erro.status === 400 || erro.status === 409
             ) {
 
                 try {
@@ -414,7 +417,7 @@ const CheckoutController = {
                                 checkout,
 
                                 endereco:
-                                    req.body,
+                                    bodySeguro(req),
 
                                 erro:
                                     erro.message

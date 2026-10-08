@@ -1,82 +1,88 @@
-// ============================================================
-// MIDDLEWARES DE AUTENTICAÇÃO E AUTORIZAÇÃO
-// ============================================================
+const Usuario = require('../models/Usuario');
 
-// Os middlewares deste arquivo verificam se o usuário possui
-// uma sessão válida e, quando necessário, se possui permissão
-// para acessar determinadas áreas do sistema.
+async function usuarioAtivo(req) {
+    if (!req.session.usuario) return null;
 
+    const usuario = await Usuario.buscarPorId(req.session.usuario.id);
 
-// ============================================================
-// EXIGIR LOGIN
-// ============================================================
-
-// Utilizado em páginas que só podem ser acessadas por usuários
-// autenticados.
-function exigirLogin(req, res, next) {
-    if (!req.session.usuario) {
-        return res.redirect('/login');
+    if (!usuario || usuario.status !== 'Ativo') {
+        return null;
     }
 
-    return next();
+    req.session.usuario = {
+        id: usuario.id,
+        nome: usuario.nome,
+        email: usuario.email,
+        telefone: usuario.telefone,
+        tipo: usuario.tipo
+    };
+
+    return usuario;
 }
 
+function encerrarSessao(req) {
+    return new Promise((resolve) => {
+        if (!req.session) return resolve();
+        req.session.destroy(() => resolve());
+    });
+}
 
-// ============================================================
-// EXIGIR ADMINISTRADOR
-// ============================================================
+async function exigirLogin(req, res, next) {
+    try {
+        const usuario = await usuarioAtivo(req);
 
-// Protege todas as rotas administrativas.
-//
-// Se não existir sessão, o usuário é enviado para o login.
-//
-// Se estiver autenticado como Cliente, o sistema retorna
-// HTTP 403 e apresenta uma página personalizada de acesso negado.
-function exigirAdmin(req, res, next) {
-    if (!req.session.usuario) {
-        return res.redirect('/login');
+        if (!usuario) {
+            await encerrarSessao(req);
+            res.clearCookie('manto10.sid');
+            return res.redirect('/login');
+        }
+
+        return next();
+    } catch (erro) {
+        return next(erro);
     }
+}
 
-    if (req.session.usuario.tipo !== 'Administrador') {
-        return res
-            .status(403)
-            .render('erros/403', {
+async function exigirAdmin(req, res, next) {
+    try {
+        const usuario = await usuarioAtivo(req);
+
+        if (!usuario) {
+            await encerrarSessao(req);
+            res.clearCookie('manto10.sid');
+            return res.redirect('/login');
+        }
+
+        if (usuario.tipo !== 'Administrador') {
+            return res.status(403).render('erros/403', {
                 titulo: 'Acesso negado | Manto 10'
             });
-    }
+        }
 
-    return next();
+        return next();
+    } catch (erro) {
+        return next(erro);
+    }
 }
 
+async function exigirLoginApi(req, res, next) {
+    try {
+        const usuario = await usuarioAtivo(req);
 
-// ============================================================
-// EXIGIR LOGIN EM REQUISIÇÕES DA API
-// ============================================================
-
-// Utilizado em operações executadas por JavaScript,
-// como ações do carrinho.
-function exigirLoginApi(req, res, next) {
-    if (!req.session.usuario) {
-        return res
-            .status(401)
-            .json({
+        if (!usuario) {
+            await encerrarSessao(req);
+            res.clearCookie('manto10.sid');
+            return res.status(401).json({
                 sucesso: false,
-                mensagem:
-                    'Faça login para adicionar produtos ao carrinho.',
+                mensagem: 'Faça login para continuar.',
                 login: '/login'
             });
-    }
+        }
 
-    return next();
+        return next();
+    } catch (erro) {
+        return next(erro);
+    }
 }
 
-
-// ============================================================
-// EXPORTAÇÃO
-// ============================================================
-
-module.exports = {
-    exigirLogin,
-    exigirAdmin,
-    exigirLoginApi
-};
+module.exports = { exigirLogin, exigirAdmin, exigirLoginApi };

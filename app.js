@@ -22,6 +22,8 @@ const indexRoutes = require('./routes/index');
 const authRoutes = require('./routes/auth');
 const produtoRoutes = require('./routes/produtos');
 const carrinhoRoutes = require('./routes/carrinho');
+const contaRoutes = require('./routes/conta');
+const pagamentoRoutes = require('./routes/pagamento');
 const adminRoutes = require('./routes/admin');
 
 // Serviço responsável por cancelar pedidos pendentes expirados.
@@ -99,6 +101,14 @@ app.use(
 // Permite receber dados enviados no formato JSON.
 app.use(express.json());
 
+app.use((req, res, next) => {
+    if (!req.body || typeof req.body !== 'object') {
+        req.body = {};
+    }
+
+    next();
+});
+
 
 // ============================================================
 // SESSÃO E AUTENTICAÇÃO
@@ -168,8 +178,14 @@ app.use('/', authRoutes);
 // Catálogo e detalhes dos produtos.
 app.use('/', produtoRoutes);
 
-// Carrinho, checkout, pagamento e área do cliente.
+// Carrinho e checkout.
 app.use('/', carrinhoRoutes);
+
+// Área do cliente.
+app.use('/', contaRoutes);
+
+// Pagamentos.
+app.use('/', pagamentoRoutes);
 
 // Área administrativa.
 app.use('/admin', adminRoutes);
@@ -182,11 +198,9 @@ app.use('/admin', adminRoutes);
 // Este middleware é executado somente quando nenhuma rota
 // anterior corresponde ao endereço solicitado.
 app.use((req, res) => {
-    res
-        .status(404)
-        .send(
-            'Página não encontrada - Manto 10'
-        );
+    return res.status(404).render('erros/404', {
+        titulo: 'Página não encontrada | Manto 10'
+    });
 });
 
 
@@ -204,11 +218,9 @@ app.use((erro, req, res, next) => {
         erro
     );
 
-    res
-        .status(500)
-        .send(
-            'Erro interno do servidor - Manto 10'
-        );
+    return res.status(erro.status || 500).render('erros/500', {
+        titulo: 'Erro interno | Manto 10'
+    });
 });
 
 

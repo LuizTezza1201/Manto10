@@ -2,6 +2,8 @@ const Carrinho = require(
     '../models/Carrinho'
 );
 
+const { bodySeguro } = require('../utils/http');
+
 function formatarMoeda(valor) {
 
     return Number(valor).toLocaleString(
@@ -233,20 +235,22 @@ const CarrinhoController = {
 
         try {
 
+            const body = bodySeguro(req);
+
             const produtoTamanhoId =
                 Number(
-                    req.body
+                    body
                         .produto_tamanho_id
                 );
 
             const quantidade =
                 Number(
-                    req.body.quantidade
+                    body.quantidade
                 );
 
             const preferenciaBox =
                 String(
-                    req.body.preferencia_box || ''
+                    body.preferencia_box || ''
                 )
                     .trim()
                     .slice(0, 60);
@@ -343,6 +347,8 @@ const CarrinhoController = {
 
         try {
 
+            const body = bodySeguro(req);
+
             const itemId =
                 Number(
                     req.params.id
@@ -350,7 +356,7 @@ const CarrinhoController = {
 
             const quantidade =
                 Number(
-                    req.body.quantidade
+                    body.quantidade
                 );
 
             if (

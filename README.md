@@ -249,6 +249,7 @@ WHATSAPP_NUMBER=
 | `INFINITEPAY_TIMEOUT_MS` | Tempo máximo de espera para chamadas à InfinitePay. |
 | `PEDIDO_EXPIRACAO_SEGUNDOS` | Tempo para expirar pedidos pendentes. |
 | `PEDIDO_VERIFICACAO_SEGUNDOS` | Intervalo de verificação dos pedidos pendentes expirados. |
+| `LIMITE_PEDIDOS_PENDENTES` | Quantidade máxima de pedidos pendentes por cliente. |
 | `WHATSAPP_NUMBER` | Número de WhatsApp usado em recursos de contato, quando configurado. |
 
 ---
@@ -259,12 +260,6 @@ O projeto utiliza MySQL. O arquivo SQL principal está em:
 
 ```text
 database/manto10.sql
-```
-
-Também pode ser usado o dump final separado fornecido com o projeto:
-
-```text
-Dump20260918_limpo_manto10.sql
 ```
 
 ### Criar banco de dados
@@ -281,12 +276,6 @@ Depois importe o arquivo SQL.
 
 ```bash
 mysql -u root -p manto10 < database/manto10.sql
-```
-
-Ou, se estiver usando o dump separado:
-
-```bash
-mysql -u root -p manto10 < Dump20260918_limpo_manto10.sql
 ```
 
 ### Testar conexão

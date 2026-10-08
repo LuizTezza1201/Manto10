@@ -6,12 +6,7 @@ const express = require('express');
 
 const CarrinhoController = require('../controllers/CarrinhoController');
 const CheckoutController = require('../controllers/CheckoutController');
-const InfinitePayController = require('../controllers/InfinitePayController');
-
-const {
-    exigirLogin,
-    exigirLoginApi
-} = require('../middlewares/auth');
+const { exigirLogin, exigirLoginApi } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -84,43 +79,6 @@ router.post(
     '/checkout/finalizar',
     exigirLogin,
     CheckoutController.finalizar
-);
-
-
-// ============================================================
-// PAGAMENTO - INFINITEPAY
-// ============================================================
-
-// Recebe notificações enviadas diretamente pela InfinitePay.
-//
-// Esta rota não utiliza sessão porque a requisição é feita
-// entre os servidores da InfinitePay e da Manto 10.
-router.post(
-    '/pagamento/infinitepay/webhook',
-    InfinitePayController.webhook
-);
-
-
-// Processa o retorno do cliente após o checkout da InfinitePay.
-//
-// A confirmação não depende da sessão do usuário. Dessa forma,
-// o pagamento ainda pode ser verificado caso a sessão expire.
-router.get(
-    '/pagamento/infinitepay/retorno',
-    InfinitePayController.retorno
-);
-
-
-// Inicia o pagamento de um pedido específico.
-//
-// IMPORTANTE:
-// Esta rota dinâmica deve permanecer depois de "webhook"
-// e "retorno". Caso fosse declarada antes, o Express poderia
-// interpretar "retorno" como se fosse o parâmetro :id.
-router.get(
-    '/pagamento/infinitepay/:id',
-    exigirLogin,
-    InfinitePayController.iniciar
 );
 
 

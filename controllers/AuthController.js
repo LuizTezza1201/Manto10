@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const Usuario = require('../models/Usuario');
+const { bodySeguro } = require('../utils/http');
 
 // ======================================================
 // FUNÇÕES AUXILIARES
@@ -74,7 +75,8 @@ const AuthController = {
 
     async cadastrar(req, res, next) {
         try {
-            let { nome, email, telefone, senha } = req.body;
+            const body = bodySeguro(req);
+            let { nome, email, telefone, senha } = body;
 
             nome = String(nome || '').trim();
             email = String(email || '').trim().toLowerCase();
@@ -158,9 +160,9 @@ const AuthController = {
             // Proteção adicional caso duas requisições tentem usar o mesmo e-mail.
             if (erro.code === 'ER_DUP_ENTRY') {
                 const dados = {
-                    nome: String(req.body.nome || '').trim(),
-                    email: String(req.body.email || '').trim().toLowerCase(),
-                    telefone: String(req.body.telefone || '').trim()
+                    nome: String(bodySeguro(req).nome || '').trim(),
+                    email: String(bodySeguro(req).email || '').trim().toLowerCase(),
+                    telefone: String(bodySeguro(req).telefone || '').trim()
                 };
 
                 return renderizarCadastro(
@@ -204,7 +206,8 @@ const AuthController = {
 
     async login(req, res, next) {
         try {
-            let { email, senha } = req.body;
+            const body = bodySeguro(req);
+            let { email, senha } = body;
 
             email = String(email || '').trim().toLowerCase();
             senha = String(senha || '');

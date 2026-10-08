@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= titulo %></title>
+    <link rel="icon" type="image/png" href="/images/logoroxa.png">
+    <link rel="stylesheet" href="/css/erro-403.css">
+</head>
+<body>
+    <main class="erro-403">
+        <div class="erro-403-conteudo">
+            <p class="erro-403-codigo">ERRO 404</p>
+            <h1>Página não encontrada.</h1>
+            <h2>O endereço acessado não existe ou foi removido.</h2>
+            <p class="erro-403-mensagem">Volte para a loja e continue navegando pela Manto 10.</p>
+            <div class="erro-403-acoes">
+                <button type="button" class="erro-403-botao erro-403-botao-secundario" onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '/'; }">← Voltar</button>
+                <a href="/" class="erro-403-botao">Voltar para a loja</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
