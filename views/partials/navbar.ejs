@@ -3,22 +3,22 @@
     <div class="cabecalho-container">
 
         <a
-    href="/"
-    class="logo-principal"
-    aria-label="Manto 10 - Página inicial"
->
-    <img
-        src="/images/logotransparente.png"
-        alt="Manto 10"
-    >
-</a>
+            href="/"
+            class="logo-principal"
+            aria-label="Manto 10 - Página inicial"
+        >
+            <img
+                src="/images/logotransparente.png"
+                alt="Manto 10"
+            >
+        </a>
 
         <form
             class="pesquisa-topo"
-    id="formPesquisaTopo"
-    action="/camisas"
-    method="GET"
-    autocomplete="off"
+            id="formPesquisaTopo"
+            action="/camisas"
+            method="GET"
+            autocomplete="off"
         >
 
             <input
@@ -62,7 +62,7 @@
 
                     <a
                         href="/admin"
-                        class="botao-painel-topo"
+                        class="botao-painel-topo acao-conta-desktop"
                     >
                         Ir ao painel ADM
                     </a>
@@ -71,7 +71,7 @@
 
                     <a
                         href="/minha-conta"
-                        class="acao-topo"
+                        class="acao-topo acao-conta-desktop"
                         title="Minha conta"
                     >
 
@@ -104,7 +104,7 @@
                 <form
                     action="/logout"
                     method="POST"
-                    class="form-logout-topo <%= usuario.tipo === 'Administrador' ? 'form-logout-admin-loja' : '' %>"
+                    class="form-logout-topo acao-logout-desktop <%= usuario.tipo === 'Administrador' ? 'form-logout-admin-loja' : '' %>"
                 >
                     <button
                         type="submit"
@@ -118,7 +118,7 @@
 
                 <a
                     href="/login"
-                    class="acao-topo"
+                    class="acao-topo acao-conta-desktop"
                     aria-label="Entrar"
                     title="Entrar"
                 >
@@ -247,6 +247,55 @@
         >
             Box Misteriosas
         </a>
+
+        <% if (usuario) { %>
+
+            <% if (usuario.tipo === 'Administrador') { %>
+
+                <a
+                    href="/admin"
+                    class="item-menu-mobile item-menu-conta-mobile"
+                >
+                    Painel administrativo
+                </a>
+
+            <% } else { %>
+
+                <a
+                    href="/minha-conta"
+                    class="item-menu-mobile item-menu-conta-mobile"
+                >
+                    Minha conta
+                    <span>
+                        <%= usuario.nome.split(' ')[0] %>
+                    </span>
+                </a>
+
+            <% } %>
+
+            <form
+                action="/logout"
+                method="POST"
+                class="form-logout-menu-mobile"
+            >
+                <button
+                    type="submit"
+                    class="botao-sair-menu-mobile"
+                >
+                    Sair da conta
+                </button>
+            </form>
+
+        <% } else { %>
+
+            <a
+                href="/login"
+                class="item-menu-mobile item-menu-conta-mobile"
+            >
+                Entrar na conta
+            </a>
+
+        <% } %>
 
     </div>
 

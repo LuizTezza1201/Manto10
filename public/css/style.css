@@ -892,18 +892,6 @@ img {
 }
 
 /* =========================================================
-   TELAS MUITO PEQUENAS
-========================================================= */
-
-@media (max-width: 380px) {
-
-    .acao-topo:first-child {
-        display: none;
-    }
-
-}
-
-/* =========================================================
    LOGO PRINCIPAL - CABEÇALHO
 ========================================================= */
 
@@ -1069,4 +1057,79 @@ img {
         height: 64px;
         max-width: 175px;
     }
+}
+
+/* =========================================================
+   CONTA E LOGOUT NO MENU MOBILE
+========================================================= */
+
+.item-menu-mobile,
+.form-logout-menu-mobile {
+    display: none;
+}
+
+.botao-sair-menu-mobile {
+    width: 100%;
+
+    padding: 13px 5px;
+
+    border: 0;
+    border-bottom: 1px solid #222222;
+
+    background: transparent;
+    color: #ff4d4d;
+
+    font: inherit;
+    font-size: 14px;
+    font-weight: 900;
+
+    text-align: left;
+    cursor: pointer;
+}
+
+.botao-sair-menu-mobile:hover {
+    color: #ffffff;
+    background: rgba(255, 77, 77, 0.16);
+}
+
+.item-menu-conta-mobile span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #cfcfcf;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+@media (max-width: 720px) {
+
+    .acao-conta-desktop,
+    .acao-logout-desktop {
+        display: none;
+    }
+
+    .item-menu-mobile,
+    .form-logout-menu-mobile {
+        display: block;
+    }
+
+    .item-menu-conta-mobile {
+        color: #ffffff;
+        font-weight: 900;
+    }
+
+    .form-logout-menu-mobile {
+        border-bottom: 1px solid #222222;
+    }
+
+    .form-logout-menu-mobile:last-child {
+        border-bottom: none;
+    }
+
+    .botao-sair-menu-mobile {
+        border-bottom: none;
+    }
+
 }
